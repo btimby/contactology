@@ -5639,13 +5639,16 @@ Campaign and SavedSearch functions
         conn.request("POST", self.path, params, headers)
 
         response = conn.getresponse()
-        jsonstr = response.read()
+        if 199 > response.status > 300:
+            # Error response, raise an appropriate exception rather than trying
+            # to decode the HTML error message.
+            raise Exception('Received HTTP %s error: %s' % (response.status, response.reason))
 
-        data = None
-        data = json.loads(jsonstr)
+        # data = None
+        data = json.loads(response.read())
 
-        if data is None:
-            raise Exception("Could not fetch data from the API.")
+        # if data is None:
+        #     raise Exception("Could not fetch data from the API.")
 
         if ((isinstance(data, dict) and
              'result' in data and data['result'] == "error")):
