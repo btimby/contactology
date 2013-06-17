@@ -2,6639 +2,6206 @@
 
 import httplib
 try:
-	import simplejson as json
+    import simplejson as json
 except ImportError:
-	import json
+    import json
 from urllib import quote
 
 
 class Contactology:
-	def __init__(self, key, useHTTPS=False):
-		self.key = key
-		self.host = "api.emailcampaigns.net:80"
-		self.path = "/2/REST/"
-		self.version = "1.3.9"
-		self.useHTTPS = useHTTPS
-		if self.useHTTPS:
-			self.host = "api.emailcampaigns.net:443"
+    def __init__(self, key, useHTTPS=False):
+        self.key = key
+        self.host = "api.emailcampaigns.net:80"
+        self.path = "/2/REST/"
+        self.version = "1.3.9"
+        self.useHTTPS = useHTTPS
+        if self.useHTTPS:
+            self.host = "api.emailcampaigns.net:443"
 
+    def Integration_Upload_Csv(self, csv):
+        '''
+        Upload csv data for mapping and importing via the Contactology UI
 
-	def Integration_Upload_Csv(self, csv):
-		'''
-		Upload csv data for mapping and importing via the Contactology UI
+        Required keyword arguments:
 
-		Required keyword arguments:
+        csv (string) - Your CSV data
 
-		csv (string) - Your CSV data
+        Optional keyword arguments:
 
-		Optional keyword arguments:
 
+        Returns struct - A struct containing a path key to be used with the webapp
+        '''
 
-		Returns struct - A struct containing a path key to be used with the webapp
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Integration_Upload_Csv',
-			'csv': csv,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Integration_Upload_Csv',
+            'csv': csv,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def Integration_Get_Cookie(self, clientId, username, time):
+        '''
+        Integrate Contactology into your own web application by setting your CAMPAIGNS_SSO_COOKIE
 
-	def Integration_Get_Cookie(self, clientId, username, time):
-		'''
-		Integrate Contactology into your own web application by setting your CAMPAIGNS_SSO_COOKIE
+        Required keyword arguments:
 
-		Required keyword arguments:
+        clientId (int) - The client ID you are creating the cookie for, must be a client belonging to your reseller account
+        username (string) - The belonging to the client ID you are logging in with the cookie
+        time (int) - Cookie timeout in seconds
 
-		clientId (int) - The client ID you are creating the cookie for, must be a client belonging to your reseller account
-		username (string) - The belonging to the client ID you are logging in with the cookie
-		time (int) - Cookie timeout in seconds
+        Optional keyword arguments:
 
-		Optional keyword arguments:
 
+        Returns string - Cookie value to be set in CAMPAIGNS_SSO_COOKIE
+        '''
 
-		Returns string - Cookie value to be set in CAMPAIGNS_SSO_COOKIE
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Integration_Get_Cookie',
-			'clientId': clientId,
-			'username': username,
-			'time': time,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Integration_Get_Cookie',
+            'clientId': clientId,
+            'username': username,
+            'time': time,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def Integration_Login_Get_Cookie(self, username, password, time):
+        '''
+        Integrate Contactology into your own web application by setting your CAMPAIGNS_SSO_COOKIE using your client's credentials
 
-	def Integration_Login_Get_Cookie(self, username, password, time):
-		'''
-		Integrate Contactology into your own web application by setting your CAMPAIGNS_SSO_COOKIE using your client's credentials
+        Required keyword arguments:
 
-		Required keyword arguments:
+        username (string) - The of the client
+        password (string) - The current of the client
+        time (int) - Cookie timeout in seconds
 
-		username (string) - The of the client
-		password (string) - The current of the client
-		time (int) - Cookie timeout in seconds
+        Optional keyword arguments:
 
-		Optional keyword arguments:
 
+        Returns struct - Returns a struct on a valid username/password combo
+        '''
 
-		Returns struct - Returns a struct on a valid username/password combo
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Integration_Login_Get_Cookie',
-			'username': username,
-			'password': password,
-			'time': time,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Integration_Login_Get_Cookie',
+            'username': username,
+            'password': password,
+            'time': time,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def Contact_Add_Email(self, email, optionalParameters=None, **kwargs):
+        '''
+        Add a single email address - does not support Custom Fields
 
-	def Contact_Add_Email(self, email, optionalParameters=None, **kwargs):
-		'''
-		Add a single email address - does not support Custom Fields
+        Required keyword arguments:
 
-		Required keyword arguments:
+        email (string) - An address
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		email (string) - An address
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
 
-		activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
+        Returns bool - Returns true on success
+        '''
 
-		Returns bool - Returns true on success
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Add_Email',
-			'email': email,
-			'optionalParameters': optionalParameters,
-		}
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'Contact_Add_Email',
+            'email': email,
+            'optionalParameters': optionalParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Contact_Add(self, email, customFields, optionalParameters=None, **kwargs):
-		'''
-		Add a contact with custom fields
+    def Contact_Add(self, email, customFields, optionalParameters=None, **kwargs):
+        '''
+        Add a contact with custom fields
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		email (string) - Email address of the contact
-		customFields (dict) - is a container for custom field data
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        email (string) - Email address of the contact
+        customFields (dict) - is a container for custom field data
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
-		activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
-		updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false. Will not update the custom fields for a contact that is deactivated (bounced, globally unsubscribed, etc.)
+        activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
+        updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false. Will not update the custom fields for a contact that is deactivated (bounced, globally unsubscribed, etc.)
 
-		Returns bool - Returns true on success
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        Returns bool - Returns true on success
+        '''
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Add',
-			'email': email,
-			'customFields': customFields,
-			'optionalParameters': optionalParameters,
-		}
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		data = self.makeCall(args)
-		return data
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-
-	def Contact_Add_Email_Multiple(self, emails, optionalParameters=None, **kwargs):
-		'''
-		Add multiple email addresses - does not support Custom Fields
-
-		Required keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Contact_Add',
+            'email': email,
+            'customFields': customFields,
+            'optionalParameters': optionalParameters,
+        }
 
-		emails (array) - An list of email addresses
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        data = self.makeCall(args)
+        return data
 
-		Optional keyword arguments:
+    def Contact_Add_Email_Multiple(self, emails, optionalParameters=None, **kwargs):
+        '''
+        Add multiple email addresses - does not support Custom Fields
 
-		activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
+        Required keyword arguments:
 
-		Returns struct - Returns a list of email addresses, each marked "true" or "false" showing whether they were suppressed
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        emails (array) - An list of email addresses
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Add_Email_Multiple',
-			'emails': emails,
-			'optionalParameters': optionalParameters,
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
-
-
-	def Contact_Add_Multiple(self, contacts, optionalParameters=None, **kwargs):
-		'''
-		Add multiple contacts with Custom Fields
-
-		Required keyword arguments:
-
-		contacts (array) - Array of contact dicts
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
-		updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
-
-		Returns struct - Aggregate import results
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'Contact_Add_Multiple',
-			'contacts': contacts,
-			'optionalParameters': optionalParameters,
-		}
+        activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
 
-		data = self.makeCall(args)
-		return data
+        Returns struct - Returns a list of email addresses, each marked "true" or "false" showing whether they were suppressed
+        '''
 
+        if optionalParameters is None:
+            optionalParameters = {}
 
-	def Contact_Import(self, contacts, source, optionalParameters=None, **kwargs):
-		'''
-		Import a collection of contacts.  Can import up to 1000 contacts with a single call.
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Required keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Contact_Add_Email_Multiple',
+            'emails': emails,
+            'optionalParameters': optionalParameters,
+        }
 
-		contacts (array) - Array of contact_hash items, as explained above
-		source (string) - A short description of the of your contacts
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        data = self.makeCall(args)
+        return data
 
-		Optional keyword arguments:
+    def Contact_Add_Multiple(self, contacts, optionalParameters=None, **kwargs):
+        '''
+        Add multiple contacts with Custom Fields
 
-		listIds (list) - Import these contacts into all of the specified lists
-		groupIds (list) - Import these contacts into all of the specified lists
-		activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
-		updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
+        Required keyword arguments:
 
-		Returns struct - Aggregate import results
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        contacts (array) - Array of contact dicts
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Import',
-			'contacts': contacts,
-			'source': source,
-			'optionalParameters': optionalParameters,
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
+        updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
 
+        Returns struct - Aggregate import results
+        '''
 
-	def Contact_Import_Delayed(self, contacts, source, callbackUrl, jobId, chunkNum, optionalParameters=None, **kwargs):
-		'''
-		Import a collection of contacts into a set of lists and groups asynchronously
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Required keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		contacts (array) - Array of contact_hash items, as explained above
-		source (string) - A short description of the of your contacts
-		callbackUrl (string) - A URL endpoint for the results of the import to be POSTed to
-		jobId (string) - A Job ID used to match up the import in your webapp
-		chunkNum (int) - An Import Chunk number used to match up in your webapp - use this to keep track of what chunks have been processed, they may not be handled in order
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        args = {
+            'key': self.key,
+            'method': 'Contact_Add_Multiple',
+            'contacts': contacts,
+            'optionalParameters': optionalParameters,
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		listIds (list) - Import these contacts into all of the specified lists
-		groupIds (list) - Import these contacts into all of the specified groups
-		activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
-		updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
+    def Contact_Import(self, contacts, source, optionalParameters=None, **kwargs):
+        '''
+        Import a collection of contacts.  Can import up to 1000 contacts with a single call.
 
-		Returns bool - 
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        Required keyword arguments:
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Import_Delayed',
-			'contacts': contacts,
-			'source': source,
-			'callbackUrl': callbackUrl,
-			'jobId': jobId,
-			'chunkNum': chunkNum,
-			'optionalParameters': optionalParameters,
-		}
+        contacts (array) - Array of contact_hash items, as explained above
+        source (string) - A short description of the of your contacts
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		data = self.makeCall(args)
-		return data
+        Optional keyword arguments:
 
+        listIds (list) - Import these contacts into all of the specified lists
+        groupIds (list) - Import these contacts into all of the specified lists
+        activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
+        updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
 
-	def Contact_Get_Active_Count(self):
-		'''
-		Get a count of active contacts
+        Returns struct - Aggregate import results
+        '''
 
-		Required keyword arguments:
+        if optionalParameters is None:
+            optionalParameters = {}
 
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Optional keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Contact_Import',
+            'contacts': contacts,
+            'source': source,
+            'optionalParameters': optionalParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-		Returns int - Returns the number of active contacts for your account
-		'''
-	
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+    def Contact_Import_Delayed(self, contacts, source, callbackUrl, jobId, chunkNum, optionalParameters=None, **kwargs):
+        '''
+        Import a collection of contacts into a set of lists and groups asynchronously
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Get_Active_Count',
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        contacts (array) - Array of contact_hash items, as explained above
+        source (string) - A short description of the of your contacts
+        callbackUrl (string) - A URL endpoint for the results of the import to be POSTed to
+        jobId (string) - A Job ID used to match up the import in your webapp
+        chunkNum (int) - An Import Chunk number used to match up in your webapp - use this to keep track of what chunks have been processed, they may not be handled in order
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
+        Optional keyword arguments:
 
-	def Contact_Get_Active(self):
-		'''
-		Get a list of active contacts
+        listIds (list) - Import these contacts into all of the specified lists
+        groupIds (list) - Import these contacts into all of the specified groups
+        activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
+        updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
 
-		Required keyword arguments:
+        Returns bool -
+        '''
 
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Optional keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
+        args = {
+            'key': self.key,
+            'method': 'Contact_Import_Delayed',
+            'contacts': contacts,
+            'source': source,
+            'callbackUrl': callbackUrl,
+            'jobId': jobId,
+            'chunkNum': chunkNum,
+            'optionalParameters': optionalParameters,
+        }
 
-		Returns array - Returns an array containing the email addresses of active contacts
-		'''
-	
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        data = self.makeCall(args)
+        return data
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Get_Active',
-		}
+    def Contact_Get_Active_Count(self):
+        '''
+        Get a count of active contacts
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
 
-	def Contact_Get(self, email, optionalParameters=None, **kwargs):
-		'''
-		Get information on a single contact
+        Optional keyword arguments:
 
-		Required keyword arguments:
 
-		email (string) - The address of the contact you want information for
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Returns int - Returns the number of active contacts for your account
+        '''
 
-		Optional keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		customFields (list) - Array of custom field IDs or tokens you want included with the results (ex: ['first_name','last_name','email_address'] OR [1,2,3])
-		getAllCustomFields (bool) - As optionalParameter customFields, but automatically includes all custom fields.  Overrides customFields value
+        args = {
+            'key': self.key,
+            'method': 'Contact_Get_Active_Count',
+        }
 
-		Returns struct - Returns a struct of structs, keyed off of email address, each containing the keys specified above
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        data = self.makeCall(args)
+        return data
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Get',
-			'email': email,
-			'optionalParameters': optionalParameters,
-		}
+    def Contact_Get_Active(self):
+        '''
+        Get a list of active contacts
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
 
-	def Contact_Find(self, optionalParameters=None, **kwargs):
-		'''
-		Get a list of contacts
+        Optional keyword arguments:
 
-		Required keyword arguments:
 
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Returns array - Returns an array containing the email addresses of active contacts
+        '''
 
-		Optional keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		customFields (list) - Array of custom field IDs or tokens you want included with the results (ex: ['first_name','last_name','email_address'] OR [1,2,3])
-		status (string) - Get only contacts with a specific status, valid values: active, bounced, deleted, suppressed
-		email (string) - Get only one specific contact
-		source (string) - Get only contacts with the specified source
-		scoreMin (int) - Get only contacts with an engagement score greater than or equal to the specified engagement score
-		scoreMax (int) - Get only contacts with an engagement score less than or equal to the specified engagement score
-		ratingMin (int) - Get only contacts with a contact rating greater than or equal to the specified contact rating 
-		ratingMax (int) - Get only contacts with a contact rating less than or equal to the specified contact rating
-		getAllCustomFields (bool) - As optionalParameter customFields, but automatically includes all custom fields.  Overrides customFields value
-		sortDir (string) - Sort direction, valid values: U, D
-		offset (int) - The number of records to skip (specify a starting point)
-		num (int) - The maximum number of records to return
+        args = {
+            'key': self.key,
+            'method': 'Contact_Get_Active',
+        }
 
-		Returns struct - Returns a struct of structs, keyed off of email address, each containing the keys specified above
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        data = self.makeCall(args)
+        return data
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Find',
-			'optionalParameters': optionalParameters,
-		}
+    def Contact_Get(self, email, optionalParameters=None, **kwargs):
+        '''
+        Get information on a single contact
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        email (string) - The address of the contact you want information for
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-	def Contact_Get_Count(self, optionalParameters=None, **kwargs):
-		'''
-		Find count for a set of Contacts
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        customFields (list) - Array of custom field IDs or tokens you want included with the results (ex: ['first_name','last_name','email_address'] OR [1,2,3])
+        getAllCustomFields (bool) - As optionalParameter customFields, but automatically includes all custom fields.  Overrides customFields value
 
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Returns struct - Returns a struct of structs, keyed off of email address, each containing the keys specified above
+        '''
 
-		Optional keyword arguments:
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		status (string) - Get only contacts with a specific status, valid values: active, bounced, deleted, suppressed
-		email (string) - Get only one specific contact
-		source (string) - Get only contacts with the specified source
-		scoreMin (int) - Get only contacts with an engagement score greater than or equal to the specified engagement score
-		scoreMax (int) - Get only contacts with an engagement score less than or equal to the specified engagement score
-		ratingMin (int) - Get only contacts with a contact rating greater than or equal to the specified contact rating 
-		ratingMax (int) - Get only contacts with a contact rating less than or equal to the specified contact rating
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Returns int - Number of contacts
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        args = {
+            'key': self.key,
+            'method': 'Contact_Get',
+            'email': email,
+            'optionalParameters': optionalParameters,
+        }
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Get_Count',
-			'optionalParameters': optionalParameters,
-		}
+        data = self.makeCall(args)
+        return data
 
-		data = self.makeCall(args)
-		return data
+    def Contact_Find(self, optionalParameters=None, **kwargs):
+        '''
+        Get a list of contacts
 
+        Required keyword arguments:
 
-	def Contact_Find_Ids(self, optionalParameters=None, **kwargs):
-		'''
-		Find a set of Contacts and return just the record IDs
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Required keyword arguments:
+        Optional keyword arguments:
 
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        customFields (list) - Array of custom field IDs or tokens you want included with the results (ex: ['first_name','last_name','email_address'] OR [1,2,3])
+        status (string) - Get only contacts with a specific status, valid values: active, bounced, deleted, suppressed
+        email (string) - Get only one specific contact
+        source (string) - Get only contacts with the specified source
+        scoreMin (int) - Get only contacts with an engagement score greater than or equal to the specified engagement score
+        scoreMax (int) - Get only contacts with an engagement score less than or equal to the specified engagement score
+        ratingMin (int) - Get only contacts with a contact rating greater than or equal to the specified contact rating
+        ratingMax (int) - Get only contacts with a contact rating less than or equal to the specified contact rating
+        getAllCustomFields (bool) - As optionalParameter customFields, but automatically includes all custom fields.  Overrides customFields value
+        sortDir (string) - Sort direction, valid values: U, D
+        offset (int) - The number of records to skip (specify a starting point)
+        num (int) - The maximum number of records to return
 
-		Optional keyword arguments:
+        Returns struct - Returns a struct of structs, keyed off of email address, each containing the keys specified above
+        '''
 
-		status (string) - Get only contacts with a specific status, valid values: active, bounced, deleted, suppressed
-		email (string) - Get only one specific contact
-		source (string) - Get only contacts with the specified source
-		scoreMin (int) - Get only contacts with an engagement score greater than or equal to the specified engagement score
-		scoreMax (int) - Get only contacts with an engagement score less than or equal to the specified engagement score
-		ratingMin (int) - Get only contacts with a contact rating greater than or equal to the specified contact rating 
-		ratingMax (int) - Get only contacts with a contact rating less than or equal to the specified contact rating
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Returns array - Contact Ids
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Find_Ids',
-			'optionalParameters': optionalParameters,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Contact_Find',
+            'optionalParameters': optionalParameters,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def Contact_Get_Count(self, optionalParameters=None, **kwargs):
+        '''
+        Find count for a set of Contacts
 
-	def Contact_Update(self, email, customFields, optionalParameters=None, **kwargs):
-		'''
-		Update the custom fields of an existing contact
+        Required keyword arguments:
 
-		Required keyword arguments:
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		email (string) - The address of the contact you want to update
-		customFields (dict) - The custom fields you want to update and their new values
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        status (string) - Get only contacts with a specific status, valid values: active, bounced, deleted, suppressed
+        email (string) - Get only one specific contact
+        source (string) - Get only contacts with the specified source
+        scoreMin (int) - Get only contacts with an engagement score greater than or equal to the specified engagement score
+        scoreMax (int) - Get only contacts with an engagement score less than or equal to the specified engagement score
+        ratingMin (int) - Get only contacts with a contact rating greater than or equal to the specified contact rating
+        ratingMax (int) - Get only contacts with a contact rating less than or equal to the specified contact rating
 
-		activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
+        Returns int - Number of contacts
+        '''
 
-		Returns bool - Returns true on success
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Update',
-			'email': email,
-			'customFields': customFields,
-			'optionalParameters': optionalParameters,
-		}
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'Contact_Get_Count',
+            'optionalParameters': optionalParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Contact_Change_Email(self, email, newEmail):
-		'''
-		Change the email address for an existing contact while preserving list and group subscriptions
+    def Contact_Find_Ids(self, optionalParameters=None, **kwargs):
+        '''
+        Find a set of Contacts and return just the record IDs
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		email (string) - The current address of the contact
-		newEmail (string) - The contact's new email address
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
+        status (string) - Get only contacts with a specific status, valid values: active, bounced, deleted, suppressed
+        email (string) - Get only one specific contact
+        source (string) - Get only contacts with the specified source
+        scoreMin (int) - Get only contacts with an engagement score greater than or equal to the specified engagement score
+        scoreMax (int) - Get only contacts with an engagement score less than or equal to the specified engagement score
+        ratingMin (int) - Get only contacts with a contact rating greater than or equal to the specified contact rating
+        ratingMax (int) - Get only contacts with a contact rating less than or equal to the specified contact rating
 
-		Returns struct - Returns a struct of structs, keyed off of email address, each containing the keys specified below
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Contact_Change_Email',
-			'email': email,
-			'newEmail': newEmail,
-		}
+        Returns array - Contact Ids
+        '''
 
-		data = self.makeCall(args)
-		return data
+        if optionalParameters is None:
+            optionalParameters = {}
 
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-	def Contact_Activate(self, email):
-		'''
-		Return a contact to active status
+        args = {
+            'key': self.key,
+            'method': 'Contact_Find_Ids',
+            'optionalParameters': optionalParameters,
+        }
 
-		Required keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		email (string) - The address of the contact you wish to activate
+    def Contact_Update(self, email, customFields, optionalParameters=None, **kwargs):
+        '''
+        Update the custom fields of an existing contact
 
-		Optional keyword arguments:
+        Required keyword arguments:
 
+        email (string) - The address of the contact you want to update
+        customFields (dict) - The custom fields you want to update and their new values
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Contact_Activate',
-			'email': email,
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
 
+        Returns bool - Returns true on success
+        '''
 
-	def Contact_Delete(self, email):
-		'''
-		Delete a contact
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Required keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		email (string) - An address
+        args = {
+            'key': self.key,
+            'method': 'Contact_Update',
+            'email': email,
+            'customFields': customFields,
+            'optionalParameters': optionalParameters,
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
+    def Contact_Change_Email(self, email, newEmail):
+        '''
+        Change the email address for an existing contact while preserving list and group subscriptions
 
-		Returns bool - True if delete was successful
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Contact_Delete',
-			'email': email,
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        email (string) - The current address of the contact
+        newEmail (string) - The contact's new email address
 
+        Optional keyword arguments:
 
-	def Contact_Suppress(self, email, optionalParameters=None, **kwargs):
-		'''
-		Suppress a contact
 
-		Required keyword arguments:
+        Returns struct - Returns a struct of structs, keyed off of email address, each containing the keys specified below
+        '''
 
-		email (string) - An address
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        args = {
+            'key': self.key,
+            'method': 'Contact_Change_Email',
+            'email': email,
+            'newEmail': newEmail,
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		campaignId (int) - The ID of the campaign tied to this suppression
+    def Contact_Activate(self, email):
+        '''
+        Return a contact to active status
 
-		Returns bool - Returns true or false indicating whether the contact was suppressed
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        Required keyword arguments:
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Suppress',
-			'email': email,
-			'optionalParameters': optionalParameters,
-		}
+        email (string) - The address of the contact you wish to activate
 
-		data = self.makeCall(args)
-		return data
+        Optional keyword arguments:
 
 
-	def Contact_Suppress_Multiple(self, emails, optionalParameters=None, **kwargs):
-		'''
-		Suppress multiple contacts
+        Returns bool - Returns true on success
+        '''
 
-		Required keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Contact_Activate',
+            'email': email,
+        }
 
-		emails (array) - An list of email addresses
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        data = self.makeCall(args)
+        return data
 
-		Optional keyword arguments:
+    def Contact_Delete(self, email):
+        '''
+        Delete a contact
 
-		campaignId (int) - The ID of the campaign tied to this suppression
+        Required keyword arguments:
 
-		Returns struct - Returns a list of email addresses, each marked "true" or "false" showing whether they were suppressed
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        email (string) - An address
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Suppress_Multiple',
-			'emails': emails,
-			'optionalParameters': optionalParameters,
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
 
+        Returns bool - True if delete was successful
+        '''
 
-	def Contact_Purge(self, email):
-		'''
-		Purge a contact
+        args = {
+            'key': self.key,
+            'method': 'Contact_Delete',
+            'email': email,
+        }
 
-		Required keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		email (string) - An address
+    def Contact_Suppress(self, email, optionalParameters=None, **kwargs):
+        '''
+        Suppress a contact
 
-		Optional keyword arguments:
+        Required keyword arguments:
 
+        email (string) - An address
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Returns bool - Returns true or false indicating whether the contact was purged
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Contact_Purge',
-			'email': email,
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        campaignId (int) - The ID of the campaign tied to this suppression
 
+        Returns bool - Returns true or false indicating whether the contact was suppressed
+        '''
 
-	def Contact_Get_History(self, email, optionalParameters=None, **kwargs):
-		'''
-		Get the history for a contact
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Required keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		email (string) - An address
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        args = {
+            'key': self.key,
+            'method': 'Contact_Suppress',
+            'email': email,
+            'optionalParameters': optionalParameters,
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		minDate (string) - Return contact history created on or after minDate. Format as UTC.
-		maxDate (string) - Return contact history created on or before maxDate. Format as UTC.
-		historyTypes (dict) - Limit the type of contact history data returned.
-		campaignIds (dict) - A dict of campaign IDs
+    def Contact_Suppress_Multiple(self, emails, optionalParameters=None, **kwargs):
+        '''
+        Suppress multiple contacts
 
-		Returns struct - Returns a struct of history information
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        Required keyword arguments:
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Get_History',
-			'email': email,
-			'optionalParameters': optionalParameters,
-		}
+        emails (array) - An list of email addresses
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		data = self.makeCall(args)
-		return data
+        Optional keyword arguments:
 
+        campaignId (int) - The ID of the campaign tied to this suppression
 
-	def Contact_Get_History_Multiple(self, optionalParameters=None, **kwargs):
-		'''
-		Get the history for a set of contacts
+        Returns struct - Returns a list of email addresses, each marked "true" or "false" showing whether they were suppressed
+        '''
 
-		Required keyword arguments:
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Optional keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Contact_Suppress_Multiple',
+            'emails': emails,
+            'optionalParameters': optionalParameters,
+        }
 
-		addressIds (dict) - A dict of email address IDs
-		campaignIds (dict) - A dict of campaign IDs
-		minDate (string) - Return contact history created on or after minDate. Format as UTC.
-		maxDate (string) - Return contact history created on or before maxDate. Format as UTC.
-		historyTypes (dict) - Limit the type of contact history data returned.
-		sortDir (string) - Sort direction, valid values: U, D
-		offset (int) - The number of records to skip (specify a starting point)
-		num (int) - The maximum number of records to return (must also specify an offset when using the num parameter)
+        data = self.makeCall(args)
+        return data
 
-		Returns struct - Returns a struct of history information
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+    def Contact_Purge(self, email):
+        '''
+        Purge a contact
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Get_History_Multiple',
-			'optionalParameters': optionalParameters,
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        email (string) - An address
 
+        Optional keyword arguments:
 
-	def Contact_Get_Subscriptions(self, email):
-		'''
-		Get the listIds for all the lists this contact is subscribed to
+        Returns bool - Returns true or false indicating whether the contact was purged
+        '''
 
-		Required keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Contact_Purge',
+            'email': email,
+        }
 
-		email (string) - An address
+        data = self.makeCall(args)
+        return data
 
-		Optional keyword arguments:
+    def Contact_Get_History(self, email, optionalParameters=None, **kwargs):
+        '''
+        Get the history for a contact
 
+        Required keyword arguments:
 
-		Returns array - Returns an array of listIds
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Contact_Get_Subscriptions',
-			'email': email,
-		}
+        email (string) - An address
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		data = self.makeCall(args)
-		return data
+        Optional keyword arguments:
 
+        minDate (string) - Return contact history created on or after minDate. Format as UTC.
+        maxDate (string) - Return contact history created on or before maxDate. Format as UTC.
+        historyTypes (dict) - Limit the type of contact history data returned.
+        campaignIds (dict) - A dict of campaign IDs
 
-	def Contact_Set_Subscriptions(self, email, listIds, optionalParameters=None, **kwargs):
-		'''
-		Unsubscribe a contact from all lists, then subscribe the contact to the
+        Returns struct - Returns a struct of history information
+        '''
+
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'Contact_Get_History',
+            'email': email,
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Contact_Get_History_Multiple(self, optionalParameters=None, **kwargs):
+        '''
+        Get the history for a set of contacts
+
+        Required keyword arguments:
+
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        addressIds (dict) - A dict of email address IDs
+        campaignIds (dict) - A dict of campaign IDs
+        minDate (string) - Return contact history created on or after minDate. Format as UTC.
+        maxDate (string) - Return contact history created on or before maxDate. Format as UTC.
+        historyTypes (dict) - Limit the type of contact history data returned.
+        sortDir (string) - Sort direction, valid values: U, D
+        offset (int) - The number of records to skip (specify a starting point)
+        num (int) - The maximum number of records to return (must also specify an offset when using the num parameter)
+
+        Returns struct - Returns a struct of history information
+        '''
+
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'Contact_Get_History_Multiple',
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Contact_Get_Subscriptions(self, email):
+        '''
+        Get the listIds for all the lists this contact is subscribed to
+
+        Required keyword arguments:
+
+        email (string) - An address
+
+        Optional keyword arguments:
+
+
+        Returns array - Returns an array of listIds
+        '''
+
+        args = {
+            'key': self.key,
+            'method': 'Contact_Get_Subscriptions',
+            'email': email,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Contact_Set_Subscriptions(self, email, listIds, optionalParameters=None, **kwargs):
+        '''
+        Unsubscribe a contact from all lists, then subscribe the contact to the
   specified lists.
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		email (string) - The address of the contact you wish to set the subscriptions of
-		listIds (array) - An list of the contact should be subscribed to and unsubscribed from all others
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        email (string) - The address of the contact you wish to set the subscriptions of
+        listIds (array) - An list of the contact should be subscribed to and unsubscribed from all others
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
-		campaignId (int) - The ID of the campaign tied to this subscription action
+        campaignId (int) - The ID of the campaign tied to this subscription action
 
-		Returns array - An array of all the lists the contact is subscribed to after the operation, should have the same values as listIds
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        Returns array - An array of all the lists the contact is subscribed to after the operation, should have the same values as listIds
+        '''
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Set_Subscriptions',
-			'email': email,
-			'listIds': listIds,
-			'optionalParameters': optionalParameters,
-		}
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		data = self.makeCall(args)
-		return data
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
+        args = {
+            'key': self.key,
+            'method': 'Contact_Set_Subscriptions',
+            'email': email,
+            'listIds': listIds,
+            'optionalParameters': optionalParameters,
+        }
 
-	def Contact_Get_No_Subscriptions(self):
-		'''
-		Get a list of all email addresses that are not subscribed to any list
+        data = self.makeCall(args)
+        return data
 
-		Required keyword arguments:
+    def Contact_Get_No_Subscriptions(self):
+        '''
+        Get a list of all email addresses that are not subscribed to any list
 
+        Required keyword arguments:
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
+        Returns array - A list of email addresses that are not subscribed to any list
+        '''
 
-		Returns array - A list of email addresses that are not subscribed to any list
-		'''
-	
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Get_No_Subscriptions',
-		}
+        args = {
+            'key': self.key,
+            'method': 'Contact_Get_No_Subscriptions',
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def Contact_Get_No_Activity(self):
+        '''
+        Get a list of all email addresses that have been sent campaigns but have not opened or clicked
 
-	def Contact_Get_No_Activity(self):
-		'''
-		Get a list of all email addresses that have been sent campaigns but have not opened or clicked
+        Required keyword arguments:
 
-		Required keyword arguments:
+        Optional keyword arguments:
 
+        sentCount (int) - Return email addresses who recieved campaigns but have taken no action (e.g.: find email addresses who have not opened or clicked on any of the 3 most recent campaigns)
 
-		Optional keyword arguments:
+        Returns array - A list of email addresses have been sent campaigns but have not opened or clicked
+        '''
 
-		sentCount (int) - Return email addresses who recieved campaigns but have taken no action (e.g.: find email addresses who have not opened or clicked on any of the 3 most recent campaigns)
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Returns array - A list of email addresses have been sent campaigns but have not opened or clicked
-		'''
-	
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        args = {
+            'key': self.key,
+            'method': 'Contact_Get_No_Activity',
+        }
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Get_No_Activity',
-		}
+        data = self.makeCall(args)
+        return data
 
-		data = self.makeCall(args)
-		return data
+    def Contact_Delete_No_Activity(self):
+        '''
+        Delete all email addresses that have been sent campaigns but have not opened or clicked
 
+        Required keyword arguments:
 
-	def Contact_Delete_No_Activity(self):
-		'''
-		Delete all email addresses that have been sent campaigns but have not opened or clicked
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        sentCount (int) - Return email addresses who recieved campaigns but have taken no action (e.g.: find email addresses who have not opened or clicked on any of the 3 most recent campaigns)
 
+        Returns int - The number of contacts that were deleted
+        '''
 
-		Optional keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		sentCount (int) - Return email addresses who recieved campaigns but have taken no action (e.g.: find email addresses who have not opened or clicked on any of the 3 most recent campaigns)
+        args = {
+            'key': self.key,
+            'method': 'Contact_Delete_No_Activity',
+        }
 
-		Returns int - The number of contacts that were deleted
-		'''
-	
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        data = self.makeCall(args)
+        return data
 
-		args = {
-			'key': self.key,
-			'method': 'Contact_Delete_No_Activity',
-		}
+    def Contact_Get_Person_Code(self, email):
+        '''
+        Retrieve the Person Code for a given contact
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        email (string) - The contact's address you want the Person Code for
 
-	def Contact_Get_Person_Code(self, email):
-		'''
-		Retrieve the Person Code for a given contact
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        Returns string - Person Code
+        '''
 
-		email (string) - The contact's address you want the Person Code for
+        args = {
+            'key': self.key,
+            'method': 'Contact_Get_Person_Code',
+            'email': email,
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
+    def Contact_Delete_No_Subscriptions(self):
+        '''
+        Delete all email addresses that are not subscribed to any list
 
-		Returns string - Person Code
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Contact_Get_Person_Code',
-			'email': email,
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        Optional keyword arguments:
 
+        Returns int - The number of contacts that were deleted
+        '''
 
-	def Contact_Delete_No_Subscriptions(self):
-		'''
-		Delete all email addresses that are not subscribed to any list
+        args = {
+            'key': self.key,
+            'method': 'Contact_Delete_No_Subscriptions',
+        }
 
-		Required keyword arguments:
+        data = self.makeCall(args)
+        return data
 
+    def CustomField_Add_Textbox(self, fieldName, required, subscriberCanEdit, optionalParameters=None, **kwargs):
+        '''
+        Add a Textbox CustomField to your signup form
 
-		Optional keyword arguments:
+        Required keyword arguments:
 
+        fieldName (string) - The name of your CustomField - this will be the label for your field on the form
+        required (bool) - Is this field when the form is filled out?
+        subscriberCanEdit (bool) - Can the subscriber edit this value later?
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Returns int - The number of contacts that were deleted
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Contact_Delete_No_Subscriptions',
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        displayOrder (int) - A number indicating what order this field should appear in
+        defaultValue (string) - Set a defaultValue if you want this field prepopulated on the form
 
+        Returns struct - Returns a struct containing the new CustomFields fieldId and token
+        '''
 
-	def CustomField_Add_Textbox(self, fieldName, required, subscriberCanEdit, optionalParameters=None, **kwargs):
-		'''
-		Add a Textbox CustomField to your signup form
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Required keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		fieldName (string) - The name of your CustomField - this will be the label for your field on the form
-		required (bool) - Is this field when the form is filled out?
-		subscriberCanEdit (bool) - Can the subscriber edit this value later?
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        args = {
+            'key': self.key,
+            'method': 'CustomField_Add_Textbox',
+            'fieldName': fieldName,
+            'required': required,
+            'subscriberCanEdit': subscriberCanEdit,
+            'optionalParameters': optionalParameters,
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		displayOrder (int) - A number indicating what order this field should appear in
-		defaultValue (string) - Set a defaultValue if you want this field prepopulated on the form
+    def CustomField_Add_Decimal(self, fieldName, required, subscriberCanEdit, optionalParameters=None, **kwargs):
+        '''
+        Add a Decimal CustomField to your signup form
 
-		Returns struct - Returns a struct containing the new CustomFields fieldId and token
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        Required keyword arguments:
 
-		args = {
-			'key': self.key,
-			'method': 'CustomField_Add_Textbox',
-			'fieldName': fieldName,
-			'required': required,
-			'subscriberCanEdit': subscriberCanEdit,
-			'optionalParameters': optionalParameters,
-		}
+        fieldName (string) - The name of your CustomField - this will be the label for your field on the form
+        required (bool) - Is this field when the form is filled out?
+        subscriberCanEdit (bool) - Can the subscriber edit this value later?
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		data = self.makeCall(args)
-		return data
+        Optional keyword arguments:
 
+        displayOrder (int) - A number indicating what order this field should appear in
+        defaultValue (float) - Set a defaultValue if you want this field prepopulated on the form
 
-	def CustomField_Add_Decimal(self, fieldName, required, subscriberCanEdit, optionalParameters=None, **kwargs):
-		'''
-		Add a Decimal CustomField to your signup form
+        Returns struct - Returns a struct containing the new CustomFields fieldId and token
+        '''
 
-		Required keyword arguments:
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		fieldName (string) - The name of your CustomField - this will be the label for your field on the form
-		required (bool) - Is this field when the form is filled out?
-		subscriberCanEdit (bool) - Can the subscriber edit this value later?
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Optional keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'CustomField_Add_Decimal',
+            'fieldName': fieldName,
+            'required': required,
+            'subscriberCanEdit': subscriberCanEdit,
+            'optionalParameters': optionalParameters,
+        }
 
-		displayOrder (int) - A number indicating what order this field should appear in
-		defaultValue (float) - Set a defaultValue if you want this field prepopulated on the form
+        data = self.makeCall(args)
+        return data
 
-		Returns struct - Returns a struct containing the new CustomFields fieldId and token
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+    def CustomField_Add_Integer(self, fieldName, required, subscriberCanEdit, optionalParameters=None, **kwargs):
+        '''
+        Add an Integer CustomField to your signup form
 
-		args = {
-			'key': self.key,
-			'method': 'CustomField_Add_Decimal',
-			'fieldName': fieldName,
-			'required': required,
-			'subscriberCanEdit': subscriberCanEdit,
-			'optionalParameters': optionalParameters,
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        fieldName (string) - The name of your CustomField - this will be the label for your field on the form
+        required (bool) - Is this field when the form is filled out?
+        subscriberCanEdit (bool) - Can the subscriber edit this value later?
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
+        Optional keyword arguments:
 
-	def CustomField_Add_Integer(self, fieldName, required, subscriberCanEdit, optionalParameters=None, **kwargs):
-		'''
-		Add an Integer CustomField to your signup form
+        displayOrder (int) - A number indicating what order this field should appear in
+        defaultValue (int) - Set a defaultValue if you want this field prepopulated on the form
 
-		Required keyword arguments:
+        Returns struct - Returns a struct containing the new CustomFields fieldId and token
+        '''
 
-		fieldName (string) - The name of your CustomField - this will be the label for your field on the form
-		required (bool) - Is this field when the form is filled out?
-		subscriberCanEdit (bool) - Can the subscriber edit this value later?
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Optional keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		displayOrder (int) - A number indicating what order this field should appear in
-		defaultValue (int) - Set a defaultValue if you want this field prepopulated on the form
+        args = {
+            'key': self.key,
+            'method': 'CustomField_Add_Integer',
+            'fieldName': fieldName,
+            'required': required,
+            'subscriberCanEdit': subscriberCanEdit,
+            'optionalParameters': optionalParameters,
+        }
 
-		Returns struct - Returns a struct containing the new CustomFields fieldId and token
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        data = self.makeCall(args)
+        return data
 
-		args = {
-			'key': self.key,
-			'method': 'CustomField_Add_Integer',
-			'fieldName': fieldName,
-			'required': required,
-			'subscriberCanEdit': subscriberCanEdit,
-			'optionalParameters': optionalParameters,
-		}
+    def CustomField_Add_Dropdown(self, fieldName, required, subscriberCanEdit, options, optionalParameters=None, **kwargs):
+        '''
+        Add a Dropdown CustomField to your signup form
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        fieldName (string) - The name of your CustomField - this will be the label for your field on the form
+        required (bool) - Is this field when the form is filled out?
+        subscriberCanEdit (bool) - Can the subscriber edit this value later?
+        options (array) - An list of strings to be shown in the dropdown
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-	def CustomField_Add_Dropdown(self, fieldName, required, subscriberCanEdit, options, optionalParameters=None, **kwargs):
-		'''
-		Add a Dropdown CustomField to your signup form
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        displayOrder (int) - A number indicating what order this field should appear in
+        defaultValue (string) - Set a defaultValue if you want this field prepopulated on the form - your value must be present in the options list
 
-		fieldName (string) - The name of your CustomField - this will be the label for your field on the form
-		required (bool) - Is this field when the form is filled out?
-		subscriberCanEdit (bool) - Can the subscriber edit this value later?
-		options (array) - An list of strings to be shown in the dropdown
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Returns struct - Returns a struct containing the new CustomFields fieldId and token
+        '''
 
-		Optional keyword arguments:
-
-		displayOrder (int) - A number indicating what order this field should appear in
-		defaultValue (string) - Set a defaultValue if you want this field prepopulated on the form - your value must be present in the options list
-
-		Returns struct - Returns a struct containing the new CustomFields fieldId and token
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		args = {
-			'key': self.key,
-			'method': 'CustomField_Add_Dropdown',
-			'fieldName': fieldName,
-			'required': required,
-			'subscriberCanEdit': subscriberCanEdit,
-			'options': options,
-			'optionalParameters': optionalParameters,
-		}
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'CustomField_Add_Dropdown',
+            'fieldName': fieldName,
+            'required': required,
+            'subscriberCanEdit': subscriberCanEdit,
+            'options': options,
+            'optionalParameters': optionalParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def CustomField_Add_Radio(self, fieldName, required, subscriberCanEdit, options, optionalParameters=None, **kwargs):
-		'''
-		Add a Radio CustomField to your signup form
+    def CustomField_Add_Radio(self, fieldName, required, subscriberCanEdit, options, optionalParameters=None, **kwargs):
+        '''
+        Add a Radio CustomField to your signup form
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		fieldName (string) - The name of your CustomField - this will be the label for your field on the form
-		required (bool) - Is this field when the form is filled out?
-		subscriberCanEdit (bool) - Can the subscriber edit this value later?
-		options (array) - An list of strings, each value will have its own radio button
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		displayOrder (int) - A number indicating what order this field should appear in
-		defaultValue (string) - Set a defaultValue if you a radio button preselected on the form - your value must be present in the options list
-
-		Returns struct - Returns a struct containing the new CustomFields fieldId and token
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        fieldName (string) - The name of your CustomField - this will be the label for your field on the form
+        required (bool) - Is this field when the form is filled out?
+        subscriberCanEdit (bool) - Can the subscriber edit this value later?
+        options (array) - An list of strings, each value will have its own radio button
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		args = {
-			'key': self.key,
-			'method': 'CustomField_Add_Radio',
-			'fieldName': fieldName,
-			'required': required,
-			'subscriberCanEdit': subscriberCanEdit,
-			'options': options,
-			'optionalParameters': optionalParameters,
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        displayOrder (int) - A number indicating what order this field should appear in
+        defaultValue (string) - Set a defaultValue if you a radio button preselected on the form - your value must be present in the options list
 
+        Returns struct - Returns a struct containing the new CustomFields fieldId and token
+        '''
 
-	def CustomField_Add_Checkbox(self, fieldName, required, subscriberCanEdit, optionalParameters=None, **kwargs):
-		'''
-		Add a single Checkbox CustomField to your signup form
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Required keyword arguments:
-
-		fieldName (string) - The name of your CustomField - this will be the label for your field on the form
-		required (bool) - Is this field when the form is filled out?
-		subscriberCanEdit (bool) - Can the subscriber edit this value later?
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		displayOrder (int) - A number indicating what order this field should appear in
-		defaultValue (bool) - Set a defaultValue if you want this field checked automatically
-
-		Returns struct - Returns a struct containing the new CustomFields fieldId and token
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'CustomField_Add_Checkbox',
-			'fieldName': fieldName,
-			'required': required,
-			'subscriberCanEdit': subscriberCanEdit,
-			'optionalParameters': optionalParameters,
-		}
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		data = self.makeCall(args)
-		return data
-
-
-	def CustomField_Add_CheckboxList(self, fieldName, required, subscriberCanEdit, options, optionalParameters=None, **kwargs):
-		'''
-		Add a CheckboxList CustomField to your signup form
-
-		Required keyword arguments:
-
-		fieldName (string) - The name of your CustomField - this will be the label for your field on the form
-		required (bool) - Is this field when the form is filled out?
-		subscriberCanEdit (bool) - Can the subscriber edit this value later?
-		options (array) - An list of strings, each value will have its own checkbox
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		displayOrder (int) - A number indicating what order this field should appear in
-		defaultValue (list) - Each string in this list must correspond to a string in options, the checkbox for each string in defaultValue will be checked initially
-
-		Returns struct - Returns a struct containing the new CustomFields fieldId and token
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'CustomField_Add_CheckboxList',
-			'fieldName': fieldName,
-			'required': required,
-			'subscriberCanEdit': subscriberCanEdit,
-			'options': options,
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def CustomField_Add_Date(self, fieldName, required, subscriberCanEdit, optionalParameters=None, **kwargs):
-		'''
-		Add a Date CustomField to your signup form
-
-		Required keyword arguments:
-
-		fieldName (string) - The name of your CustomField - this will be the label for your field on the form
-		required (bool) - Is this field when the form is filled out?
-		subscriberCanEdit (bool) - Can the subscriber edit this value later?
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		displayOrder (int) - A number indicating what order this field should appear in
-		defaultValue (string) - Set a defaultValue if you want this field prepopulated on the form
-
-		Returns struct - Returns a struct containing the new CustomFields fieldId and token
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'CustomField_Add_Date',
-			'fieldName': fieldName,
-			'required': required,
-			'subscriberCanEdit': subscriberCanEdit,
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def CustomField_Add_Email(self, fieldName, required, subscriberCanEdit, optionalParameters=None, **kwargs):
-		'''
-		Add an Email CustomField to your signup form
-
-		Required keyword arguments:
-
-		fieldName (string) - The name of your CustomField - this will be the label for your field on the form
-		required (bool) - Is this field when the form is filled out?
-		subscriberCanEdit (bool) - Can the subscriber edit this value later?
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		displayOrder (int) - A number indicating what order this field should appear in
-		defaultValue (string) - Set a defaultValue if you want this field prepopulated on the form - must be a valid email address
-
-		Returns struct - Returns a struct containing the new CustomFields fieldId and token
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'CustomField_Add_Email',
-			'fieldName': fieldName,
-			'required': required,
-			'subscriberCanEdit': subscriberCanEdit,
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def CustomField_Add_Phone(self, fieldName, required, subscriberCanEdit, optionalParameters=None, **kwargs):
-		'''
-		Add a Phone CustomField to your signup form
-
-		Required keyword arguments:
-
-		fieldName (string) - The name of your CustomField - this will be the label for your field on the form
-		required (bool) - Is this field when the form is filled out?
-		subscriberCanEdit (bool) - Can the subscriber edit this value later?
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		displayOrder (int) - A number indicating what order this field should appear in
-		defaultValue (string) - Set a defaultValue if you want this field prepopulated on the form
-
-		Returns struct - Returns a struct containing the new CustomFields fieldId and token
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'CustomField_Add_Phone',
-			'fieldName': fieldName,
-			'required': required,
-			'subscriberCanEdit': subscriberCanEdit,
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def CustomField_Add_StateDropdown(self, fieldName, required, subscriberCanEdit, optionalParameters=None, **kwargs):
-		'''
-		Add a StateDropdown CustomField to your signup form
-
-		Required keyword arguments:
-
-		fieldName (string) - The name of your CustomField - this will be the label for your field on the form
-		required (bool) - Is this field when the form is filled out?
-		subscriberCanEdit (bool) - Can the subscriber edit this value later?
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        args = {
+            'key': self.key,
+            'method': 'CustomField_Add_Radio',
+            'fieldName': fieldName,
+            'required': required,
+            'subscriberCanEdit': subscriberCanEdit,
+            'options': options,
+            'optionalParameters': optionalParameters,
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		displayOrder (int) - A number indicating what order this field should appear in
-		defaultValue (string) - Set a defaultValue if you want this value preselected in the dropdown - must be the full name of a valid state
+    def CustomField_Add_Checkbox(self, fieldName, required, subscriberCanEdit, optionalParameters=None, **kwargs):
+        '''
+        Add a single Checkbox CustomField to your signup form
 
-		Returns struct - Returns a struct containing the new CustomFields fieldId and token
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'CustomField_Add_StateDropdown',
-			'fieldName': fieldName,
-			'required': required,
-			'subscriberCanEdit': subscriberCanEdit,
-			'optionalParameters': optionalParameters,
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        fieldName (string) - The name of your CustomField - this will be the label for your field on the form
+        required (bool) - Is this field when the form is filled out?
+        subscriberCanEdit (bool) - Can the subscriber edit this value later?
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
+        Optional keyword arguments:
 
-	def CustomField_Add_Address(self, fieldName, required, subscriberCanEdit, optionalParameters=None, **kwargs):
-		'''
-		Add an Address CustomField to your signup form
+        displayOrder (int) - A number indicating what order this field should appear in
+        defaultValue (bool) - Set a defaultValue if you want this field checked automatically
 
-		Required keyword arguments:
+        Returns struct - Returns a struct containing the new CustomFields fieldId and token
+        '''
 
-		fieldName (string) - The name of your CustomField - this will be the label for your field on the form
-		required (bool) - Is this field when the form is filled out?
-		subscriberCanEdit (bool) - Can the subscriber edit this value later?
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Optional keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		displayOrder (int) - A number indicating what order this field should appear in
-		defaultValue (string) - Set a defaultValue if you want this field prepopulated on the form
+        args = {
+            'key': self.key,
+            'method': 'CustomField_Add_Checkbox',
+            'fieldName': fieldName,
+            'required': required,
+            'subscriberCanEdit': subscriberCanEdit,
+            'optionalParameters': optionalParameters,
+        }
 
-		Returns struct - Returns a struct containing the new CustomFields fieldId and token
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        data = self.makeCall(args)
+        return data
 
-		args = {
-			'key': self.key,
-			'method': 'CustomField_Add_Address',
-			'fieldName': fieldName,
-			'required': required,
-			'subscriberCanEdit': subscriberCanEdit,
-			'optionalParameters': optionalParameters,
-		}
+    def CustomField_Add_CheckboxList(self, fieldName, required, subscriberCanEdit, options, optionalParameters=None, **kwargs):
+        '''
+        Add a CheckboxList CustomField to your signup form
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        fieldName (string) - The name of your CustomField - this will be the label for your field on the form
+        required (bool) - Is this field when the form is filled out?
+        subscriberCanEdit (bool) - Can the subscriber edit this value later?
+        options (array) - An list of strings, each value will have its own checkbox
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-	def CustomField_Find(self, searchParameters=None):
-		'''
-		Get a list of CustomFields - excluding searchParameters indicates you want a list of all CustomFields
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        displayOrder (int) - A number indicating what order this field should appear in
+        defaultValue (list) - Each string in this list must correspond to a string in options, the checkbox for each string in defaultValue will be checked initially
 
-		searchParameters (dict) - Provide a dict to narrow your results
+        Returns struct - Returns a struct containing the new CustomFields fieldId and token
+        '''
 
-		Optional keyword arguments:
+        if optionalParameters is None:
+            optionalParameters = {}
 
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Returns struct - Returns a struct for each CustomField found
-		'''
-	
-		if searchParameters is None:
-			searchParameters = {}
-	
-		args = {
-			'key': self.key,
-			'method': 'CustomField_Find',
-			'searchParameters': searchParameters,
-		}
+        args = {
+            'key': self.key,
+            'method': 'CustomField_Add_CheckboxList',
+            'fieldName': fieldName,
+            'required': required,
+            'subscriberCanEdit': subscriberCanEdit,
+            'options': options,
+            'optionalParameters': optionalParameters,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def CustomField_Add_Date(self, fieldName, required, subscriberCanEdit, optionalParameters=None, **kwargs):
+        '''
+        Add a Date CustomField to your signup form
 
-	def CustomField_Get_All(self):
-		'''
-		Get a list of all current CustomFields
+        Required keyword arguments:
 
-		Required keyword arguments:
+        fieldName (string) - The name of your CustomField - this will be the label for your field on the form
+        required (bool) - Is this field when the form is filled out?
+        subscriberCanEdit (bool) - Can the subscriber edit this value later?
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        displayOrder (int) - A number indicating what order this field should appear in
+        defaultValue (string) - Set a defaultValue if you want this field prepopulated on the form
 
+        Returns struct - Returns a struct containing the new CustomFields fieldId and token
+        '''
 
-		Returns struct - Returns a struct for each CustomField found
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'CustomField_Get_All',
-		}
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		data = self.makeCall(args)
-		return data
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
+        args = {
+            'key': self.key,
+            'method': 'CustomField_Add_Date',
+            'fieldName': fieldName,
+            'required': required,
+            'subscriberCanEdit': subscriberCanEdit,
+            'optionalParameters': optionalParameters,
+        }
 
-	def CustomField_Update(self, fieldId, updateParameters):
-		'''
-		Update an existing CustomField
+        data = self.makeCall(args)
+        return data
 
-		Required keyword arguments:
+    def CustomField_Add_Email(self, fieldName, required, subscriberCanEdit, optionalParameters=None, **kwargs):
+        '''
+        Add an Email CustomField to your signup form
 
-		fieldId (int) - The of the CustomField you want to modify
-		updateParameters (dict) - A dict of replacement values for your CustomField - only specify fields that you want to change
+        Required keyword arguments:
 
-		Optional keyword arguments:
+        fieldName (string) - The name of your CustomField - this will be the label for your field on the form
+        required (bool) - Is this field when the form is filled out?
+        subscriberCanEdit (bool) - Can the subscriber edit this value later?
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
+        Optional keyword arguments:
 
-		Returns struct - Returns a struct with your CustomField's new properties
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'CustomField_Update',
-			'fieldId': fieldId,
-			'updateParameters': updateParameters,
-		}
+        displayOrder (int) - A number indicating what order this field should appear in
+        defaultValue (string) - Set a defaultValue if you want this field prepopulated on the form - must be a valid email address
 
-		data = self.makeCall(args)
-		return data
+        Returns struct - Returns a struct containing the new CustomFields fieldId and token
+        '''
 
+        if optionalParameters is None:
+            optionalParameters = {}
 
-	def CustomField_Reorder(self, reorder):
-		'''
-		Update the displayOrder property on multiple fields at once
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Required keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'CustomField_Add_Email',
+            'fieldName': fieldName,
+            'required': required,
+            'subscriberCanEdit': subscriberCanEdit,
+            'optionalParameters': optionalParameters,
+        }
 
-		reorder (dict) - A dict where each key is a fieldId and each value is the new displayOrder
+        data = self.makeCall(args)
+        return data
 
-		Optional keyword arguments:
+    def CustomField_Add_Phone(self, fieldName, required, subscriberCanEdit, optionalParameters=None, **kwargs):
+        '''
+        Add a Phone CustomField to your signup form
 
+        Required keyword arguments:
 
-		Returns struct - Returns a struct for each CustomField updated
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'CustomField_Reorder',
-			'reorder': reorder,
-		}
+        fieldName (string) - The name of your CustomField - this will be the label for your field on the form
+        required (bool) - Is this field when the form is filled out?
+        subscriberCanEdit (bool) - Can the subscriber edit this value later?
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		data = self.makeCall(args)
-		return data
+        Optional keyword arguments:
 
+        displayOrder (int) - A number indicating what order this field should appear in
+        defaultValue (string) - Set a defaultValue if you want this field prepopulated on the form
 
-	def CustomField_Delete(self, fieldId):
-		'''
-		Delete a CustomField - this action cannot be undone
+        Returns struct - Returns a struct containing the new CustomFields fieldId and token
+        '''
 
-		Required keyword arguments:
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		fieldId (int) - The of the CustomField you want to delete - first_name, last_name and email_address cannot be deleted
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Optional keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'CustomField_Add_Phone',
+            'fieldName': fieldName,
+            'required': required,
+            'subscriberCanEdit': subscriberCanEdit,
+            'optionalParameters': optionalParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'CustomField_Delete',
-			'fieldId': fieldId,
-		}
+    def CustomField_Add_StateDropdown(self, fieldName, required, subscriberCanEdit, optionalParameters=None, **kwargs):
+        '''
+        Add a StateDropdown CustomField to your signup form
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        fieldName (string) - The name of your CustomField - this will be the label for your field on the form
+        required (bool) - Is this field when the form is filled out?
+        subscriberCanEdit (bool) - Can the subscriber edit this value later?
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-	def List_Add_Test(self, name, optionalParameters=None, **kwargs):
-		'''
-		Create a new test contact list
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        displayOrder (int) - A number indicating what order this field should appear in
+        defaultValue (string) - Set a defaultValue if you want this value preselected in the dropdown - must be the full name of a valid state
 
-		name (string) - The of your list
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Returns struct - Returns a struct containing the new CustomFields fieldId and token
+        '''
 
-		Optional keyword arguments:
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		description (string) - A short description for your list
-		easycastName (string) - A one word shortcut for EasyCast access, will create an EasyCast email address in the format NAME.list.YOURID@send.emailcampaigns.net
-		listOwnerEmail (string) - An email address that receives an email whenever a contact subscribes to this list, and can approve "EasyCast" messages
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Returns int - id Returns the List ID of your new List
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        args = {
+            'key': self.key,
+            'method': 'CustomField_Add_StateDropdown',
+            'fieldName': fieldName,
+            'required': required,
+            'subscriberCanEdit': subscriberCanEdit,
+            'optionalParameters': optionalParameters,
+        }
 
-		args = {
-			'key': self.key,
-			'method': 'List_Add_Test',
-			'name': name,
-			'optionalParameters': optionalParameters,
-		}
+        data = self.makeCall(args)
+        return data
 
-		data = self.makeCall(args)
-		return data
+    def CustomField_Add_Address(self, fieldName, required, subscriberCanEdit, optionalParameters=None, **kwargs):
+        '''
+        Add an Address CustomField to your signup form
 
+        Required keyword arguments:
 
-	def List_Add_Internal(self, name, optionalParameters=None, **kwargs):
-		'''
-		Create a new internal contact list
+        fieldName (string) - The name of your CustomField - this will be the label for your field on the form
+        required (bool) - Is this field when the form is filled out?
+        subscriberCanEdit (bool) - Can the subscriber edit this value later?
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Required keyword arguments:
+        Optional keyword arguments:
 
-		name (string) - The of your list
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        displayOrder (int) - A number indicating what order this field should appear in
+        defaultValue (string) - Set a defaultValue if you want this field prepopulated on the form
 
-		Optional keyword arguments:
+        Returns struct - Returns a struct containing the new CustomFields fieldId and token
+        '''
 
-		description (string) - A short description for your list
-		easycastName (string) - A one word shortcut for EasyCast access, will create an EasyCast email address in the format NAME.list.YOURID@send.emailcampaigns.net
-		listOwnerEmail (string) - An email address that receives an email whenever a contact subscribes to this list, and can approve "EasyCast" messages
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Returns int - id Returns the List ID of your new List
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		args = {
-			'key': self.key,
-			'method': 'List_Add_Internal',
-			'name': name,
-			'optionalParameters': optionalParameters,
-		}
+        args = {
+            'key': self.key,
+            'method': 'CustomField_Add_Address',
+            'fieldName': fieldName,
+            'required': required,
+            'subscriberCanEdit': subscriberCanEdit,
+            'optionalParameters': optionalParameters,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def CustomField_Find(self, searchParameters=None):
+        '''
+        Get a list of CustomFields - excluding searchParameters indicates you want a list of all CustomFields
 
-	def List_Add_Private(self, name, optionalParameters=None, **kwargs):
-		'''
-		Create a new private contact list
+        Required keyword arguments:
 
-		Required keyword arguments:
+        searchParameters (dict) - Provide a dict to narrow your results
 
-		name (string) - The of your list
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        Returns struct - Returns a struct for each CustomField found
+        '''
 
-		description (string) - A short description for your list
-		easycastName (string) - A one word shortcut for EasyCast access, will create an EasyCast email address in the format NAME.list.YOURID@send.emailcampaigns.net
-		listOwnerEmail (string) - An email address that receives an email whenever a contact subscribes to this list, and can approve "EasyCast" messages
-		optIn (bool) - Setting this to true means that the system will send contacts a confirmation email before sending them messages
-		optInFromEmail (string) - The email address that the optInMessage confirmation email will be sent from.  Required if optIn is true
-		optInFromEmailAlias (string) - The From Name that the optInMessage confirmation email will be sent from.
-		optInSubject (string) - The subject line of the optInMessage confirmation email.  Required if optIn is true
-		optInMessage (string) - The HTML email body for the confirmation email.  MUST include the {confirm_url} token that will insert the link to the correct subscription confirmation page.  Required if optIn is true
+        if searchParameters is None:
+            searchParameters = {}
 
-		Returns int - id Returns the List ID of your new List
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        args = {
+            'key': self.key,
+            'method': 'CustomField_Find',
+            'searchParameters': searchParameters,
+        }
 
-		args = {
-			'key': self.key,
-			'method': 'List_Add_Private',
-			'name': name,
-			'optionalParameters': optionalParameters,
-		}
+        data = self.makeCall(args)
+        return data
 
-		data = self.makeCall(args)
-		return data
+    def CustomField_Get_All(self):
+        '''
+        Get a list of all current CustomFields
 
+        Required keyword arguments:
 
-	def List_Add_Public(self, name, optionalParameters=None, **kwargs):
-		'''
-		Create a new public contact list
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        Returns struct - Returns a struct for each CustomField found
+        '''
 
-		name (string) - The of your list
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        args = {
+            'key': self.key,
+            'method': 'CustomField_Get_All',
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		description (string) - A short description for your list
-		easycastName (string) - A one word shortcut for EasyCast access, will create an EasyCast email address in the format NAME.list.YOURID@send.emailcampaigns.net
-		listOwnerEmail (string) - An email address that receives an email whenever a contact subscribes to this list, and can approve "EasyCast" messages
-		optIn (bool) - Setting this to true means that the system will send contacts a confirmation email before sending them messages
-		optInFromEmail (string) - The email address that the optInMessage confirmation email will be sent from.  Required if optIn is true
-		optInFromEmailAlias (string) - The From Name that the optInMessage confirmation email will be sent from.
-		optInSubject (string) - The subject line of the optInMessage confirmation email.  Required if optIn is true
-		optInMessage (string) - The HTML email body for the confirmation email.  MUST include the {confirm_url} token that will insert the link to the correct subscription confirmation page.  Required if optIn is true
+    def CustomField_Update(self, fieldId, updateParameters):
+        '''
+        Update an existing CustomField
 
-		Returns int - id Returns the List ID of your new List
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        Required keyword arguments:
 
-		args = {
-			'key': self.key,
-			'method': 'List_Add_Public',
-			'name': name,
-			'optionalParameters': optionalParameters,
-		}
+        fieldId (int) - The of the CustomField you want to modify
+        updateParameters (dict) - A dict of replacement values for your CustomField - only specify fields that you want to change
 
-		data = self.makeCall(args)
-		return data
+        Optional keyword arguments:
 
+        Returns struct - Returns a struct with your CustomField's new properties
+        '''
 
-	def List_Delete(self, listId):
-		'''
-		Delete a list you created
+        args = {
+            'key': self.key,
+            'method': 'CustomField_Update',
+            'fieldId': fieldId,
+            'updateParameters': updateParameters,
+        }
 
-		Required keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		listId (int) - The List ID of the list you wish to delete
+    def CustomField_Reorder(self, reorder):
+        '''
+        Update the displayOrder property on multiple fields at once
 
-		Optional keyword arguments:
+        Required keyword arguments:
 
+        reorder (dict) - A dict where each key is a fieldId and each value is the new displayOrder
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'List_Delete',
-			'listId': listId,
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        Returns struct - Returns a struct for each CustomField updated
+        '''
 
+        args = {
+            'key': self.key,
+            'method': 'CustomField_Reorder',
+            'reorder': reorder,
+        }
 
-	def List_Subscribe(self, listId, email, optionalParameters=None, **kwargs):
-		'''
-		Add an email address contact to an existing list
+        data = self.makeCall(args)
+        return data
 
-		Required keyword arguments:
+    def CustomField_Delete(self, fieldId):
+        '''
+        Delete a CustomField - this action cannot be undone
 
-		listId (int) - The ID of the list you want to subscribe the email address to
-		email (string) - The address you are subscribing
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Required keyword arguments:
 
-		Optional keyword arguments:
+        fieldId (int) - The of the CustomField you want to delete - first_name, last_name and email_address cannot be deleted
 
-		campaignId (int) - The ID of the campaign tied to this subscription action
-		source (string) - A short description of the source of your contact
+        Optional keyword arguments:
 
-		Returns bool - True on success
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        Returns bool - Returns true on success
+        '''
 
-		args = {
-			'key': self.key,
-			'method': 'List_Subscribe',
-			'listId': listId,
-			'email': email,
-			'optionalParameters': optionalParameters,
-		}
+        args = {
+            'key': self.key,
+            'method': 'CustomField_Delete',
+            'fieldId': fieldId,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def List_Add_Test(self, name, optionalParameters=None, **kwargs):
+        '''
+        Create a new test contact list
 
-	def List_Unsubscribe(self, listId, email, optionalParameters=None, **kwargs):
-		'''
-		Remove an email address contact from an existing list
+        Required keyword arguments:
 
-		Required keyword arguments:
+        name (string) - The of your list
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		listId (int) - The ID of the list you want to unsubscribe the email address from
-		email (string) - The address you are unsubscribing
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        description (string) - A short description for your list
+        easycastName (string) - A one word shortcut for EasyCast access, will create an EasyCast email address in the format NAME.list.YOURID@send.emailcampaigns.net
+        listOwnerEmail (string) - An email address that receives an email whenever a contact subscribes to this list, and can approve "EasyCast" messages
 
-		campaignId (int) - The ID of the campaign tied to this subscription action
+        Returns int - id Returns the List ID of your new List
+        '''
 
-		Returns bool - True on success
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		args = {
-			'key': self.key,
-			'method': 'List_Unsubscribe',
-			'listId': listId,
-			'email': email,
-			'optionalParameters': optionalParameters,
-		}
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'List_Add_Test',
+            'name': name,
+            'optionalParameters': optionalParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def List_Unsubscribe_Multiple(self, listId, emails):
-		'''
-		Remove multiple email address contacts from an existing list
+    def List_Add_Internal(self, name, optionalParameters=None, **kwargs):
+        '''
+        Create a new internal contact list
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		listId (int) - The ID of the list you want to unsubscribe the email address from
-		emails (array) - An list of email addresses you are unsubscribing
+        name (string) - The of your list
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
+        description (string) - A short description for your list
+        easycastName (string) - A one word shortcut for EasyCast access, will create an EasyCast email address in the format NAME.list.YOURID@send.emailcampaigns.net
+        listOwnerEmail (string) - An email address that receives an email whenever a contact subscribes to this list, and can approve "EasyCast" messages
 
-		Returns int - Returns the number of contacts removed
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'List_Unsubscribe_Multiple',
-			'listId': listId,
-			'emails': emails,
-		}
+        Returns int - id Returns the List ID of your new List
+        '''
 
-		data = self.makeCall(args)
-		return data
+        if optionalParameters is None:
+            optionalParameters = {}
 
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-	def List_Get_Contacts(self, listId, optionalParameters=None, **kwargs):
-		'''
-		Retrieve a list of contacts in a given list
+        args = {
+            'key': self.key,
+            'method': 'List_Add_Internal',
+            'name': name,
+            'optionalParameters': optionalParameters,
+        }
 
-		Required keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		listId (int) - The ID of the list you retrieve contacts from
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+    def List_Add_Private(self, name, optionalParameters=None, **kwargs):
+        '''
+        Create a new private contact list
 
-		Optional keyword arguments:
+        Required keyword arguments:
 
-		status (string) - Retrieve only contacts with a particular list status, valid values: subscribed, unsubscribed, bounced
-		contactStatus (string) - Retrieve only contacts with a particular contact status, valid values: active, bounced, deleted, suppressed
-		startDate (string) - Retrieve only contacts subscribed or updated on or after this date, format: YYYY-MM-DD HH:MM:SS
-		endDate (string) - Retrieve only contacts subscribed or updated on or before this date, format: YYYY-MM-DD HH:MM:SS
-		customFields (list) - Array of custom field IDs or tokens you want included with the results (ex: ['first_name','last_name','email_address'] OR [1,2,3])
-		sortDir (string) - Sort direction, valid values: U, D
-		offset (int) - The number of records to skip (specify a starting point)
-		num (int) - The maximum number of records to return
+        name (string) - The of your list
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Returns struct - Struct of records each with a key of email and values of contactId, email, source, status, statusCode and listStatus
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        Optional keyword arguments:
 
-		args = {
-			'key': self.key,
-			'method': 'List_Get_Contacts',
-			'listId': listId,
-			'optionalParameters': optionalParameters,
-		}
+        description (string) - A short description for your list
+        easycastName (string) - A one word shortcut for EasyCast access, will create an EasyCast email address in the format NAME.list.YOURID@send.emailcampaigns.net
+        listOwnerEmail (string) - An email address that receives an email whenever a contact subscribes to this list, and can approve "EasyCast" messages
+        optIn (bool) - Setting this to true means that the system will send contacts a confirmation email before sending them messages
+        optInFromEmail (string) - The email address that the optInMessage confirmation email will be sent from.  Required if optIn is true
+        optInFromEmailAlias (string) - The From Name that the optInMessage confirmation email will be sent from.
+        optInSubject (string) - The subject line of the optInMessage confirmation email.  Required if optIn is true
+        optInMessage (string) - The HTML email body for the confirmation email.  MUST include the {confirm_url} token that will insert the link to the correct subscription confirmation page.  Required if optIn is true
 
-		data = self.makeCall(args)
-		return data
+        Returns int - id Returns the List ID of your new List
+        '''
 
+        if optionalParameters is None:
+            optionalParameters = {}
 
-	def List_Get_Active_Lists(self, optionalParameters=None, **kwargs):
-		'''
-		Get a listing of currently active lists
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Required keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'List_Add_Private',
+            'name': name,
+            'optionalParameters': optionalParameters,
+        }
 
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        data = self.makeCall(args)
+        return data
 
-		Optional keyword arguments:
+    def List_Add_Public(self, name, optionalParameters=None, **kwargs):
+        '''
+        Create a new public contact list
 
-		type (string) - Return only lists of a given type, value values: public, private, test, internal
-		sortBy (string) - Field to sort by, value values: name, description, id, type, status
-		sortDir (string) - Sort direction, valid values: U, D
-		offset (int) - The number of records to skip (specify a starting point)
-		num (int) - The maximum number of records to return
+        Required keyword arguments:
 
-		Returns struct - Array of records with the key of listId and values of listId, name, description, type and listOwnerEmail
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        name (string) - The of your list
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		args = {
-			'key': self.key,
-			'method': 'List_Get_Active_Lists',
-			'optionalParameters': optionalParameters,
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        description (string) - A short description for your list
+        easycastName (string) - A one word shortcut for EasyCast access, will create an EasyCast email address in the format NAME.list.YOURID@send.emailcampaigns.net
+        listOwnerEmail (string) - An email address that receives an email whenever a contact subscribes to this list, and can approve "EasyCast" messages
+        optIn (bool) - Setting this to true means that the system will send contacts a confirmation email before sending them messages
+        optInFromEmail (string) - The email address that the optInMessage confirmation email will be sent from.  Required if optIn is true
+        optInFromEmailAlias (string) - The From Name that the optInMessage confirmation email will be sent from.
+        optInSubject (string) - The subject line of the optInMessage confirmation email.  Required if optIn is true
+        optInMessage (string) - The HTML email body for the confirmation email.  MUST include the {confirm_url} token that will insert the link to the correct subscription confirmation page.  Required if optIn is true
 
+        Returns int - id Returns the List ID of your new List
+        '''
 
-	def List_Get_Info(self, listId):
-		'''
-		Get information about a list, including name, type, created, easyCast, listOwner and optIn info (where applicable)
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Required keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		listId (int) - The ID of the list you are getting info for
+        args = {
+            'key': self.key,
+            'method': 'List_Add_Public',
+            'name': name,
+            'optionalParameters': optionalParameters,
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
+    def List_Delete(self, listId):
+        '''
+        Delete a list you created
 
-		Returns struct - Returns info about the requested list
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'List_Get_Info',
-			'listId': listId,
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        listId (int) - The List ID of the list you wish to delete
 
+        Optional keyword arguments:
 
-	def List_Import_Contacts(self, listId, source, contacts, optionalParameters=None, **kwargs):
-		'''
-		Import a collection of contacts into a given list
+        Returns bool - Returns true on success
+        '''
 
-		Required keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'List_Delete',
+            'listId': listId,
+        }
 
-		listId (int) - The ID of the list you are importing contacts into
-		source (string) - A short description of the of your contacts
-		contacts (array) - Array of contact_hash items, as explained above
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        data = self.makeCall(args)
+        return data
 
-		Optional keyword arguments:
+    def List_Subscribe(self, listId, email, optionalParameters=None, **kwargs):
+        '''
+        Add an email address contact to an existing list
 
-		activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
-		updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
+        Required keyword arguments:
 
-		Returns struct - Aggregate import results
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        listId (int) - The ID of the list you want to subscribe the email address to
+        email (string) - The address you are subscribing
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		args = {
-			'key': self.key,
-			'method': 'List_Import_Contacts',
-			'listId': listId,
-			'source': source,
-			'contacts': contacts,
-			'optionalParameters': optionalParameters,
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        campaignId (int) - The ID of the campaign tied to this subscription action
+        source (string) - A short description of the source of your contact
 
+        Returns bool - True on success
+        '''
 
-	def List_Import_Contacts_Delayed(self, listId, source, contacts, callbackUrl, jobId, chunkNum, optionalParameters=None, **kwargs):
-		'''
-		Import a collection of contacts into a given list asyncrhonously
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Required keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		listId (int) - The ID of the list you are importing contacts into
-		source (string) - A short description of the of your contacts
-		contacts (array) - Array of contact_hash items, as explained above
-		callbackUrl (string) - A URL endpoint for the results of the import to be POSTed to
-		jobId (string) - A Job ID used to match up the import in your webapp
-		chunkNum (int) - An Import Chunk number used to match up in your webapp - use this to keep track of what chunks have been processed, they may not be handled in order
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        args = {
+            'key': self.key,
+            'method': 'List_Subscribe',
+            'listId': listId,
+            'email': email,
+            'optionalParameters': optionalParameters,
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
-		updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
+    def List_Unsubscribe(self, listId, email, optionalParameters=None, **kwargs):
+        '''
+        Remove an email address contact from an existing list
 
-		Returns bool - 
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        Required keyword arguments:
 
-		args = {
-			'key': self.key,
-			'method': 'List_Import_Contacts_Delayed',
-			'listId': listId,
-			'source': source,
-			'contacts': contacts,
-			'callbackUrl': callbackUrl,
-			'jobId': jobId,
-			'chunkNum': chunkNum,
-			'optionalParameters': optionalParameters,
-		}
+        listId (int) - The ID of the list you want to unsubscribe the email address from
+        email (string) - The address you are unsubscribing
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		data = self.makeCall(args)
-		return data
+        Optional keyword arguments:
 
+        campaignId (int) - The ID of the campaign tied to this subscription action
 
-	def List_Evaluate_Contacts(self, contacts):
-		'''
-		Evaluate a collection of contacts
+        Returns bool - True on success
+        '''
 
-		Required keyword arguments:
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		contacts (array) - Array of contact_hash items, as explained above
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Optional keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'List_Unsubscribe',
+            'listId': listId,
+            'email': email,
+            'optionalParameters': optionalParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-		Returns struct - Aggregate import results
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'List_Evaluate_Contacts',
-			'contacts': contacts,
-		}
+    def List_Unsubscribe_Multiple(self, listId, emails):
+        '''
+        Remove multiple email address contacts from an existing list
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        listId (int) - The ID of the list you want to unsubscribe the email address from
+        emails (array) - An list of email addresses you are unsubscribing
 
-	def List_Get_Count(self, listId, status=''):
-		'''
-		Get the number of contacts in a given list
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        Returns int - Returns the number of contacts removed
+        '''
 
-		listId (int) - The ID of the list you want the count from
-		status (string) - Count only contacts with a particular list status, valid values: subscribed, unsubscribed, bounced (defaults to subscribed)
+        args = {
+            'key': self.key,
+            'method': 'List_Unsubscribe_Multiple',
+            'listId': listId,
+            'emails': emails,
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		contactStatus (string) - Count only contacts with a particular contact status, valid values: active, bounced, deleted, suppressed
+    def List_Get_Contacts(self, listId, optionalParameters=None, **kwargs):
+        '''
+        Retrieve a list of contacts in a given list
 
-		Returns int - Number of contacts in list
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'List_Get_Count',
-			'listId': listId,
-			'status': status,
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        listId (int) - The ID of the list you retrieve contacts from
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
+        Optional keyword arguments:
 
-	def List_Update_Test(self, listId, updateParameters):
-		'''
-		Update an existing Test List
+        status (string) - Retrieve only contacts with a particular list status, valid values: subscribed, unsubscribed, bounced
+        contactStatus (string) - Retrieve only contacts with a particular contact status, valid values: active, bounced, deleted, suppressed
+        startDate (string) - Retrieve only contacts subscribed or updated on or after this date, format: YYYY-MM-DD HH:MM:SS
+        endDate (string) - Retrieve only contacts subscribed or updated on or before this date, format: YYYY-MM-DD HH:MM:SS
+        customFields (list) - Array of custom field IDs or tokens you want included with the results (ex: ['first_name','last_name','email_address'] OR [1,2,3])
+        sortDir (string) - Sort direction, valid values: U, D
+        offset (int) - The number of records to skip (specify a starting point)
+        num (int) - The maximum number of records to return
 
-		Required keyword arguments:
+        Returns struct - Struct of records each with a key of email and values of contactId, email, source, status, statusCode and listStatus
+        '''
 
-		listId (int) - The of the list you want to modify
-		updateParameters (dict) - A dict of replacement values for your list - only specify items that you want to change
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Optional keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
+        args = {
+            'key': self.key,
+            'method': 'List_Get_Contacts',
+            'listId': listId,
+            'optionalParameters': optionalParameters,
+        }
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'List_Update_Test',
-			'listId': listId,
-			'updateParameters': updateParameters,
-		}
+        data = self.makeCall(args)
+        return data
 
-		data = self.makeCall(args)
-		return data
+    def List_Get_Active_Lists(self, optionalParameters=None, **kwargs):
+        '''
+        Get a listing of currently active lists
 
+        Required keyword arguments:
 
-	def List_Update_Internal(self, listId, updateParameters):
-		'''
-		Update an existing Internal List
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Required keyword arguments:
+        Optional keyword arguments:
 
-		listId (int) - The of the list you want to modify
-		updateParameters (dict) - A dict of replacement values for your list - only specify items that you want to change
+        type (string) - Return only lists of a given type, value values: public, private, test, internal
+        sortBy (string) - Field to sort by, value values: name, description, id, type, status
+        sortDir (string) - Sort direction, valid values: U, D
+        offset (int) - The number of records to skip (specify a starting point)
+        num (int) - The maximum number of records to return
 
-		Optional keyword arguments:
+        Returns struct - Array of records with the key of listId and values of listId, name, description, type and listOwnerEmail
+        '''
 
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'List_Update_Internal',
-			'listId': listId,
-			'updateParameters': updateParameters,
-		}
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'List_Get_Active_Lists',
+            'optionalParameters': optionalParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def List_Update_Private(self, listId, updateParameters):
-		'''
-		Update an existing Private List
+    def List_Get_Info(self, listId):
+        '''
+        Get information about a list, including name, type, created, easyCast, listOwner and optIn info (where applicable)
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		listId (int) - The of the list you want to modify
-		updateParameters (dict) - A dict of replacement values for your list - only specify items that you want to change
+        listId (int) - The ID of the list you are getting info for
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'List_Update_Private',
-			'listId': listId,
-			'updateParameters': updateParameters,
-		}
+        Returns struct - Returns info about the requested list
+        '''
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'List_Get_Info',
+            'listId': listId,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def List_Update_Public(self, listId, updateParameters):
-		'''
-		Update an existing Public List
+    def List_Import_Contacts(self, listId, source, contacts, optionalParameters=None, **kwargs):
+        '''
+        Import a collection of contacts into a given list
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		listId (int) - The of the list you want to modify
-		updateParameters (dict) - A dict of replacement values for your list - only specify items that you want to change
+        listId (int) - The ID of the list you are importing contacts into
+        source (string) - A short description of the of your contacts
+        contacts (array) - Array of contact_hash items, as explained above
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
+        activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
+        updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'List_Update_Public',
-			'listId': listId,
-			'updateParameters': updateParameters,
-		}
+        Returns struct - Aggregate import results
+        '''
 
-		data = self.makeCall(args)
-		return data
+        if optionalParameters is None:
+            optionalParameters = {}
 
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-	def Group_Create(self, name):
-		'''
-		Create a new Group
+        args = {
+            'key': self.key,
+            'method': 'List_Import_Contacts',
+            'listId': listId,
+            'source': source,
+            'contacts': contacts,
+            'optionalParameters': optionalParameters,
+        }
 
-		Required keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		name (string) - The of your group
+    def List_Import_Contacts_Delayed(self, listId, source, contacts, callbackUrl, jobId, chunkNum, optionalParameters=None, **kwargs):
+        '''
+        Import a collection of contacts into a given list asyncrhonously
 
-		Optional keyword arguments:
+        Required keyword arguments:
 
+        listId (int) - The ID of the list you are importing contacts into
+        source (string) - A short description of the of your contacts
+        contacts (array) - Array of contact_hash items, as explained above
+        callbackUrl (string) - A URL endpoint for the results of the import to be POSTed to
+        jobId (string) - A Job ID used to match up the import in your webapp
+        chunkNum (int) - An Import Chunk number used to match up in your webapp - use this to keep track of what chunks have been processed, they may not be handled in order
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Returns int - id Returns the Group ID of your new Group
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Group_Create',
-			'name': name,
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
+        updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
 
+        Returns bool -
+        '''
 
-	def Group_Update(self, groupId, name):
-		'''
-		Update an existing group
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Required keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		groupId (int) - The of the group you want to modify
-		name (string) - The new of your group
+        args = {
+            'key': self.key,
+            'method': 'List_Import_Contacts_Delayed',
+            'listId': listId,
+            'source': source,
+            'contacts': contacts,
+            'callbackUrl': callbackUrl,
+            'jobId': jobId,
+            'chunkNum': chunkNum,
+            'optionalParameters': optionalParameters,
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
+    def List_Evaluate_Contacts(self, contacts):
+        '''
+        Evaluate a collection of contacts
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Group_Update',
-			'groupId': groupId,
-			'name': name,
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        contacts (array) - Array of contact_hash items, as explained above
 
+        Optional keyword arguments:
 
-	def Group_Delete(self, groupId):
-		'''
-		Delete a group you created
+        Returns struct - Aggregate import results
+        '''
 
-		Required keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'List_Evaluate_Contacts',
+            'contacts': contacts,
+        }
 
-		groupId (int) - The Group ID of the group you wish to delete
+        data = self.makeCall(args)
+        return data
 
-		Optional keyword arguments:
+    def List_Get_Count(self, listId, status=''):
+        '''
+        Get the number of contacts in a given list
 
+        Required keyword arguments:
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Group_Delete',
-			'groupId': groupId,
-		}
+        listId (int) - The ID of the list you want the count from
+        status (string) - Count only contacts with a particular list status, valid values: subscribed, unsubscribed, bounced (defaults to subscribed)
 
-		data = self.makeCall(args)
-		return data
+        Optional keyword arguments:
 
+        contactStatus (string) - Count only contacts with a particular contact status, valid values: active, bounced, deleted, suppressed
 
-	def Group_Add_Contact(self, groupId, email):
-		'''
-		Add an email address contact to an existing group
+        Returns int - Number of contacts in list
+        '''
 
-		Required keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'List_Get_Count',
+            'listId': listId,
+            'status': status,
+        }
 
-		groupId (int) - The ID of the group you want to subscribe the email address to
-		email (string) - The address you are subscribing
+        data = self.makeCall(args)
+        return data
 
-		Optional keyword arguments:
+    def List_Update_Test(self, listId, updateParameters):
+        '''
+        Update an existing Test List
 
+        Required keyword arguments:
 
-		Returns bool - True on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Group_Add_Contact',
-			'groupId': groupId,
-			'email': email,
-		}
+        listId (int) - The of the list you want to modify
+        updateParameters (dict) - A dict of replacement values for your list - only specify items that you want to change
 
-		data = self.makeCall(args)
-		return data
+        Optional keyword arguments:
 
+        Returns bool - Returns true on success
+        '''
 
-	def Group_Remove_Contact(self, groupId, email):
-		'''
-		Remove an email address contact from an existing group
+        args = {
+            'key': self.key,
+            'method': 'List_Update_Test',
+            'listId': listId,
+            'updateParameters': updateParameters,
+        }
 
-		Required keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		groupId (int) - The ID of the group you want to unsubscribe the email address to
-		email (string) - The address you are unsubscribing
+    def List_Update_Internal(self, listId, updateParameters):
+        '''
+        Update an existing Internal List
 
-		Optional keyword arguments:
+        Required keyword arguments:
 
+        listId (int) - The of the list you want to modify
+        updateParameters (dict) - A dict of replacement values for your list - only specify items that you want to change
 
-		Returns bool - True on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Group_Remove_Contact',
-			'groupId': groupId,
-			'email': email,
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        Returns bool - Returns true on success
+        '''
 
+        args = {
+            'key': self.key,
+            'method': 'List_Update_Internal',
+            'listId': listId,
+            'updateParameters': updateParameters,
+        }
 
-	def Group_Remove_Contacts_Multiple(self, groupId, emails):
-		'''
-		Remove multiple email address contacts from an existing group
+        data = self.makeCall(args)
+        return data
 
-		Required keyword arguments:
+    def List_Update_Private(self, listId, updateParameters):
+        '''
+        Update an existing Private List
 
-		groupId (int) - The ID of the group you want to remove the email address from
-		emails (array) - An list of email addresses you are removing from the group
+        Required keyword arguments:
 
-		Optional keyword arguments:
+        listId (int) - The of the list you want to modify
+        updateParameters (dict) - A dict of replacement values for your list - only specify items that you want to change
 
+        Optional keyword arguments:
 
-		Returns int - Returns the number of contacts removed
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Group_Remove_Contacts_Multiple',
-			'groupId': groupId,
-			'emails': emails,
-		}
+        Returns bool - Returns true on success
+        '''
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'List_Update_Private',
+            'listId': listId,
+            'updateParameters': updateParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Group_Get_Contacts(self, groupId, optionalParameters=None, **kwargs):
-		'''
-		Retrieve a list of contacts in a given group
+    def List_Update_Public(self, listId, updateParameters):
+        '''
+        Update an existing Public List
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		groupId (int) - The ID of the group you retrieve contacts from
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        listId (int) - The of the list you want to modify
+        updateParameters (dict) - A dict of replacement values for your list - only specify items that you want to change
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
-		customFields (list) - Array of custom field IDs or tokens you want included with the results (ex: ['first_name','last_name','email_address'] OR [1,2,3])
-		sortDir (string) - Sort direction, valid values: U, D
-		offset (int) - The number of records to skip (specify a starting point)
-		num (int) - The maximum number of records to return
+        Returns bool - Returns true on success
+        '''
 
-		Returns struct - Struct of records each with a key of the contact's email addressemail and values of contactId, email, status and statusCode
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        args = {
+            'key': self.key,
+            'method': 'List_Update_Public',
+            'listId': listId,
+            'updateParameters': updateParameters,
+        }
 
-		args = {
-			'key': self.key,
-			'method': 'Group_Get_Contacts',
-			'groupId': groupId,
-			'optionalParameters': optionalParameters,
-		}
+        data = self.makeCall(args)
+        return data
 
-		data = self.makeCall(args)
-		return data
+    def Group_Create(self, name):
+        '''
+        Create a new Group
 
+        Required keyword arguments:
 
-	def Group_List(self):
-		'''
-		Get a listing of currently active groups
+        name (string) - The of your group
 
-		Required keyword arguments:
+        Optional keyword arguments:
 
+        Returns int - id Returns the Group ID of your new Group
+        '''
 
-		Optional keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Group_Create',
+            'name': name,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-		Returns struct - Struct of records with the key of groupId and value of name
-		'''
-	
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+    def Group_Update(self, groupId, name):
+        '''
+        Update an existing group
 
-		args = {
-			'key': self.key,
-			'method': 'Group_List',
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        groupId (int) - The of the group you want to modify
+        name (string) - The new of your group
 
+        Optional keyword arguments:
 
-	def Group_Import_Contacts(self, groupId, source, contacts, optionalParameters=None, **kwargs):
-		'''
-		Import a collection of contacts into a given group
+        Returns bool - Returns true on success
+        '''
 
-		Required keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Group_Update',
+            'groupId': groupId,
+            'name': name,
+        }
 
-		groupId (int) - The ID of the group you are importing contacts into
-		source (string) - A short description of the of your contacts
-		contacts (array) - Array of contact_hash items, as explained above
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        data = self.makeCall(args)
+        return data
 
-		Optional keyword arguments:
+    def Group_Delete(self, groupId):
+        '''
+        Delete a group you created
 
-		activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
-		updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
+        Required keyword arguments:
 
-		Returns struct - Aggregate import results
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        groupId (int) - The Group ID of the group you wish to delete
 
-		args = {
-			'key': self.key,
-			'method': 'Group_Import_Contacts',
-			'groupId': groupId,
-			'source': source,
-			'contacts': contacts,
-			'optionalParameters': optionalParameters,
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        Returns bool - Returns true on success
+        '''
 
+        args = {
+            'key': self.key,
+            'method': 'Group_Delete',
+            'groupId': groupId,
+        }
 
-	def Group_Get_Count(self, groupId):
-		'''
-		Get the number of contacts in a given group
+        data = self.makeCall(args)
+        return data
 
-		Required keyword arguments:
+    def Group_Add_Contact(self, groupId, email):
+        '''
+        Add an email address contact to an existing group
 
-		groupId (int) - The ID of the group you want the count from
+        Required keyword arguments:
 
-		Optional keyword arguments:
+        groupId (int) - The ID of the group you want to subscribe the email address to
+        email (string) - The address you are subscribing
 
+        Optional keyword arguments:
 
-		Returns int - Number of contacts in group
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Group_Get_Count',
-			'groupId': groupId,
-		}
+        Returns bool - True on success
+        '''
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'Group_Add_Contact',
+            'groupId': groupId,
+            'email': email,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def SavedSearch_Create(self, name, advancedConditions, optionalParameters=None, **kwargs):
-		'''
-		Create a new SavedSearch
+    def Group_Remove_Contact(self, groupId, email):
+        '''
+        Remove an email address contact from an existing group
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		name (string) - A for your saved search, must be unique
-		advancedConditions (array) - An list of AdvancedCondition items - see AdvancedCondition for more info
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        groupId (int) - The ID of the group you want to unsubscribe the email address to
+        email (string) - The address you are unsubscribing
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
-		logicalCondition (string) - Specify "Any" or "All", defaults to "Any".  Used to govern if any or all AdvancedConditions must be met before a contact is returned
+        Returns bool - True on success
+        '''
 
-		Returns int - Returns the searchId of your new search
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        args = {
+            'key': self.key,
+            'method': 'Group_Remove_Contact',
+            'groupId': groupId,
+            'email': email,
+        }
 
-		args = {
-			'key': self.key,
-			'method': 'SavedSearch_Create',
-			'name': name,
-			'advancedConditions': advancedConditions,
-			'optionalParameters': optionalParameters,
-		}
+        data = self.makeCall(args)
+        return data
 
-		data = self.makeCall(args)
-		return data
+    def Group_Remove_Contacts_Multiple(self, groupId, emails):
+        '''
+        Remove multiple email address contacts from an existing group
 
+        Required keyword arguments:
 
-	def SavedSearch_Delete(self, searchId):
-		'''
-		Delete a savedSearch you created
+        groupId (int) - The ID of the group you want to remove the email address from
+        emails (array) - An list of email addresses you are removing from the group
 
-		Required keyword arguments:
+        Optional keyword arguments:
 
-		searchId (int) - The SavedSearch ID of the savedSearch you wish to delete
+        Returns int - Returns the number of contacts removed
+        '''
 
-		Optional keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Group_Remove_Contacts_Multiple',
+            'groupId': groupId,
+            'emails': emails,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'SavedSearch_Delete',
-			'searchId': searchId,
-		}
+    def Group_Get_Contacts(self, groupId, optionalParameters=None, **kwargs):
+        '''
+        Retrieve a list of contacts in a given group
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        groupId (int) - The ID of the group you retrieve contacts from
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-	def SavedSearch_Get_Contacts(self, searchId, optionalParameters=None, **kwargs):
-		'''
-		Retrieve a list of contacts found by a given saved search
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        customFields (list) - Array of custom field IDs or tokens you want included with the results (ex: ['first_name','last_name','email_address'] OR [1,2,3])
+        sortDir (string) - Sort direction, valid values: U, D
+        offset (int) - The number of records to skip (specify a starting point)
+        num (int) - The maximum number of records to return
 
-		searchId (int) - The ID of the savedSearch you retrieve contacts from
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Returns struct - Struct of records each with a key of the contact's email addressemail and values of contactId, email, status and statusCode
+        '''
 
-		Optional keyword arguments:
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		customFields (list) - Array of custom field IDs or tokens you want included with the results (ex: ["first_name","last_name","email_address"] OR [1,2,3])
-		sortDir (string) - Sort direction, valid values: U, D
-		offset (int) - The number of records to skip (specify a starting point)
-		num (int) - The maximum number of records to return
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Returns struct - Struct of records each with a key of email and values of contactId, email, status and statusCode
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        args = {
+            'key': self.key,
+            'method': 'Group_Get_Contacts',
+            'groupId': groupId,
+            'optionalParameters': optionalParameters,
+        }
 
-		args = {
-			'key': self.key,
-			'method': 'SavedSearch_Get_Contacts',
-			'searchId': searchId,
-			'optionalParameters': optionalParameters,
-		}
+        data = self.makeCall(args)
+        return data
 
-		data = self.makeCall(args)
-		return data
+    def Group_List(self):
+        '''
+        Get a listing of currently active groups
 
+        Required keyword arguments:
 
-	def SavedSearch_List(self):
-		'''
-		Get a listing of Saved Searches
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        Returns struct - Struct of records with the key of groupId and value of name
+        '''
 
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Optional keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Group_List',
+        }
 
+        data = self.makeCall(args)
+        return data
 
-		Returns struct - Struct of records with the key of searchId and value of name
-		'''
-	
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+    def Group_Import_Contacts(self, groupId, source, contacts, optionalParameters=None, **kwargs):
+        '''
+        Import a collection of contacts into a given group
 
-		args = {
-			'key': self.key,
-			'method': 'SavedSearch_List',
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        groupId (int) - The ID of the group you are importing contacts into
+        source (string) - A short description of the of your contacts
+        contacts (array) - Array of contact_hash items, as explained above
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
+        Optional keyword arguments:
 
-	def SavedSearch_Get_Count(self, searchId):
-		'''
-		Get the number of contacts in a given savedSearch
+        activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
+        updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
 
-		Required keyword arguments:
+        Returns struct - Aggregate import results
+        '''
 
-		searchId (int) - The ID of the savedSearch you want the count from
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Optional keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
+        args = {
+            'key': self.key,
+            'method': 'Group_Import_Contacts',
+            'groupId': groupId,
+            'source': source,
+            'contacts': contacts,
+            'optionalParameters': optionalParameters,
+        }
 
-		Returns int - Number of contacts in savedSearch
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'SavedSearch_Get_Count',
-			'searchId': searchId,
-		}
+        data = self.makeCall(args)
+        return data
 
-		data = self.makeCall(args)
-		return data
+    def Group_Get_Count(self, groupId):
+        '''
+        Get the number of contacts in a given group
 
+        Required keyword arguments:
 
-	def Campaign_Create_Standard(self, recipients, campaignName, subject, senderEmail, senderName, content, optionalParameters=None, **kwargs):
-		'''
-		Create a standard Contactology campaign
+        groupId (int) - The ID of the group you want the count from
 
-		Required keyword arguments:
+        Optional keyword arguments:
 
-		recipients (dict) - A dict which specifies the for your Campaign - can include list, group and search
-		campaignName (string) - The name of this Campaign - not shown to recipients
-		subject (string) - The line of the Campaign
-		senderEmail (string) - The from email address of the Campaign
-		senderName (string) - The from name of the Campaign
-		content (dict) - A dict which specifies the of the Campaign email - can include html and text
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Returns int - Number of contacts in group
+        '''
 
-		Optional keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Group_Get_Count',
+            'groupId': groupId,
+        }
 
-		authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
-		replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
-		replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
-		trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
-		recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
-		showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
-		viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
-		trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
-		trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
-		trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
-		googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
-		clickTaleName (string) - Defaults to blank.  If this is set, ClickTale tracking will be turned on for this message with the specified name. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
-		clickTaleCustomFields (list) - Defaults to blank.  Accepts an list of CustomField IDs.  clickTaleName must be set when using this parameter.  Please do not use any personally identifiable information when using the ClickTale integration. This might include: First Name, Last Name, Company Name, Phone Number and Email Address. This policy applies to any other field that could identify your email subscriber within ClickTale tracking. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
-		customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
-		exclusions (dict) - A dict which specifies the recipients to exclude from your Campaign - can contain list, group, and  search
-		footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
-		facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign 
-		twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign 
+        data = self.makeCall(args)
+        return data
 
-		Returns int - campaignId The ID for your new Campaign
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+    def SavedSearch_Create(self, name, advancedConditions, optionalParameters=None, **kwargs):
+        '''
+        Create a new SavedSearch
 
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Create_Standard',
-			'recipients': recipients,
-			'campaignName': campaignName,
-			'subject': subject,
-			'senderEmail': senderEmail,
-			'senderName': senderName,
-			'content': content,
-			'optionalParameters': optionalParameters,
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        name (string) - A for your saved search, must be unique
+        advancedConditions (array) - An list of AdvancedCondition items - see AdvancedCondition for more info
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
+        Optional keyword arguments:
 
-	def Campaign_Create_Standard_From_Url(self, recipients, campaignName, subject, senderEmail, senderName, content, optionalParameters=None, **kwargs):
-		'''
-		Create a standard Contactology campaign
+        logicalCondition (string) - Specify "Any" or "All", defaults to "Any".  Used to govern if any or all AdvancedConditions must be met before a contact is returned
 
-		Required keyword arguments:
+        Returns int - Returns the searchId of your new search
+        '''
 
-		recipients (dict) - A dict which specifies the for your Campaign - can include list, group and search
-		campaignName (string) - The name of this Campaign - not shown to recipients
-		subject (string) - The line of the Campaign
-		senderEmail (string) - The from email address of the Campaign
-		senderName (string) - The from name of the Campaign
-		content (dict) - A dict which specifies the URLs that hold the of the Campaign email - can include htmlUrl and textUrl
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Optional keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		generateTextFromHtml (bool) - Set to true to automatically generate the text part of a multipart email from the URL HTML content - overrides any textUrl given for the Campaign
-		authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
-		replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
-		replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
-		trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
-		recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
-		showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
-		viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
-		trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
-		trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
-		trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
-		googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
-		clickTaleName (string) - Defaults to blank.  If this is set, ClickTale tracking will be turned on for this message with the specified name. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
-		clickTaleCustomFields (list) - Defaults to blank.  Accepts an list of CustomField IDs.  clickTaleName must be set when using this parameter.  Please do not use any personally identifiable information when using the ClickTale integration. This might include: First Name, Last Name, Company Name, Phone Number and Email Address. This policy applies to any other field that could identify your email subscriber within ClickTale tracking. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
-		customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
-		exclusions (dict) - A dict which specifies the recipients to exclude from your Campaign - can contain list, group, and  search
-		footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
-		facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign 
-		twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign 
+        args = {
+            'key': self.key,
+            'method': 'SavedSearch_Create',
+            'name': name,
+            'advancedConditions': advancedConditions,
+            'optionalParameters': optionalParameters,
+        }
 
-		Returns int - campaignId The ID for your new Campaign
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        data = self.makeCall(args)
+        return data
 
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Create_Standard_From_Url',
-			'recipients': recipients,
-			'campaignName': campaignName,
-			'subject': subject,
-			'senderEmail': senderEmail,
-			'senderName': senderName,
-			'content': content,
-			'optionalParameters': optionalParameters,
-		}
+    def SavedSearch_Delete(self, searchId):
+        '''
+        Delete a savedSearch you created
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        searchId (int) - The SavedSearch ID of the savedSearch you wish to delete
 
-	def Campaign_Create_Ad_Hoc(self, contacts, campaignName, subject, senderEmail, senderName, content, optionalParameters=None, **kwargs):
-		'''
-		Create a campaign to be sent to an ad hoc list of email addresses.  The campaign will send immediately, it is not necessary to call Campaign_Send
+        Optional keyword arguments:
 
-		Required keyword arguments:
 
-		contacts (array) - an list of contact items
-		campaignName (string) - The name of this Campaign - not shown to recipients
-		subject (string) - The line of the Campaign
-		senderEmail (string) - The from email address of the Campaign
-		senderName (string) - The from name of the Campaign
-		content (dict) - A dict which specifies the of the Campaign email - can include html and text
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Returns bool - Returns true on success
+        '''
 
-		Optional keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'SavedSearch_Delete',
+            'searchId': searchId,
+        }
 
-		authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
-		replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
-		replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
-		trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
-		recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
-		showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
-		viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
-		trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
-		trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
-		trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
-		googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
-		clickTaleName (string) - Defaults to blank.  If this is set, ClickTale tracking will be turned on for this message with the specified name. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
-		clickTaleCustomFields (list) - Defaults to blank.  Accepts an list of CustomField IDs.  clickTaleName must be set when using this parameter.  Please do not use any personally identifiable information when using the ClickTale integration. This might include: First Name, Last Name, Company Name, Phone Number and Email Address. This policy applies to any other field that could identify your email subscriber within ClickTale tracking. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
-		activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
-		updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
-		customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
-		footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
-		source (string) - A short description of the source of your contact
-		facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign 
-		twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
+        data = self.makeCall(args)
+        return data
 
-		Returns struct - Returns a struct containing info about the new campaign
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+    def SavedSearch_Get_Contacts(self, searchId, optionalParameters=None, **kwargs):
+        '''
+        Retrieve a list of contacts found by a given saved search
 
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Create_Ad_Hoc',
-			'contacts': contacts,
-			'campaignName': campaignName,
-			'subject': subject,
-			'senderEmail': senderEmail,
-			'senderName': senderName,
-			'content': content,
-			'optionalParameters': optionalParameters,
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        searchId (int) - The ID of the savedSearch you retrieve contacts from
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
+        Optional keyword arguments:
 
-	def Campaign_Create_Triggered_On_List_Subscription(self, listId, timeType, timeValue, campaignName, subject, senderEmail, senderName, content, advancedConditions=None, optionalParameters=None, **kwargs):
-		'''
-		Create an Triggered campaign that sends every time someone subscribes to a given List
+        customFields (list) - Array of custom field IDs or tokens you want included with the results (ex: ["first_name","last_name","email_address"] OR [1,2,3])
+        sortDir (string) - Sort direction, valid values: U, D
+        offset (int) - The number of records to skip (specify a starting point)
+        num (int) - The maximum number of records to return
 
-		Required keyword arguments:
+        Returns struct - Struct of records each with a key of email and values of contactId, email, status and statusCode
+        '''
 
-		listId (int) - The ID of the list that subscriptions to will trigger
-		timeType (string) - The type of time interval for your Triggered Campaign - timeValue and go together to define the timing rule for your Triggered Campaign. Valid values: minutes, hours, days, weeks, months
-		timeValue (int) - A number between 0 and 60 inclusive - and timeType go together to define the timing rule for your Triggered Campaign
-		campaignName (string) - The name of this Campaign - not shown to recipients
-		subject (string) - The line of the Campaign
-		senderEmail (string) - The from email address of the Campaign
-		senderName (string) - The from name of the Campaign
-		content (dict) - A dict which specifies the of the Campaign email - can include html and text
-		advancedConditions (array) - An list of AdvancedCondition items that govern automation behavior
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		selectedAreas (list) - Limit what users trigger your Triggered Campaign by specifying where they signed up from (e.g.: via the API, via the Signup Form) - see AdvancedConditions for usage
-		authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
-		replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
-		replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
-		trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
-		recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
-		showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
-		viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
-		trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
-		trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
-		trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
-		googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
-		clickTaleName (string) - Defaults to blank.  If this is set, ClickTale tracking will be turned on for this message with the specified name. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
-		clickTaleCustomFields (list) - Defaults to blank.  Accepts an list of CustomField IDs.  clickTaleName must be set when using this parameter.  Please do not use any personally identifiable information when using the ClickTale integration. This might include: First Name, Last Name, Company Name, Phone Number and Email Address. This policy applies to any other field that could identify your email subscriber within ClickTale tracking. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
-		activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
-		updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
-		customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
-		footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
-		facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign 
-		twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
-
-		Returns int - campaignId The ID of your new Campaign
-		'''
-	
-		if advancedConditions is None:
-			advancedConditions = []
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Create_Triggered_On_List_Subscription',
-			'listId': listId,
-			'timeType': timeType,
-			'timeValue': timeValue,
-			'campaignName': campaignName,
-			'subject': subject,
-			'senderEmail': senderEmail,
-			'senderName': senderName,
-			'content': content,
-			'advancedConditions': advancedConditions,
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Campaign_Create_Triggered_On_Date_CustomField(self, dateCustomFieldId, timeType, timeValue, timeDirection, useCurrentYear, sendTime, campaignName, subject, senderEmail, senderName, content, advancedConditions=None, optionalParameters=None, **kwargs):
-		'''
-		Create an Triggered campaign that sends relative to a Date CustomField
-
-		Required keyword arguments:
-
-		dateCustomFieldId (int) - The ID of the CustomField of type Date whose value you want to use as a trigger
-		timeType (string) - The type of time interval for your Triggered Campaign - timeValue and go together to define the timing rule for your Triggered Campaign. Valid values: days, weeks, months
-		timeValue (int) - A number between 0 and 60 inclusive - and timeType go together to define the timing rule for your Triggered Campaign
-		timeDirection (string) - The direction of the time interval for your Triggered Campaign - timeValue and timeType go together to define the timing rule for your Triggered Campaign. Valid values: before, after
-		useCurrentYear (bool) - Set to true to ignore the Year value in the specified Date CustomField and base the trigger off of the current year instead.
-		sendTime (int) - What hour of the day in the campaign should send in 24-hour format, give a number between 0 and 23 inclusive
-		campaignName (string) - The name of this Campaign - not shown to recipients
-		subject (string) - The line of the Campaign
-		senderEmail (string) - The from email address of the Campaign
-		senderName (string) - The from name of the Campaign
-		content (dict) - A dict which specifies the of the Campaign email - can include html and text
-		advancedConditions (array) - An list of AdvancedCondition items that govern automation behavior
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		selectedAreas (list) - Limit what users trigger your Triggered Campaign by specifying where they signed up from (e.g.: via the API, via the Signup Form) - see AdvancedConditions for usage
-		authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
-		replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
-		replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
-		trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
-		recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
-		showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
-		viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
-		trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
-		trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
-		trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
-		googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
-		clickTaleName (string) - Defaults to blank.  If this is set, ClickTale tracking will be turned on for this message with the specified name. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
-		clickTaleCustomFields (list) - Defaults to blank.  Accepts an list of CustomField IDs.  clickTaleName must be set when using this parameter.  Please do not use any personally identifiable information when using the ClickTale integration. This might include: First Name, Last Name, Company Name, Phone Number and Email Address. This policy applies to any other field that could identify your email subscriber within ClickTale tracking. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
-		activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
-		updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
-		customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
-		footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
-		facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign 
-		twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
-
-		Returns int - campaignId The ID of your new Campaign
-		'''
-	
-		if advancedConditions is None:
-			advancedConditions = []
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Create_Triggered_On_Date_CustomField',
-			'dateCustomFieldId': dateCustomFieldId,
-			'timeType': timeType,
-			'timeValue': timeValue,
-			'timeDirection': timeDirection,
-			'useCurrentYear': useCurrentYear,
-			'sendTime': sendTime,
-			'campaignName': campaignName,
-			'subject': subject,
-			'senderEmail': senderEmail,
-			'senderName': senderName,
-			'content': content,
-			'advancedConditions': advancedConditions,
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Campaign_Create_Recurring(self, timeFrame, sendHour, sendMinute, sendTimezone, recipients, campaignName, subject, senderEmail, senderName, content, optionalParameters=None, **kwargs):
-		'''
-		Create a Recurring Campaign that sends regularly on a defined schedule
-
-		Required keyword arguments:
-
-		timeFrame (dict) - A definition of how often the Recurring Campaign should send (see notes above)
-		sendHour (int) - What hour of the day the Recurring Campaign should be sent, in 24 hour format (0-23)
-		sendMinute (int) - What minute of the day the Recurring Campaign should be sent (0-59)
-		sendTimezone (string) - What Timezone is intended for use with sendHour and sendMinute
-		recipients (dict) - A dict which specifies the for your Campaign - can include list, group and search
-		campaignName (string) - The name of this Campaign - not shown to recipients
-		subject (string) - The line of the Campaign
-		senderEmail (string) - The from email address of the Campaign
-		senderName (string) - The from name of the Campaign
-		content (dict) - A dict which specifies the of the Campaign email - can include html and text
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
-		replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
-		replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
-		trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
-		recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
-		showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
-		viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
-		trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
-		trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
-		trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
-		googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
-		clickTaleName (string) - Defaults to blank.  If this is set, ClickTale tracking will be turned on for this message with the specified name. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
-		clickTaleCustomFields (list) - Defaults to blank.  Accepts an list of CustomField IDs.  clickTaleName must be set when using this parameter.  Please do not use any personally identifiable information when using the ClickTale integration. This might include: First Name, Last Name, Company Name, Phone Number and Email Address. This policy applies to any other field that could identify your email subscriber within ClickTale tracking. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
-		activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
-		updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
-		customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
-		exclusions (dict) - A dict which specifies the recipients to exclude from your Campaign - can contain list, group, and  search
-		footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
-		facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign 
-		twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
-
-		Returns int - campaignId The ID for your new Campaign
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Create_Recurring',
-			'timeFrame': timeFrame,
-			'sendHour': sendHour,
-			'sendMinute': sendMinute,
-			'sendTimezone': sendTimezone,
-			'recipients': recipients,
-			'campaignName': campaignName,
-			'subject': subject,
-			'senderEmail': senderEmail,
-			'senderName': senderName,
-			'content': content,
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Campaign_Create_Recurring_From_Url(self, timeFrame, sendHour, sendMinute, sendTimezone, recipients, campaignName, subject, senderEmail, senderName, content, optionalParameters=None, **kwargs):
-		'''
-		Create a Recurring Campaign that sends regularly on a defined schedule
-
-		Required keyword arguments:
-
-		timeFrame (dict) - A definition of how often the Recurring Campaign should send (see notes above)
-		sendHour (int) - What hour of the day the Recurring Campaign should be sent, in 24 hour format (0-23)
-		sendMinute (int) - What minute of the day the Recurring Campaign should be sent (0-59)
-		sendTimezone (string) - What Timezone is intended for use with sendHour and sendMinute
-		recipients (dict) - A dict which specifies the for your Campaign - can include list, group and search
-		campaignName (string) - The name of this Campaign - not shown to recipients
-		subject (string) - The line of the Campaign
-		senderEmail (string) - The from email address of the Campaign
-		senderName (string) - The from name of the Campaign
-		content (dict) - A dict which specifies the of the Campaign email - can include html and text
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		generateTextFromHtml (bool) - Set to true to automatically generate the text part of a multipart email from the URL HTML content - overrides any textUrl given for the Campaign
-		authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
-		replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
-		replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
-		trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
-		recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
-		showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
-		viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
-		trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
-		trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
-		trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
-		googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
-		clickTaleName (string) - Defaults to blank.  If this is set, ClickTale tracking will be turned on for this message with the specified name. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
-		clickTaleCustomFields (list) - Defaults to blank.  Accepts an list of CustomField IDs.  clickTaleName must be set when using this parameter.  Please do not use any personally identifiable information when using the ClickTale integration. This might include: First Name, Last Name, Company Name, Phone Number and Email Address. This policy applies to any other field that could identify your email subscriber within ClickTale tracking. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
-		activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
-		updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
-		customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
-		exclusions (dict) - A dict which specifies the recipients to exclude from your Campaign - can contain list, group, and  search
-		footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
-		facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign 
-		twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
-
-		Returns int - campaignId The ID for your new Campaign
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Create_Recurring_From_Url',
-			'timeFrame': timeFrame,
-			'sendHour': sendHour,
-			'sendMinute': sendMinute,
-			'sendTimezone': sendTimezone,
-			'recipients': recipients,
-			'campaignName': campaignName,
-			'subject': subject,
-			'senderEmail': senderEmail,
-			'senderName': senderName,
-			'content': content,
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Campaign_Create_Transactional(self, testContact, testReplacements, campaignName, subject, senderEmail, senderName, content, optionalParameters=None, **kwargs):
-		'''
-		Create a transactional Contactology campaign
-
-		Required keyword arguments:
-
-		testContact (dict) - An initial contact to receive a test copy of the transactional email
-		testReplacements (dict) - An initial set of test replacement values to be used for the testEmail
-		campaignName (string) - The name of this Campaign - not shown to recipients
-		subject (string) - The line of the Campaign
-		senderEmail (string) - The from email address of the Campaign
-		senderName (string) - The from name of the Campaign
-		content (dict) - A dict which specifies the of the Campaign email - can include html and text
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
-		replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
-		replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
-		trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
-		recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
-		showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
-		viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
-		trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
-		trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
-		trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
-		googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
-		clickTaleName (string) - Defaults to blank.  If this is set, ClickTale tracking will be turned on for this message with the specified name. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
-		clickTaleCustomFields (list) - Defaults to blank.  Accepts an list of CustomField IDs.  clickTaleName must be set when using this parameter.  Please do not use any personally identifiable information when using the ClickTale integration. This might include: First Name, Last Name, Company Name, Phone Number and Email Address. This policy applies to any other field that could identify your email subscriber within ClickTale tracking. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
-		customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
-		footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
-		facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign 
-		twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
-		appendFooter (bool) - Defaults to true. Whether or not a footer should be automatically appended to your message content
-
-		Returns int - campaignId The ID for your new Campaign
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Create_Transactional',
-			'testContact': testContact,
-			'testReplacements': testReplacements,
-			'campaignName': campaignName,
-			'subject': subject,
-			'senderEmail': senderEmail,
-			'senderName': senderName,
-			'content': content,
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Campaign_Update_Standard(self, campaignId, optionalParameters=None, **kwargs):
-		'''
-		Update properties of an existing Campaign. Only unsent campaigns in Draft status can be updated.
-
-		Required keyword arguments:
-
-		campaignId (int) - The Campaign id. The campaign must be in draft mode - an exception will be thrown if not.
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		campaignName (string) - 
-		list (int/list) - Include a single listId or list of listIds for the Campaign to be sent to - WILL REPLACE ANY CURRENTLY SELECTED LISTS
-		group (int/list) - Include a single groupId or list of searchIds for the Campaign to be sent to - WILL REPLACE ANY CURRENTLY SELECTED GROUPS
-		search (int/list) - Include a single searchId or list of searchIds for the Campaign to be sent to - WILL REPLACE ANY CURRENTLY SELECTED SAVED SEARCHES
-		listExclude (int/list) - Exclude a single listId or list of listIds from the Campaign - WILL REPLACE ANY CURRENTLY EXCLUDED LISTS
-		groupExclude (int/list) - Exclude a single groupId or list of searchIds from the Campaign - WILL REPLACE ANY CURRENTLY EXCLUDED GROUPS
-		searchExclude (int/list) - Exclude a single searchId or list of searchIds from the Campaign - WILL REPLACE ANY CURRENTLY EXCLUDED SAVED SEARCHES
-		subject (string) - The subject line of the Campaign
-		senderEmail (string) - The from email address of the Campaign
-		senderName (string) - The from name of the Campaign
-		html (string) - The HTML body of your message. Can only be provided for campaigns with content types "Editor" or "Copy/Paste".
-		text (string) - The plain text body of your message
-		generateTextFromHtml (bool) - Automatically create Text content from HTML content
-		htmlUrl (string) - The URL to use for HTML content
-		textUrl (string) - The URL to use for Text content
-		authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
-		replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
-		replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
-		trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
-		recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
-		showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
-		viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
-		trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
-		trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
-		trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
-		googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
-		clickTaleName (string) - Defaults to blank.  Please see Campaign_Create_Standard for information.
-		clickTaleCustomFields (list) - Defaults to blank.  Please see Campaign_Create_Standard for information.
-		useCustomUrlParameters (bool) - Whether or not to append custom parameters to the end of all urls
-		customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
-		footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer.  Set it to zero to use the Default Footer.
-		facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign 
-		twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
-
-		Returns struct - Returns a struct containing standard Info for the campaign
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Update_Standard',
-			'campaignId': campaignId,
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Campaign_Update_Triggered_On_List_Subscription(self, campaignId, optionalParameters=None, **kwargs):
-		'''
-		Update properties of an existing Triggered On List Subscription Campaign.  Only unactivated campaigns in Draft status can be Updated
-
-		Required keyword arguments:
-
-		campaignId (int) - The Campaign id. The campaign must be in draft mode - an exception will be thrown if not.
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		campaignName (string) - The internal-use name of the campaign
-		listId (int) - The ID of the list that subscriptions to will trigger
-		timeType (string) - The type of time interval for your Triggered Campaign - timeValue and timeType go together to define the timing rule for your Triggered Campaign.  Valid values: minutes, hours, days, weeks, months
-		timeValue (int) - A number between 0 and 60 inclusive - timeValue and timeType go together to define the timing rule for your Triggered Campaign
-		subject (string) - The subject line of the Campaign
-		senderEmail (string) - The from email address of the Campaign
-		senderName (string) - The from name of the Campaign
-		html (string) - The HTML body of your message
-		text (string) - The plain text body of your message
-		generateTextFromHtml (bool) - Automatically create Text content from HTML content
-		htmlUrl (string) - The URL to use for HTML content
-		textUrl (string) - The URL to use for Text content
-		authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
-		replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
-		replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
-		trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
-		recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
-		showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
-		viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
-		trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
-		trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
-		trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
-		googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
-		clickTaleName (string) - Defaults to blank.  Please see Campaign_Create_Standard for information.
-		clickTaleCustomFields (list) - Defaults to blank.  Please see Campaign_Create_Standard for information.
-		useCustomUrlParameters (bool) - Whether or not to append custom parameters to the end of all urls
-		customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
-		footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
-		facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign 
-		twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
-
-		Returns struct - Returns a struct containing standard Info for the campaign
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Update_Triggered_On_List_Subscription',
-			'campaignId': campaignId,
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Campaign_Update_Triggered_On_Date_CustomField(self, campaignId, optionalParameters=None, **kwargs):
-		'''
-		Update properties of an existing Triggered On Date CustomField Campaign.  Only unactivated campaigns in Draft status can be Updated
-
-		Required keyword arguments:
-
-		campaignId (int) - The Campaign id. The campaign must be in draft mode - an exception will be thrown if not.
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		campaignName (string) - The internal-use name of the campaign
-		dateCustomFieldId (int) - The ID of the CustomField of type Date whose value you want to use as a trigger
-		timeType (string) - The type of time interval for your Triggered Campaign - timeValue and timeType go together to define the timing rule for your Triggered Campaign.  Valid values: days, weeks, months
-		timeValue (int) - A number between 0 and 60 inclusive - timeValue and timeType go together to define the timing rule for your Triggered Campaign
-		timeDirection (string) - The direction of the time interval for your Triggered Campaign - timeValue and timeType go together to define the timing rule for your Triggered Campaign.  Valid values: before, after
-		useCurrentYear (bool) - Set to true to ignore the Year value in the specified Date CustomField and base the trigger off of the current year instead.
-		sendTime (int) - What hour of the day in the campaign should send in 24-hour format, give a number between 0 and 23 inclusive
-		subject (string) - The subject line of the Campaign
-		senderEmail (string) - The from email address of the Campaign
-		senderName (string) - The from name of the Campaign
-		html (string) - The HTML body of your message
-		text (string) - The plain text body of your message
-		generateTextFromHtml (bool) - Automatically create Text content from HTML content
-		htmlUrl (string) - The URL to use for HTML content
-		textUrl (string) - The URL to use for Text content
-		authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
-		replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
-		replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
-		trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
-		recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
-		showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
-		viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
-		trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
-		trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
-		trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
-		googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
-		clickTaleName (string) - Defaults to blank.  Please see Campaign_Create_Standard for information.
-		clickTaleCustomFields (list) - Defaults to blank.  Please see Campaign_Create_Standard for information.
-		useCustomUrlParameters (bool) - Whether or not to append custom parameters to the end of all urls
-		customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
-		footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer.  Set to zero to use the Default Footer
-		facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign 
-		twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
-
-		Returns struct - Returns a struct containing standard Info for the campaign
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Update_Triggered_On_Date_CustomField',
-			'campaignId': campaignId,
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Campaign_Update_Recurring(self, campaignId, optionalParameters=None, **kwargs):
-		'''
-		Update properties of an existing Recurring Campaign.  Only unactivated campaigns in Draft status can be Updated
-
-		Required keyword arguments:
-
-		campaignId (int) - The Campaign id. The campaign must be in draft mode - an exception will be thrown if not.
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		campaignName (string) - The name of the campaign, for internal use
-		timeFrame (dict) - A definition of how often the Recurring Campaign should send (see notes above)
-		sendHour (int) - What hour of the day the Recurring Campaign should be sent, in 24 hour format (0-23)
-		sendMinute (int) - What minute of the day the Recurring Campaign should be sent (0-59)
-		sendTimezone (string) - What Timezone is intended for use with sendHour and sendMinute
-		list (int/list) - Include a single listId or list of listIds for the Campaign to be sent to - WILL REPLACE ANY CURRENTLY SELECTED LISTS
-		group (int/list) - Include a single groupId or list of searchIds for the Campaign to be sent to - WILL REPLACE ANY CURRENTLY SELECTED GROUPS
-		search (int/list) - Include a single searchId or list of searchIds for the Campaign to be sent to - WILL REPLACE ANY CURRENTLY SELECTED SAVED SEARCHES
-		listExclude (int/list) - Exclude a single listId or list of listIds from the Campaign - WILL REPLACE ANY CURRENTLY EXCLUDED LISTS
-		groupExclude (int/list) - Exclude a single groupId or list of searchIds from the Campaign - WILL REPLACE ANY CURRENTLY EXCLUDED GROUPS
-		searchExclude (int/list) - Exclude a single searchId or list of searchIds from the Campaign - WILL REPLACE ANY CURRENTLY EXCLUDED SAVED SEARCHES
-		subject (string) - The subject line of the Campaign
-		senderEmail (string) - The from email address of the Campaign
-		senderName (string) - The from name of the Campaign
-		html (string) - The HTML body of your message
-		text (string) - The plain text body of your message
-		generateTextFromHtml (bool) - Automatically create Text content from HTML content
-		htmlUrl (string) - The URL to use for HTML content
-		textUrl (string) - The URL to use for Text content
-		authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
-		replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
-		replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
-		trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
-		recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
-		showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
-		viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
-		trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
-		trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
-		trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
-		googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
-		clickTaleName (string) - Defaults to blank.  Please see Campaign_Create_Standard for information.
-		clickTaleCustomFields (list) - Defaults to blank.  Please see Campaign_Create_Standard for information.
-		useCustomUrlParameters (bool) - Whether or not to append custom parameters to the end of all urls
-		customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
-		footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer.  Set to zero to use the Default Footer
-		facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign 
-		twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
-
-		Returns struct - Returns a struct containing standard Info for the campaign
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Update_Recurring',
-			'campaignId': campaignId,
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Campaign_Refresh_Url_Content(self, campaignId, optionalParameters=None, **kwargs):
-		'''
-		Refresh the content of a URL based Campaign in Draft status
-
-		Required keyword arguments:
-
-		campaignId (int) - The Campaign id. The campaign must be in draft mode - an exception will be thrown if not.
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		generateTextFromHtml (bool) - Set to true to automatically generate the text part of a multipart email from the URL HTML content - overrides any textUrl given for the Campaign
-
-		Returns struct - Returns a struct containing a preview of the campaign
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Refresh_Url_Content',
-			'campaignId': campaignId,
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Campaign_Get_Info(self, campaignId):
-		'''
-		Get Info for a specified Campaign
-
-		Required keyword arguments:
-
-		campaignId (int) - The Campaign ID of the Campaign you want Info on
-
-		Optional keyword arguments:
-
-
-		Returns struct - 
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Get_Info',
-			'campaignId': campaignId,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Campaign_Find(self, searchParameters=None):
-		'''
-		Find Info for a set of Campaigns
-
-		Required keyword arguments:
-
-		searchParameters (dict) - A dict of search parameters, any combination of which can be used
-
-		Optional keyword arguments:
-
-
-		Returns struct - 
-		'''
-	
-		if searchParameters is None:
-			searchParameters = {}
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Find',
-			'searchParameters': searchParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Campaign_Get_Count(self, searchParameters=None):
-		'''
-		Find count for a set of Campaigns
-
-		Required keyword arguments:
-
-		searchParameters (dict) - A dict of search parameters, any combination of which can be used
-
-		Optional keyword arguments:
-
-
-		Returns int - Number of campaigns
-		'''
-	
-		if searchParameters is None:
-			searchParameters = {}
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Get_Count',
-			'searchParameters': searchParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Campaign_Find_Ids(self, searchParameters=None):
-		'''
-		Find a set of Campaigns and return just the record IDs
-
-		Required keyword arguments:
-
-		searchParameters (dict) - A dict of search parameters, any combination of which can be used
-
-		Optional keyword arguments:
-
-
-		Returns array - Campaign Ids
-		'''
-	
-		if searchParameters is None:
-			searchParameters = {}
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Find_Ids',
-			'searchParameters': searchParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Campaign_Preview(self, campaignId):
-		'''
-		Get a preview of a Campaign
-
-		Required keyword arguments:
-
-		campaignId (int) - The campaign you wish to preview
-
-		Optional keyword arguments:
-
-
-		Returns struct - Returns a struct containing a preview of the campaign
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Preview',
-			'campaignId': campaignId,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Campaign_Copy(self, campaignId, optionalParameters=None, **kwargs):
-		'''
-		Create a duplicate of a campaign
-
-		Required keyword arguments:
-
-		campaignId (int) - The campaign you wish to copy
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		campaignName (string) - Replace the name of the copied campaign with this
-
-		Returns struct - Returns Info about the newly created campaign
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Copy',
-			'campaignId': campaignId,
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Campaign_Send_Test(self, campaignId, optionalParameters=None, **kwargs):
-		'''
-		Send a test of your Campaign
-
-		Required keyword arguments:
-
-		campaignId (int) - The campaign you wish to test
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		testEmail (string/list) - A single email or list of email addresses to send this test to
-		testListId (int/list) - A single listId or list of listIds to send this test to - all lists specified must be Test Lists (see List_Add_Test)
-		note (string) - A note to be inserted at the top of the campaign, used to point out changes or request feedback from your test recipients
-
-		Returns bool - True on success
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Send_Test',
-			'campaignId': campaignId,
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Campaign_Report(self, campaignId, optionalParameters=None, **kwargs):
-		'''
-		Get a report on a Completed Campaign
-
-		Required keyword arguments:
-
-		campaignId (int) - The campaign you wish to generate a report for
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		cached (bool) - Return a cached set of campaign data, defaults to true.
-		formatted (bool) - Return the campaign data with formatting applied, defaults to false.
-		urlDetails (bool) - Return detailed information for every link in the campaign, defaults to true.
-
-		Returns struct - Returns report data from the specified campaign
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Report',
-			'campaignId': campaignId,
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Campaign_Delete(self, campaignId):
-		'''
-		Delete a specified campaign
-
-		Required keyword arguments:
-
-		campaignId (int) - The campaign you wish to delete
-
-		Optional keyword arguments:
-
-
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Delete',
-			'campaignId': campaignId,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Campaign_Add_Recipients(self, campaignId, contacts, optionalParameters=None, **kwargs):
-		'''
-		Adds an adhoc grouping of contacts to a campaign
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'SavedSearch_Get_Contacts',
+            'searchId': searchId,
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def SavedSearch_List(self):
+        '''
+        Get a listing of Saved Searches
+
+        Required keyword arguments:
+
+
+        Optional keyword arguments:
+
+
+        Returns struct - Struct of records with the key of searchId and value of name
+        '''
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'SavedSearch_List',
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def SavedSearch_Get_Count(self, searchId):
+        '''
+        Get the number of contacts in a given savedSearch
+
+        Required keyword arguments:
+
+        searchId (int) - The ID of the savedSearch you want the count from
+
+        Optional keyword arguments:
+
+        Returns int - Number of contacts in savedSearch
+        '''
+
+        args = {
+            'key': self.key,
+            'method': 'SavedSearch_Get_Count',
+            'searchId': searchId,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Create_Standard(self, recipients, campaignName, subject, senderEmail, senderName, content, optionalParameters=None, **kwargs):
+        '''
+        Create a standard Contactology campaign
+
+        Required keyword arguments:
+
+        recipients (dict) - A dict which specifies the for your Campaign - can include list, group and search
+        campaignName (string) - The name of this Campaign - not shown to recipients
+        subject (string) - The line of the Campaign
+        senderEmail (string) - The from email address of the Campaign
+        senderName (string) - The from name of the Campaign
+        content (dict) - A dict which specifies the of the Campaign email - can include html and text
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
+        replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
+        replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
+        trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
+        recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
+        showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
+        viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
+        trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
+        trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
+        trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
+        googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
+        clickTaleName (string) - Defaults to blank.  If this is set, ClickTale tracking will be turned on for this message with the specified name. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
+        clickTaleCustomFields (list) - Defaults to blank.  Accepts an list of CustomField IDs.  clickTaleName must be set when using this parameter.  Please do not use any personally identifiable information when using the ClickTale integration. This might include: First Name, Last Name, Company Name, Phone Number and Email Address. This policy applies to any other field that could identify your email subscriber within ClickTale tracking. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
+        customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
+        exclusions (dict) - A dict which specifies the recipients to exclude from your Campaign - can contain list, group, and  search
+        footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
+        facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign
+        twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
+
+        Returns int - campaignId The ID for your new Campaign
+        '''
+
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Create_Standard',
+            'recipients': recipients,
+            'campaignName': campaignName,
+            'subject': subject,
+            'senderEmail': senderEmail,
+            'senderName': senderName,
+            'content': content,
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Create_Standard_From_Url(self, recipients, campaignName, subject, senderEmail, senderName, content, optionalParameters=None, **kwargs):
+        '''
+        Create a standard Contactology campaign
+
+        Required keyword arguments:
+
+        recipients (dict) - A dict which specifies the for your Campaign - can include list, group and search
+        campaignName (string) - The name of this Campaign - not shown to recipients
+        subject (string) - The line of the Campaign
+        senderEmail (string) - The from email address of the Campaign
+        senderName (string) - The from name of the Campaign
+        content (dict) - A dict which specifies the URLs that hold the of the Campaign email - can include htmlUrl and textUrl
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        generateTextFromHtml (bool) - Set to true to automatically generate the text part of a multipart email from the URL HTML content - overrides any textUrl given for the Campaign
+        authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
+        replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
+        replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
+        trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
+        recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
+        showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
+        viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
+        trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
+        trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
+        trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
+        googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
+        clickTaleName (string) - Defaults to blank.  If this is set, ClickTale tracking will be turned on for this message with the specified name. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
+        clickTaleCustomFields (list) - Defaults to blank.  Accepts an list of CustomField IDs.  clickTaleName must be set when using this parameter.  Please do not use any personally identifiable information when using the ClickTale integration. This might include: First Name, Last Name, Company Name, Phone Number and Email Address. This policy applies to any other field that could identify your email subscriber within ClickTale tracking. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
+        customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
+        exclusions (dict) - A dict which specifies the recipients to exclude from your Campaign - can contain list, group, and  search
+        footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
+        facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign
+        twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
+
+        Returns int - campaignId The ID for your new Campaign
+        '''
+
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Create_Standard_From_Url',
+            'recipients': recipients,
+            'campaignName': campaignName,
+            'subject': subject,
+            'senderEmail': senderEmail,
+            'senderName': senderName,
+            'content': content,
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Create_Ad_Hoc(self, contacts, campaignName, subject, senderEmail, senderName, content, optionalParameters=None, **kwargs):
+        '''
+        Create a campaign to be sent to an ad hoc list of email addresses.  The campaign will send immediately, it is not necessary to call Campaign_Send
+
+        Required keyword arguments:
+
+        contacts (array) - an list of contact items
+        campaignName (string) - The name of this Campaign - not shown to recipients
+        subject (string) - The line of the Campaign
+        senderEmail (string) - The from email address of the Campaign
+        senderName (string) - The from name of the Campaign
+        content (dict) - A dict which specifies the of the Campaign email - can include html and text
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
+        replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
+        replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
+        trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
+        recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
+        showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
+        viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
+        trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
+        trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
+        trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
+        googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
+        clickTaleName (string) - Defaults to blank.  If this is set, ClickTale tracking will be turned on for this message with the specified name. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
+        clickTaleCustomFields (list) - Defaults to blank.  Accepts an list of CustomField IDs.  clickTaleName must be set when using this parameter.  Please do not use any personally identifiable information when using the ClickTale integration. This might include: First Name, Last Name, Company Name, Phone Number and Email Address. This policy applies to any other field that could identify your email subscriber within ClickTale tracking. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
+        activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
+        updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
+        customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
+        footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
+        source (string) - A short description of the source of your contact
+        facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign
+        twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
+
+        Returns struct - Returns a struct containing info about the new campaign
+        '''
+
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Create_Ad_Hoc',
+            'contacts': contacts,
+            'campaignName': campaignName,
+            'subject': subject,
+            'senderEmail': senderEmail,
+            'senderName': senderName,
+            'content': content,
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Create_Triggered_On_List_Subscription(self, listId, timeType, timeValue, campaignName, subject, senderEmail, senderName, content, advancedConditions=None, optionalParameters=None, **kwargs):
+        '''
+        Create an Triggered campaign that sends every time someone subscribes to a given List
+
+        Required keyword arguments:
+
+        listId (int) - The ID of the list that subscriptions to will trigger
+        timeType (string) - The type of time interval for your Triggered Campaign - timeValue and go together to define the timing rule for your Triggered Campaign. Valid values: minutes, hours, days, weeks, months
+        timeValue (int) - A number between 0 and 60 inclusive - and timeType go together to define the timing rule for your Triggered Campaign
+        campaignName (string) - The name of this Campaign - not shown to recipients
+        subject (string) - The line of the Campaign
+        senderEmail (string) - The from email address of the Campaign
+        senderName (string) - The from name of the Campaign
+        content (dict) - A dict which specifies the of the Campaign email - can include html and text
+        advancedConditions (array) - An list of AdvancedCondition items that govern automation behavior
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        selectedAreas (list) - Limit what users trigger your Triggered Campaign by specifying where they signed up from (e.g.: via the API, via the Signup Form) - see AdvancedConditions for usage
+        authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
+        replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
+        replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
+        trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
+        recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
+        showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
+        viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
+        trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
+        trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
+        trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
+        googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
+        clickTaleName (string) - Defaults to blank.  If this is set, ClickTale tracking will be turned on for this message with the specified name. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
+        clickTaleCustomFields (list) - Defaults to blank.  Accepts an list of CustomField IDs.  clickTaleName must be set when using this parameter.  Please do not use any personally identifiable information when using the ClickTale integration. This might include: First Name, Last Name, Company Name, Phone Number and Email Address. This policy applies to any other field that could identify your email subscriber within ClickTale tracking. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
+        activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
+        updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
+        customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
+        footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
+        facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign
+        twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
+
+        Returns int - campaignId The ID of your new Campaign
+        '''
+
+        if advancedConditions is None:
+            advancedConditions = []
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Create_Triggered_On_List_Subscription',
+            'listId': listId,
+            'timeType': timeType,
+            'timeValue': timeValue,
+            'campaignName': campaignName,
+            'subject': subject,
+            'senderEmail': senderEmail,
+            'senderName': senderName,
+            'content': content,
+            'advancedConditions': advancedConditions,
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Create_Triggered_On_Date_CustomField(self, dateCustomFieldId, timeType, timeValue, timeDirection, useCurrentYear, sendTime, campaignName, subject, senderEmail, senderName, content, advancedConditions=None, optionalParameters=None, **kwargs):
+        '''
+        Create an Triggered campaign that sends relative to a Date CustomField
+
+        Required keyword arguments:
+
+        dateCustomFieldId (int) - The ID of the CustomField of type Date whose value you want to use as a trigger
+        timeType (string) - The type of time interval for your Triggered Campaign - timeValue and go together to define the timing rule for your Triggered Campaign. Valid values: days, weeks, months
+        timeValue (int) - A number between 0 and 60 inclusive - and timeType go together to define the timing rule for your Triggered Campaign
+        timeDirection (string) - The direction of the time interval for your Triggered Campaign - timeValue and timeType go together to define the timing rule for your Triggered Campaign. Valid values: before, after
+        useCurrentYear (bool) - Set to true to ignore the Year value in the specified Date CustomField and base the trigger off of the current year instead.
+        sendTime (int) - What hour of the day in the campaign should send in 24-hour format, give a number between 0 and 23 inclusive
+        campaignName (string) - The name of this Campaign - not shown to recipients
+        subject (string) - The line of the Campaign
+        senderEmail (string) - The from email address of the Campaign
+        senderName (string) - The from name of the Campaign
+        content (dict) - A dict which specifies the of the Campaign email - can include html and text
+        advancedConditions (array) - An list of AdvancedCondition items that govern automation behavior
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        selectedAreas (list) - Limit what users trigger your Triggered Campaign by specifying where they signed up from (e.g.: via the API, via the Signup Form) - see AdvancedConditions for usage
+        authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
+        replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
+        replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
+        trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
+        recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
+        showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
+        viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
+        trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
+        trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
+        trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
+        googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
+        clickTaleName (string) - Defaults to blank.  If this is set, ClickTale tracking will be turned on for this message with the specified name. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
+        clickTaleCustomFields (list) - Defaults to blank.  Accepts an list of CustomField IDs.  clickTaleName must be set when using this parameter.  Please do not use any personally identifiable information when using the ClickTale integration. This might include: First Name, Last Name, Company Name, Phone Number and Email Address. This policy applies to any other field that could identify your email subscriber within ClickTale tracking. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
+        activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
+        updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
+        customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
+        footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
+        facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign
+        twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
+
+        Returns int - campaignId The ID of your new Campaign
+        '''
+
+        if advancedConditions is None:
+            advancedConditions = []
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Create_Triggered_On_Date_CustomField',
+            'dateCustomFieldId': dateCustomFieldId,
+            'timeType': timeType,
+            'timeValue': timeValue,
+            'timeDirection': timeDirection,
+            'useCurrentYear': useCurrentYear,
+            'sendTime': sendTime,
+            'campaignName': campaignName,
+            'subject': subject,
+            'senderEmail': senderEmail,
+            'senderName': senderName,
+            'content': content,
+            'advancedConditions': advancedConditions,
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Create_Recurring(self, timeFrame, sendHour, sendMinute, sendTimezone, recipients, campaignName, subject, senderEmail, senderName, content, optionalParameters=None, **kwargs):
+        '''
+        Create a Recurring Campaign that sends regularly on a defined schedule
+
+        Required keyword arguments:
+
+        timeFrame (dict) - A definition of how often the Recurring Campaign should send (see notes above)
+        sendHour (int) - What hour of the day the Recurring Campaign should be sent, in 24 hour format (0-23)
+        sendMinute (int) - What minute of the day the Recurring Campaign should be sent (0-59)
+        sendTimezone (string) - What Timezone is intended for use with sendHour and sendMinute
+        recipients (dict) - A dict which specifies the for your Campaign - can include list, group and search
+        campaignName (string) - The name of this Campaign - not shown to recipients
+        subject (string) - The line of the Campaign
+        senderEmail (string) - The from email address of the Campaign
+        senderName (string) - The from name of the Campaign
+        content (dict) - A dict which specifies the of the Campaign email - can include html and text
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
+        replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
+        replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
+        trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
+        recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
+        showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
+        viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
+        trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
+        trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
+        trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
+        googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
+        clickTaleName (string) - Defaults to blank.  If this is set, ClickTale tracking will be turned on for this message with the specified name. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
+        clickTaleCustomFields (list) - Defaults to blank.  Accepts an list of CustomField IDs.  clickTaleName must be set when using this parameter.  Please do not use any personally identifiable information when using the ClickTale integration. This might include: First Name, Last Name, Company Name, Phone Number and Email Address. This policy applies to any other field that could identify your email subscriber within ClickTale tracking. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
+        activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
+        updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
+        customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
+        exclusions (dict) - A dict which specifies the recipients to exclude from your Campaign - can contain list, group, and  search
+        footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
+        facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign
+        twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
+
+        Returns int - campaignId The ID for your new Campaign
+        '''
+
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Create_Recurring',
+            'timeFrame': timeFrame,
+            'sendHour': sendHour,
+            'sendMinute': sendMinute,
+            'sendTimezone': sendTimezone,
+            'recipients': recipients,
+            'campaignName': campaignName,
+            'subject': subject,
+            'senderEmail': senderEmail,
+            'senderName': senderName,
+            'content': content,
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Create_Recurring_From_Url(self, timeFrame, sendHour, sendMinute, sendTimezone, recipients, campaignName, subject, senderEmail, senderName, content, optionalParameters=None, **kwargs):
+        '''
+        Create a Recurring Campaign that sends regularly on a defined schedule
+
+        Required keyword arguments:
+
+        timeFrame (dict) - A definition of how often the Recurring Campaign should send (see notes above)
+        sendHour (int) - What hour of the day the Recurring Campaign should be sent, in 24 hour format (0-23)
+        sendMinute (int) - What minute of the day the Recurring Campaign should be sent (0-59)
+        sendTimezone (string) - What Timezone is intended for use with sendHour and sendMinute
+        recipients (dict) - A dict which specifies the for your Campaign - can include list, group and search
+        campaignName (string) - The name of this Campaign - not shown to recipients
+        subject (string) - The line of the Campaign
+        senderEmail (string) - The from email address of the Campaign
+        senderName (string) - The from name of the Campaign
+        content (dict) - A dict which specifies the of the Campaign email - can include html and text
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        generateTextFromHtml (bool) - Set to true to automatically generate the text part of a multipart email from the URL HTML content - overrides any textUrl given for the Campaign
+        authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
+        replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
+        replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
+        trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
+        recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
+        showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
+        viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
+        trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
+        trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
+        trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
+        googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
+        clickTaleName (string) - Defaults to blank.  If this is set, ClickTale tracking will be turned on for this message with the specified name. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
+        clickTaleCustomFields (list) - Defaults to blank.  Accepts an list of CustomField IDs.  clickTaleName must be set when using this parameter.  Please do not use any personally identifiable information when using the ClickTale integration. This might include: First Name, Last Name, Company Name, Phone Number and Email Address. This policy applies to any other field that could identify your email subscriber within ClickTale tracking. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
+        activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
+        updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
+        customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
+        exclusions (dict) - A dict which specifies the recipients to exclude from your Campaign - can contain list, group, and  search
+        footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
+        facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign
+        twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
+
+        Returns int - campaignId The ID for your new Campaign
+        '''
+
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Create_Recurring_From_Url',
+            'timeFrame': timeFrame,
+            'sendHour': sendHour,
+            'sendMinute': sendMinute,
+            'sendTimezone': sendTimezone,
+            'recipients': recipients,
+            'campaignName': campaignName,
+            'subject': subject,
+            'senderEmail': senderEmail,
+            'senderName': senderName,
+            'content': content,
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Create_Transactional(self, testContact, testReplacements, campaignName, subject, senderEmail, senderName, content, optionalParameters=None, **kwargs):
+        '''
+        Create a transactional Contactology campaign
+
+        Required keyword arguments:
+
+        testContact (dict) - An initial contact to receive a test copy of the transactional email
+        testReplacements (dict) - An initial set of test replacement values to be used for the testEmail
+        campaignName (string) - The name of this Campaign - not shown to recipients
+        subject (string) - The line of the Campaign
+        senderEmail (string) - The from email address of the Campaign
+        senderName (string) - The from name of the Campaign
+        content (dict) - A dict which specifies the of the Campaign email - can include html and text
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
+        replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
+        replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
+        trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
+        recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
+        showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
+        viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
+        trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
+        trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
+        trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
+        googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
+        clickTaleName (string) - Defaults to blank.  If this is set, ClickTale tracking will be turned on for this message with the specified name. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
+        clickTaleCustomFields (list) - Defaults to blank.  Accepts an list of CustomField IDs.  clickTaleName must be set when using this parameter.  Please do not use any personally identifiable information when using the ClickTale integration. This might include: First Name, Last Name, Company Name, Phone Number and Email Address. This policy applies to any other field that could identify your email subscriber within ClickTale tracking. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
+        customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
+        footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
+        facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign
+        twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
+        appendFooter (bool) - Defaults to true. Whether or not a footer should be automatically appended to your message content
+
+        Returns int - campaignId The ID for your new Campaign
+        '''
+
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Create_Transactional',
+            'testContact': testContact,
+            'testReplacements': testReplacements,
+            'campaignName': campaignName,
+            'subject': subject,
+            'senderEmail': senderEmail,
+            'senderName': senderName,
+            'content': content,
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Update_Standard(self, campaignId, optionalParameters=None, **kwargs):
+        '''
+        Update properties of an existing Campaign. Only unsent campaigns in Draft status can be updated.
+
+        Required keyword arguments:
+
+        campaignId (int) - The Campaign id. The campaign must be in draft mode - an exception will be thrown if not.
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        campaignName (string) -
+        list (int/list) - Include a single listId or list of listIds for the Campaign to be sent to - WILL REPLACE ANY CURRENTLY SELECTED LISTS
+        group (int/list) - Include a single groupId or list of searchIds for the Campaign to be sent to - WILL REPLACE ANY CURRENTLY SELECTED GROUPS
+        search (int/list) - Include a single searchId or list of searchIds for the Campaign to be sent to - WILL REPLACE ANY CURRENTLY SELECTED SAVED SEARCHES
+        listExclude (int/list) - Exclude a single listId or list of listIds from the Campaign - WILL REPLACE ANY CURRENTLY EXCLUDED LISTS
+        groupExclude (int/list) - Exclude a single groupId or list of searchIds from the Campaign - WILL REPLACE ANY CURRENTLY EXCLUDED GROUPS
+        searchExclude (int/list) - Exclude a single searchId or list of searchIds from the Campaign - WILL REPLACE ANY CURRENTLY EXCLUDED SAVED SEARCHES
+        subject (string) - The subject line of the Campaign
+        senderEmail (string) - The from email address of the Campaign
+        senderName (string) - The from name of the Campaign
+        html (string) - The HTML body of your message. Can only be provided for campaigns with content types "Editor" or "Copy/Paste".
+        text (string) - The plain text body of your message
+        generateTextFromHtml (bool) - Automatically create Text content from HTML content
+        htmlUrl (string) - The URL to use for HTML content
+        textUrl (string) - The URL to use for Text content
+        authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
+        replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
+        replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
+        trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
+        recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
+        showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
+        viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
+        trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
+        trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
+        trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
+        googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
+        clickTaleName (string) - Defaults to blank.  Please see Campaign_Create_Standard for information.
+        clickTaleCustomFields (list) - Defaults to blank.  Please see Campaign_Create_Standard for information.
+        useCustomUrlParameters (bool) - Whether or not to append custom parameters to the end of all urls
+        customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
+        footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer.  Set it to zero to use the Default Footer.
+        facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign
+        twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
+
+        Returns struct - Returns a struct containing standard Info for the campaign
+        '''
+
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Update_Standard',
+            'campaignId': campaignId,
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Update_Triggered_On_List_Subscription(self, campaignId, optionalParameters=None, **kwargs):
+        '''
+        Update properties of an existing Triggered On List Subscription Campaign.  Only unactivated campaigns in Draft status can be Updated
+
+        Required keyword arguments:
+
+        campaignId (int) - The Campaign id. The campaign must be in draft mode - an exception will be thrown if not.
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        campaignName (string) - The internal-use name of the campaign
+        listId (int) - The ID of the list that subscriptions to will trigger
+        timeType (string) - The type of time interval for your Triggered Campaign - timeValue and timeType go together to define the timing rule for your Triggered Campaign.  Valid values: minutes, hours, days, weeks, months
+        timeValue (int) - A number between 0 and 60 inclusive - timeValue and timeType go together to define the timing rule for your Triggered Campaign
+        subject (string) - The subject line of the Campaign
+        senderEmail (string) - The from email address of the Campaign
+        senderName (string) - The from name of the Campaign
+        html (string) - The HTML body of your message
+        text (string) - The plain text body of your message
+        generateTextFromHtml (bool) - Automatically create Text content from HTML content
+        htmlUrl (string) - The URL to use for HTML content
+        textUrl (string) - The URL to use for Text content
+        authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
+        replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
+        replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
+        trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
+        recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
+        showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
+        viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
+        trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
+        trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
+        trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
+        googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
+        clickTaleName (string) - Defaults to blank.  Please see Campaign_Create_Standard for information.
+        clickTaleCustomFields (list) - Defaults to blank.  Please see Campaign_Create_Standard for information.
+        useCustomUrlParameters (bool) - Whether or not to append custom parameters to the end of all urls
+        customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
+        footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
+        facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign
+        twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
+
+        Returns struct - Returns a struct containing standard Info for the campaign
+        '''
+
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Update_Triggered_On_List_Subscription',
+            'campaignId': campaignId,
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Update_Triggered_On_Date_CustomField(self, campaignId, optionalParameters=None, **kwargs):
+        '''
+        Update properties of an existing Triggered On Date CustomField Campaign.  Only unactivated campaigns in Draft status can be Updated
+
+        Required keyword arguments:
+
+        campaignId (int) - The Campaign id. The campaign must be in draft mode - an exception will be thrown if not.
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        campaignName (string) - The internal-use name of the campaign
+        dateCustomFieldId (int) - The ID of the CustomField of type Date whose value you want to use as a trigger
+        timeType (string) - The type of time interval for your Triggered Campaign - timeValue and timeType go together to define the timing rule for your Triggered Campaign.  Valid values: days, weeks, months
+        timeValue (int) - A number between 0 and 60 inclusive - timeValue and timeType go together to define the timing rule for your Triggered Campaign
+        timeDirection (string) - The direction of the time interval for your Triggered Campaign - timeValue and timeType go together to define the timing rule for your Triggered Campaign.  Valid values: before, after
+        useCurrentYear (bool) - Set to true to ignore the Year value in the specified Date CustomField and base the trigger off of the current year instead.
+        sendTime (int) - What hour of the day in the campaign should send in 24-hour format, give a number between 0 and 23 inclusive
+        subject (string) - The subject line of the Campaign
+        senderEmail (string) - The from email address of the Campaign
+        senderName (string) - The from name of the Campaign
+        html (string) - The HTML body of your message
+        text (string) - The plain text body of your message
+        generateTextFromHtml (bool) - Automatically create Text content from HTML content
+        htmlUrl (string) - The URL to use for HTML content
+        textUrl (string) - The URL to use for Text content
+        authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
+        replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
+        replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
+        trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
+        recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
+        showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
+        viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
+        trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
+        trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
+        trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
+        googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
+        clickTaleName (string) - Defaults to blank.  Please see Campaign_Create_Standard for information.
+        clickTaleCustomFields (list) - Defaults to blank.  Please see Campaign_Create_Standard for information.
+        useCustomUrlParameters (bool) - Whether or not to append custom parameters to the end of all urls
+        customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
+        footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer.  Set to zero to use the Default Footer
+        facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign
+        twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
+
+        Returns struct - Returns a struct containing standard Info for the campaign
+        '''
+
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Update_Triggered_On_Date_CustomField',
+            'campaignId': campaignId,
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Update_Recurring(self, campaignId, optionalParameters=None, **kwargs):
+        '''
+        Update properties of an existing Recurring Campaign.  Only unactivated campaigns in Draft status can be Updated
+
+        Required keyword arguments:
+
+        campaignId (int) - The Campaign id. The campaign must be in draft mode - an exception will be thrown if not.
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        campaignName (string) - The name of the campaign, for internal use
+        timeFrame (dict) - A definition of how often the Recurring Campaign should send (see notes above)
+        sendHour (int) - What hour of the day the Recurring Campaign should be sent, in 24 hour format (0-23)
+        sendMinute (int) - What minute of the day the Recurring Campaign should be sent (0-59)
+        sendTimezone (string) - What Timezone is intended for use with sendHour and sendMinute
+        list (int/list) - Include a single listId or list of listIds for the Campaign to be sent to - WILL REPLACE ANY CURRENTLY SELECTED LISTS
+        group (int/list) - Include a single groupId or list of searchIds for the Campaign to be sent to - WILL REPLACE ANY CURRENTLY SELECTED GROUPS
+        search (int/list) - Include a single searchId or list of searchIds for the Campaign to be sent to - WILL REPLACE ANY CURRENTLY SELECTED SAVED SEARCHES
+        listExclude (int/list) - Exclude a single listId or list of listIds from the Campaign - WILL REPLACE ANY CURRENTLY EXCLUDED LISTS
+        groupExclude (int/list) - Exclude a single groupId or list of searchIds from the Campaign - WILL REPLACE ANY CURRENTLY EXCLUDED GROUPS
+        searchExclude (int/list) - Exclude a single searchId or list of searchIds from the Campaign - WILL REPLACE ANY CURRENTLY EXCLUDED SAVED SEARCHES
+        subject (string) - The subject line of the Campaign
+        senderEmail (string) - The from email address of the Campaign
+        senderName (string) - The from name of the Campaign
+        html (string) - The HTML body of your message
+        text (string) - The plain text body of your message
+        generateTextFromHtml (bool) - Automatically create Text content from HTML content
+        htmlUrl (string) - The URL to use for HTML content
+        textUrl (string) - The URL to use for Text content
+        authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
+        replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
+        replyToName (string) - Defaults to senderName.  The display name of the replyToEmail
+        trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail
+        recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
+        showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
+        viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
+        trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report
+        trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report
+        trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report
+        googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name
+        clickTaleName (string) - Defaults to blank.  Please see Campaign_Create_Standard for information.
+        clickTaleCustomFields (list) - Defaults to blank.  Please see Campaign_Create_Standard for information.
+        useCustomUrlParameters (bool) - Whether or not to append custom parameters to the end of all urls
+        customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
+        footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer.  Set to zero to use the Default Footer
+        facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign
+        twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
+
+        Returns struct - Returns a struct containing standard Info for the campaign
+        '''
+
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Update_Recurring',
+            'campaignId': campaignId,
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Refresh_Url_Content(self, campaignId, optionalParameters=None, **kwargs):
+        '''
+        Refresh the content of a URL based Campaign in Draft status
+
+        Required keyword arguments:
+
+        campaignId (int) - The Campaign id. The campaign must be in draft mode - an exception will be thrown if not.
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        generateTextFromHtml (bool) - Set to true to automatically generate the text part of a multipart email from the URL HTML content - overrides any textUrl given for the Campaign
+
+        Returns struct - Returns a struct containing a preview of the campaign
+        '''
+
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Refresh_Url_Content',
+            'campaignId': campaignId,
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Get_Info(self, campaignId):
+        '''
+        Get Info for a specified Campaign
+
+        Required keyword arguments:
+
+        campaignId (int) - The Campaign ID of the Campaign you want Info on
+
+        Optional keyword arguments:
+
+        Returns struct -
+        '''
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Get_Info',
+            'campaignId': campaignId,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Find(self, searchParameters=None):
+        '''
+        Find Info for a set of Campaigns
+
+        Required keyword arguments:
+
+        searchParameters (dict) - A dict of search parameters, any combination of which can be used
+
+        Optional keyword arguments:
+
+        Returns struct -
+        '''
+
+        if searchParameters is None:
+            searchParameters = {}
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Find',
+            'searchParameters': searchParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Get_Count(self, searchParameters=None):
+        '''
+        Find count for a set of Campaigns
+
+        Required keyword arguments:
+
+        searchParameters (dict) - A dict of search parameters, any combination of which can be used
+
+        Optional keyword arguments:
+
+        Returns int - Number of campaigns
+        '''
+
+        if searchParameters is None:
+            searchParameters = {}
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Get_Count',
+            'searchParameters': searchParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Find_Ids(self, searchParameters=None):
+        '''
+        Find a set of Campaigns and return just the record IDs
+
+        Required keyword arguments:
+
+        searchParameters (dict) - A dict of search parameters, any combination of which can be used
+
+        Optional keyword arguments:
+
+        Returns array - Campaign Ids
+        '''
+
+        if searchParameters is None:
+            searchParameters = {}
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Find_Ids',
+            'searchParameters': searchParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Preview(self, campaignId):
+        '''
+        Get a preview of a Campaign
+
+        Required keyword arguments:
+
+        campaignId (int) - The campaign you wish to preview
+
+        Optional keyword arguments:
+
+        Returns struct - Returns a struct containing a preview of the campaign
+        '''
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Preview',
+            'campaignId': campaignId,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Copy(self, campaignId, optionalParameters=None, **kwargs):
+        '''
+        Create a duplicate of a campaign
+
+        Required keyword arguments:
+
+        campaignId (int) - The campaign you wish to copy
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        campaignName (string) - Replace the name of the copied campaign with this
+
+        Returns struct - Returns Info about the newly created campaign
+        '''
+
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Copy',
+            'campaignId': campaignId,
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Send_Test(self, campaignId, optionalParameters=None, **kwargs):
+        '''
+        Send a test of your Campaign
+
+        Required keyword arguments:
+
+        campaignId (int) - The campaign you wish to test
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        testEmail (string/list) - A single email or list of email addresses to send this test to
+        testListId (int/list) - A single listId or list of listIds to send this test to - all lists specified must be Test Lists (see List_Add_Test)
+        note (string) - A note to be inserted at the top of the campaign, used to point out changes or request feedback from your test recipients
+
+        Returns bool - True on success
+        '''
+
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Send_Test',
+            'campaignId': campaignId,
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Report(self, campaignId, optionalParameters=None, **kwargs):
+        '''
+        Get a report on a Completed Campaign
+
+        Required keyword arguments:
+
+        campaignId (int) - The campaign you wish to generate a report for
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        cached (bool) - Return a cached set of campaign data, defaults to true.
+        formatted (bool) - Return the campaign data with formatting applied, defaults to false.
+        urlDetails (bool) - Return detailed information for every link in the campaign, defaults to true.
+
+        Returns struct - Returns report data from the specified campaign
+        '''
+
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Report',
+            'campaignId': campaignId,
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Delete(self, campaignId):
+        '''
+        Delete a specified campaign
+
+        Required keyword arguments:
+
+        campaignId (int) - The campaign you wish to delete
+
+        Optional keyword arguments:
+
+
+        Returns bool - Returns true on success
+        '''
+
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Delete',
+            'campaignId': campaignId,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Campaign_Add_Recipients(self, campaignId, contacts, optionalParameters=None, **kwargs):
+        '''
+        Adds an adhoc grouping of contacts to a campaign
 The recipients are added and will be sent in the next send cycle. This can be used to send transactional or ongoing type messages. In this
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		campaignId (integer) - a valid campaign id
-		contacts (array) - an list of contact items
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        campaignId (integer) - a valid campaign id
+        contacts (array) - an list of contact items
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
-		activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
-		updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
+        activateDeleted (bool) - If this contact was already deleted, reactivate them - defaults to true
+        updateCustomFields (bool) - If this contact already exists, replace custom field values with values provided - defaults to false
 
-		Returns struct - Returns contact add results
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        Returns struct - Returns contact add results
+        '''
 
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Add_Recipients',
-			'campaignId': campaignId,
-			'contacts': contacts,
-			'optionalParameters': optionalParameters,
-		}
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		data = self.makeCall(args)
-		return data
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Add_Recipients',
+            'campaignId': campaignId,
+            'contacts': contacts,
+            'optionalParameters': optionalParameters,
+        }
 
-	def Campaign_Send(self, campaignId):
-		'''
-		Send a Campaign currently in Draft status
+        data = self.makeCall(args)
+        return data
 
-		Required keyword arguments:
+    def Campaign_Send(self, campaignId):
+        '''
+        Send a Campaign currently in Draft status
 
-		campaignId (int) - The campaign you wish to send
+        Required keyword arguments:
 
-		Optional keyword arguments:
+        campaignId (int) - The campaign you wish to send
 
+        Optional keyword arguments:
 
-		Returns struct - Returns boolean success and an array of issues
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Send',
-			'campaignId': campaignId,
-		}
+        Returns struct - Returns boolean success and an array of issues
+        '''
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Send',
+            'campaignId': campaignId,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Campaign_Send_Transactional(self, campaignId, contact, source, replacements):
-		'''
-		Send a new message in a transactional Campaign
+    def Campaign_Send_Transactional(self, campaignId, contact, source, replacements):
+        '''
+        Send a new message in a transactional Campaign
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		campaignId (int) - The campaign you wish to send
-		contact (dict) - The you wish to send this transactional campaign to
-		source (string) - A short description of the of your contact
-		replacements (dict) - Token replacement values to be swapped in the message body
+        campaignId (int) - The campaign you wish to send
+        contact (dict) - The you wish to send this transactional campaign to
+        source (string) - A short description of the of your contact
+        replacements (dict) - Token replacement values to be swapped in the message body
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
+        Returns mixed - Returns true on success, returns a struct on failure
+        '''
 
-		Returns mixed - Returns true on success, returns a struct on failure
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Send_Transactional',
-			'campaignId': campaignId,
-			'contact': contact,
-			'source': source,
-			'replacements': replacements,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Send_Transactional',
+            'campaignId': campaignId,
+            'contact': contact,
+            'source': source,
+            'replacements': replacements,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def Campaign_Send_Transactional_Multiple(self, campaignId, contacts, source, replacements, optionalParameters=None, **kwargs):
+        '''
+        Send a new message in a transactional Campaign
 
-	def Campaign_Send_Transactional_Multiple(self, campaignId, contacts, source, replacements, optionalParameters=None, **kwargs):
-		'''
-		Send a new message in a transactional Campaign
+        Required keyword arguments:
 
-		Required keyword arguments:
+        campaignId (int) - The campaign you wish to send
+        contacts (array) - An list of dicts containing the you wish to send this transactional campaign to
+        source (string) - A short description of the of your contact
+        replacements (array) - An list of token replacement values to be swapped in the message body
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		campaignId (int) - The campaign you wish to send
-		contacts (array) - An list of dicts containing the you wish to send this transactional campaign to
-		source (string) - A short description of the of your contact
-		replacements (array) - An list of token replacement values to be swapped in the message body
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        continueOnError (bool) - Send to good contacts even if bad contacts are found, defaults to false
 
-		continueOnError (bool) - Send to good contacts even if bad contacts are found, defaults to false
+        Returns mixed - Returns true on success, returns a struct on failure
+        '''
 
-		Returns mixed - Returns true on success, returns a struct on failure
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Send_Transactional_Multiple',
-			'campaignId': campaignId,
-			'contacts': contacts,
-			'source': source,
-			'replacements': replacements,
-			'optionalParameters': optionalParameters,
-		}
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Send_Transactional_Multiple',
+            'campaignId': campaignId,
+            'contacts': contacts,
+            'source': source,
+            'replacements': replacements,
+            'optionalParameters': optionalParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Campaign_Send_Reconfirmation(self, email):
-		'''
-		Send a new message in a reconfirmation campaign
+    def Campaign_Send_Reconfirmation(self, email):
+        '''
+        Send a new message in a reconfirmation campaign
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		email (string) - The you wish to send this transactional campaign to
+        email (string) - The you wish to send this transactional campaign to
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
+        Returns mixed - Returns true on success, returns a struct on failure
+        '''
 
-		Returns mixed - Returns true on success, returns a struct on failure
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Send_Reconfirmation',
-			'email': email,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Send_Reconfirmation',
+            'email': email,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def Campaign_Schedule(self, campaignId, time):
+        '''
+        Schedule a Campaign to send at a specified date and time
 
-	def Campaign_Schedule(self, campaignId, time):
-		'''
-		Schedule a Campaign to send at a specified date and time
+        Required keyword arguments:
 
-		Required keyword arguments:
+        campaignId (int) - The campaign you wish to schedule
+        time (string) - a timeString in UTC timezone
 
-		campaignId (int) - The campaign you wish to schedule
-		time (string) - a timeString in UTC timezone
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        Returns struct - Returns boolean success and an array of issues
+        '''
 
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Schedule',
+            'campaignId': campaignId,
+            'time': time,
+        }
 
-		Returns struct - Returns boolean success and an array of issues
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Schedule',
-			'campaignId': campaignId,
-			'time': time,
-		}
+        data = self.makeCall(args)
+        return data
 
-		data = self.makeCall(args)
-		return data
+    def Campaign_Schedule_Cancel(self, campaignId):
+        '''
+        Clear a Scheduled Campaign's scheduled time and return the Campaign to Draft mode
 
+        Required keyword arguments:
 
-	def Campaign_Schedule_Cancel(self, campaignId):
-		'''
-		Clear a Scheduled Campaign's scheduled time and return the Campaign to Draft mode
+        campaignId (int) - The campaign you wish to schedule
 
-		Required keyword arguments:
+        Optional keyword arguments:
 
-		campaignId (int) - The campaign you wish to schedule
+        Returns struct -
+        '''
 
-		Optional keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Schedule_Cancel',
+            'campaignId': campaignId,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-		Returns struct - 
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Schedule_Cancel',
-			'campaignId': campaignId,
-		}
+    def Campaign_Resend_Bounces(self, campaignId):
+        '''
+        Resend the Campaign to Contacts who soft-bounced
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        campaignId (int) - The campaign you wish to schedule
 
-	def Campaign_Resend_Bounces(self, campaignId):
-		'''
-		Resend the Campaign to Contacts who soft-bounced
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        Returns bool - Returns true on success
+        '''
 
-		campaignId (int) - The campaign you wish to schedule
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Resend_Bounces',
+            'campaignId': campaignId,
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
+    def Campaign_Get_Delivered_Contacts(self, campaignId, optionalParameters=None, **kwargs):
+        '''
+        Get a list of all Contacts who have the Delivered status for the specified Campaign
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Resend_Bounces',
-			'campaignId': campaignId,
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        campaignId (int) - The campaign you wish to find delivered contacts for
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
+        Optional keyword arguments:
 
-	def Campaign_Get_Delivered_Contacts(self, campaignId, optionalParameters=None, **kwargs):
-		'''
-		Get a list of all Contacts who have the Delivered status for the specified Campaign
+        minDate (timeString) - Find only Contacts who were Delivered on or after this date
+        maxDate (timeString) - Find only Contacts who were Delivered on or before this date
 
-		Required keyword arguments:
+        Returns struct - Returns a struct containing all found contacts
+        '''
 
-		campaignId (int) - The campaign you wish to find delivered contacts for
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Optional keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		minDate (timeString) - Find only Contacts who were Delivered on or after this date
-		maxDate (timeString) - Find only Contacts who were Delivered on or before this date
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Get_Delivered_Contacts',
+            'campaignId': campaignId,
+            'optionalParameters': optionalParameters,
+        }
 
-		Returns struct - Returns a struct containing all found contacts
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        data = self.makeCall(args)
+        return data
 
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Get_Delivered_Contacts',
-			'campaignId': campaignId,
-			'optionalParameters': optionalParameters,
-		}
+    def Campaign_Get_Hard_Bounced_Contacts(self, campaignId, optionalParameters=None, **kwargs):
+        '''
+        Get a list of all Contacts who Hard Bounced for the specified Campaign
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        campaignId (int) - The campaign you wish to find hard bounced contacts for
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-	def Campaign_Get_Hard_Bounced_Contacts(self, campaignId, optionalParameters=None, **kwargs):
-		'''
-		Get a list of all Contacts who Hard Bounced for the specified Campaign
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        minDate (timeString) - Find only Contacts who Hard Bounced on or after this date
+        maxDate (timeString) - Find only Contacts who Hard Bounced on or before this date
 
-		campaignId (int) - The campaign you wish to find hard bounced contacts for
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Returns struct - Returns a struct containing all found contacts
+        '''
 
-		Optional keyword arguments:
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		minDate (timeString) - Find only Contacts who Hard Bounced on or after this date
-		maxDate (timeString) - Find only Contacts who Hard Bounced on or before this date
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Returns struct - Returns a struct containing all found contacts
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Get_Hard_Bounced_Contacts',
+            'campaignId': campaignId,
+            'optionalParameters': optionalParameters,
+        }
 
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Get_Hard_Bounced_Contacts',
-			'campaignId': campaignId,
-			'optionalParameters': optionalParameters,
-		}
+        data = self.makeCall(args)
+        return data
 
-		data = self.makeCall(args)
-		return data
+    def Campaign_Get_Opened_Contacts(self, campaignId, optionalParameters=None, **kwargs):
+        '''
+        Get a list of all Contacts who Opened the specified Campaign
 
+        Required keyword arguments:
 
-	def Campaign_Get_Opened_Contacts(self, campaignId, optionalParameters=None, **kwargs):
-		'''
-		Get a list of all Contacts who Opened the specified Campaign
+        campaignId (int) - The campaign you wish to find contacts who opened said campaign
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Required keyword arguments:
+        Optional keyword arguments:
 
-		campaignId (int) - The campaign you wish to find contacts who opened said campaign
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        minDate (timeString) - Find only Contacts who opened this campaign on or after this date
+        maxDate (timeString) - Find only Contacts who opened this campaign on or before this date
 
-		Optional keyword arguments:
+        Returns struct - Returns a struct containing all found contacts
+        '''
 
-		minDate (timeString) - Find only Contacts who opened this campaign on or after this date
-		maxDate (timeString) - Find only Contacts who opened this campaign on or before this date
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Returns struct - Returns a struct containing all found contacts
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Get_Opened_Contacts',
-			'campaignId': campaignId,
-			'optionalParameters': optionalParameters,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Get_Opened_Contacts',
+            'campaignId': campaignId,
+            'optionalParameters': optionalParameters,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def Campaign_Get_ClickThru_Contacts(self, campaignId, optionalParameters=None, **kwargs):
+        '''
+        Get a list of all Contacts who Clicked Thru for the specified Campaign
 
-	def Campaign_Get_ClickThru_Contacts(self, campaignId, optionalParameters=None, **kwargs):
-		'''
-		Get a list of all Contacts who Clicked Thru for the specified Campaign
+        Required keyword arguments:
 
-		Required keyword arguments:
+        campaignId (int) - The campaign you wish to find clicked thru contacts for
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		campaignId (int) - The campaign you wish to find clicked thru contacts for
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        minDate (timeString) - Find only Contacts who Clicked Thru on or after this date
+        maxDate (timeString) - Find only Contacts who Clicked Thru on or before this date
+        urlId (int) - Find only Contacts who clicked on the given link
 
-		minDate (timeString) - Find only Contacts who Clicked Thru on or after this date
-		maxDate (timeString) - Find only Contacts who Clicked Thru on or before this date
-		urlId (int) - Find only Contacts who clicked on the given link
+        Returns struct - Returns a struct containing all found contacts
+        '''
 
-		Returns struct - Returns a struct containing all found contacts
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Get_ClickThru_Contacts',
-			'campaignId': campaignId,
-			'optionalParameters': optionalParameters,
-		}
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Get_ClickThru_Contacts',
+            'campaignId': campaignId,
+            'optionalParameters': optionalParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Campaign_Get_Replied_Contacts(self, campaignId, optionalParameters=None, **kwargs):
-		'''
-		Get a list of all Contacts who Replied To the specified Campaign
+    def Campaign_Get_Replied_Contacts(self, campaignId, optionalParameters=None, **kwargs):
+        '''
+        Get a list of all Contacts who Replied To the specified Campaign
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		campaignId (int) - The campaign you wish to find contacts who replied to said campaign
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        campaignId (int) - The campaign you wish to find contacts who replied to said campaign
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
-		minDate (timeString) - Find only Contacts who replied to this campaign on or after this date
-		maxDate (timeString) - Find only Contacts who replied to this campaign on or before this date
+        minDate (timeString) - Find only Contacts who replied to this campaign on or after this date
+        maxDate (timeString) - Find only Contacts who replied to this campaign on or before this date
 
-		Returns struct - Returns a struct containing all found contacts
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        Returns struct - Returns a struct containing all found contacts
+        '''
 
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Get_Replied_Contacts',
-			'campaignId': campaignId,
-			'optionalParameters': optionalParameters,
-		}
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		data = self.makeCall(args)
-		return data
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Get_Replied_Contacts',
+            'campaignId': campaignId,
+            'optionalParameters': optionalParameters,
+        }
 
-	def Campaign_Get_Unsubscribed_Contacts(self, campaignId, optionalParameters=None, **kwargs):
-		'''
-		Get a list of all Contacts who Unsubscribed from the specified Campaign
+        data = self.makeCall(args)
+        return data
 
-		Required keyword arguments:
+    def Campaign_Get_Unsubscribed_Contacts(self, campaignId, optionalParameters=None, **kwargs):
+        '''
+        Get a list of all Contacts who Unsubscribed from the specified Campaign
 
-		campaignId (int) - The campaign you wish to find contacts who unsubscribed from said campaign
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Required keyword arguments:
 
-		Optional keyword arguments:
+        campaignId (int) - The campaign you wish to find contacts who unsubscribed from said campaign
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		minDate (timeString) - Find only Contacts who unsubscribed from this campaign on or after this date
-		maxDate (timeString) - Find only Contacts who unsubscribed from this campaign on or before this date
+        Optional keyword arguments:
 
-		Returns struct - Returns a struct containing all found contacts
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        minDate (timeString) - Find only Contacts who unsubscribed from this campaign on or after this date
+        maxDate (timeString) - Find only Contacts who unsubscribed from this campaign on or before this date
 
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Get_Unsubscribed_Contacts',
-			'campaignId': campaignId,
-			'optionalParameters': optionalParameters,
-		}
+        Returns struct - Returns a struct containing all found contacts
+        '''
 
-		data = self.makeCall(args)
-		return data
+        if optionalParameters is None:
+            optionalParameters = {}
 
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-	def Campaign_Get_Subscribed_Contacts(self, campaignId, optionalParameters=None, **kwargs):
-		'''
-		Get a list of all Contacts who Subscribed from the specified Campaign
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Get_Unsubscribed_Contacts',
+            'campaignId': campaignId,
+            'optionalParameters': optionalParameters,
+        }
 
-		Required keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		campaignId (int) - The campaign you wish to find contacts who subscribed from said campaign
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+    def Campaign_Get_Subscribed_Contacts(self, campaignId, optionalParameters=None, **kwargs):
+        '''
+        Get a list of all Contacts who Subscribed from the specified Campaign
 
-		Optional keyword arguments:
+        Required keyword arguments:
 
-		minDate (timeString) - Find only Contacts who subscribed from this campaign on or after this date
-		maxDate (timeString) - Find only Contacts who subscribed from this campaign on or before this date
+        campaignId (int) - The campaign you wish to find contacts who subscribed from said campaign
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Returns struct - Returns a struct containing all found contacts
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        Optional keyword arguments:
 
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Get_Subscribed_Contacts',
-			'campaignId': campaignId,
-			'optionalParameters': optionalParameters,
-		}
+        minDate (timeString) - Find only Contacts who subscribed from this campaign on or after this date
+        maxDate (timeString) - Find only Contacts who subscribed from this campaign on or before this date
 
-		data = self.makeCall(args)
-		return data
+        Returns struct - Returns a struct containing all found contacts
+        '''
 
+        if optionalParameters is None:
+            optionalParameters = {}
 
-	def Campaign_Get_Forwarded_Contacts(self, campaignId, optionalParameters=None, **kwargs):
-		'''
-		Get a list of all Contacts who Forwarded the specified Campaign
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Required keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Get_Subscribed_Contacts',
+            'campaignId': campaignId,
+            'optionalParameters': optionalParameters,
+        }
 
-		campaignId (int) - The campaign you wish to find contacts who forwarded said campaign
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        data = self.makeCall(args)
+        return data
 
-		Optional keyword arguments:
+    def Campaign_Get_Forwarded_Contacts(self, campaignId, optionalParameters=None, **kwargs):
+        '''
+        Get a list of all Contacts who Forwarded the specified Campaign
 
-		minDate (timeString) - Find only Contacts who forwarded this campaign on or after this date
-		maxDate (timeString) - Find only Contacts who forwarded this campaign on or before this date
+        Required keyword arguments:
 
-		Returns struct - Returns a struct containing all found contacts
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        campaignId (int) - The campaign you wish to find contacts who forwarded said campaign
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Get_Forwarded_Contacts',
-			'campaignId': campaignId,
-			'optionalParameters': optionalParameters,
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        minDate (timeString) - Find only Contacts who forwarded this campaign on or after this date
+        maxDate (timeString) - Find only Contacts who forwarded this campaign on or before this date
 
+        Returns struct - Returns a struct containing all found contacts
+        '''
 
-	def Campaign_Get_Urls(self, campaignId):
-		'''
-		Get a list of URLs in a given campaign, for use with the Campaign_Get_ClickThru_Contacts call
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Required keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		campaignId (int) - The campaign you wish to find contacts who forwarded said campaign
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Get_Forwarded_Contacts',
+            'campaignId': campaignId,
+            'optionalParameters': optionalParameters,
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
+    def Campaign_Get_Urls(self, campaignId):
+        '''
+        Get a list of URLs in a given campaign, for use with the Campaign_Get_ClickThru_Contacts call
 
-		Returns struct - 
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Get_Urls',
-			'campaignId': campaignId,
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        campaignId (int) - The campaign you wish to find contacts who forwarded said campaign
 
+        Optional keyword arguments:
 
-	def Campaign_Activate_Triggered(self, campaignId):
-		'''
-		Activate an Triggered Campaign
+        Returns struct -
+        '''
 
-		Required keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Get_Urls',
+            'campaignId': campaignId,
+        }
 
-		campaignId (int) - The campaign you wish to activate
+        data = self.makeCall(args)
+        return data
 
-		Optional keyword arguments:
+    def Campaign_Activate_Triggered(self, campaignId):
+        '''
+        Activate an Triggered Campaign
 
+        Required keyword arguments:
 
-		Returns struct - 
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Activate_Triggered',
-			'campaignId': campaignId,
-		}
+        campaignId (int) - The campaign you wish to activate
 
-		data = self.makeCall(args)
-		return data
+        Optional keyword arguments:
 
+        Returns struct -
+        '''
 
-	def Campaign_Activate_Recurring(self, campaignId):
-		'''
-		Activate a Recurring Campaign
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Activate_Triggered',
+            'campaignId': campaignId,
+        }
 
-		Required keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		campaignId (int) - The campaign you wish to activate
+    def Campaign_Activate_Recurring(self, campaignId):
+        '''
+        Activate a Recurring Campaign
 
-		Optional keyword arguments:
+        Required keyword arguments:
 
+        campaignId (int) - The campaign you wish to activate
 
-		Returns struct - 
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Activate_Recurring',
-			'campaignId': campaignId,
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        Returns struct -
+        '''
 
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Activate_Recurring',
+            'campaignId': campaignId,
+        }
 
-	def Campaign_Deactivate_Triggered(self, campaignId):
-		'''
-		Deactivate an active Triggered campaign
+        data = self.makeCall(args)
+        return data
 
-		Required keyword arguments:
+    def Campaign_Deactivate_Triggered(self, campaignId):
+        '''
+        Deactivate an active Triggered campaign
 
-		campaignId (int) - The campaign you wish to deactivate
+        Required keyword arguments:
 
-		Optional keyword arguments:
+        campaignId (int) - The campaign you wish to deactivate
 
+        Optional keyword arguments:
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Deactivate_Triggered',
-			'campaignId': campaignId,
-		}
+        Returns bool - Returns true on success
+        '''
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Deactivate_Triggered',
+            'campaignId': campaignId,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Campaign_Deactivate_Recurring(self, campaignId):
-		'''
-		Deactivate an active recurring campaign
+    def Campaign_Deactivate_Recurring(self, campaignId):
+        '''
+        Deactivate an active recurring campaign
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		campaignId (int) - The campaign you wish to deactivate
+        campaignId (int) - The campaign you wish to deactivate
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
+        Returns bool - Returns true on success
+        '''
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Deactivate_Recurring',
-			'campaignId': campaignId,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Deactivate_Recurring',
+            'campaignId': campaignId,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def Campaign_Create_Split(self, recipients, campaignName, subject, senderEmail, senderName, content, splitParts, optionalParameters=None, **kwargs):
+        '''
+        Create a multivariate split Contactology campaign - used to help determine the most effective configuration for your campaigns.
 
-	def Campaign_Create_Split(self, recipients, campaignName, subject, senderEmail, senderName, content, splitParts, optionalParameters=None, **kwargs):
-		'''
-		Create a multivariate split Contactology campaign - used to help determine the most effective configuration for your campaigns.
+        Required keyword arguments:
 
-		Required keyword arguments:
+        recipients (dict) - A dict which specifies the for your Campaign - can include list, group and search
+        campaignName (string) - The name of this Campaign - not shown to recipients
+        subject (string) - The line of the Campaign
+        senderEmail (string) - The from email address of the Campaign
+        senderName (string) - The from name of the Campaign
+        content (dict) - A dict which specifies the of the Campaign email - can include html and text
+        splitParts (array) - An list of dicts containing override values for each split - each dict will cause a new split to be created
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		recipients (dict) - A dict which specifies the for your Campaign - can include list, group and search
-		campaignName (string) - The name of this Campaign - not shown to recipients
-		subject (string) - The line of the Campaign
-		senderEmail (string) - The from email address of the Campaign
-		senderName (string) - The from name of the Campaign
-		content (dict) - A dict which specifies the of the Campaign email - can include html and text
-		splitParts (array) - An list of dicts containing override values for each split - each dict will cause a new split to be created
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        splitPercent (int) - Defaults to 5.  This is the percentage of your lists/groups/searches that will get randomly allocated to each split.
+        authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
+        replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
+        replyToName (string) - Defaults to senderName.  The display name of the replyToEmail.
+        trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail.
+        recipientName (string) - The display name of your recipient.  Can use Personalization Tokens.
+        showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
+        viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
+        trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report.
+        trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report.
+        trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report.
+        googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name.
+        clickTaleName (string) - Defaults to blank.  If this is set, ClickTale tracking will be turned on for this message with the specified name. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
+        clickTaleCustomFields (list) - Defaults to blank.  Accepts an list of CustomField IDs.  clickTaleName must be set when using this parameter.  Please do not use any personally identifiable information when using the ClickTale integration. This might include: First Name, Last Name, Company Name, Phone Number and Email Address. This policy applies to any other field that could identify your email subscriber within ClickTale tracking. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
+        customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
+        footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
+        facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign
+        twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
 
-		splitPercent (int) - Defaults to 5.  This is the percentage of your lists/groups/searches that will get randomly allocated to each split.
-		authenticate (bool) - Defaults to false. Authentication applies certain identifiers to your message to let the receiving servers know where the message is coming from. This helps with delivery of large mailings to major ISPs and some spam filters who often look for these identifiers to determine if a message is legit or not.
-		replyToEmail (string) - Defaults to senderEmail.  The email address that replies to your Campaign should go to.  This will be overridden if you set trackReplies to true.
-		replyToName (string) - Defaults to senderName.  The display name of the replyToEmail.
-		trackReplies (bool) - Defaults to false. Whether or not replies should be tracked in your Campaign Report.  Setting this to true will override your replyToEmail.
-		recipientName (string) - The display name of your recipient.  Can use Personalization Tokens.
-		showInArchive (bool) - Defaults to false.  Whether or not this message should be show in your message archive.
-		viewInBrowser (bool) - Defaults to false.  Whether or not this message should include a "View In Browser" link.
-		trackOpens (bool) - Defaults to true.  Whether or not opens for this message should be tracked in your Campaign Report.
-		trackClickThruHTML (bool) - Defaults to true.  Whether or not click tracking for links in the HTML body of this message should be tracked in your Campaign Report.
-		trackClickThruText (bool) - Defaults to true.  Whether or not click tracking for links in the text body of this message should be tracked in your Campaign Report.
-		googleAnalyticsName (string) - Defaults to blank.  If this is set, Google Analytics tracking will be turned on for this message with the specified name.
-		clickTaleName (string) - Defaults to blank.  If this is set, ClickTale tracking will be turned on for this message with the specified name. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
-		clickTaleCustomFields (list) - Defaults to blank.  Accepts an list of CustomField IDs.  clickTaleName must be set when using this parameter.  Please do not use any personally identifiable information when using the ClickTale integration. This might include: First Name, Last Name, Company Name, Phone Number and Email Address. This policy applies to any other field that could identify your email subscriber within ClickTale tracking. Please note: you'll need to have ClickTale setup on your web site in order to use this feature.
-		customUrlParameters (list) - The custom parameters to be appended to all urls orgainized into key / value pairs
-		footerId (int) - Defaults to your account's default footer.  Set this to a valid footer ID to cause this campaign to use that footer
-		facebookAutopost (dict) - A dict which contains information required to automatically post to Facebook upon completion of the campaign 
-		twitterAutopost (dict) - A dict which contains information required to automatically post to Twitter upon completion of the campaign
+        Returns int - campaignId The ID for your new Campaign
+        '''
 
-		Returns int - campaignId The ID for your new Campaign
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Create_Split',
-			'recipients': recipients,
-			'campaignName': campaignName,
-			'subject': subject,
-			'senderEmail': senderEmail,
-			'senderName': senderName,
-			'content': content,
-			'splitParts': splitParts,
-			'optionalParameters': optionalParameters,
-		}
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Create_Split',
+            'recipients': recipients,
+            'campaignName': campaignName,
+            'subject': subject,
+            'senderEmail': senderEmail,
+            'senderName': senderName,
+            'content': content,
+            'splitParts': splitParts,
+            'optionalParameters': optionalParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Campaign_Update_Split_Parts(self, campaignId, partIds, optionalParameters, **kwargs):
-		'''
-		Update properties of an existing Campaign.  Only unsent campaigns in Draft status can be Updated
+    def Campaign_Update_Split_Parts(self, campaignId, partIds, optionalParameters, **kwargs):
+        '''
+        Update properties of an existing Campaign.  Only unsent campaigns in Draft status can be Updated
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		campaignId (int) - The Campaign id. The campaign must be in draft mode - an exception will be thrown if not.
-		partIds (array) - An list of partIds, each element being a single letter A-Z
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        campaignId (int) - The Campaign id. The campaign must be in draft mode - an exception will be thrown if not.
+        partIds (array) - An list of partIds, each element being a single letter A-Z
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
-		subject (string) - The subject line of the Campaign
-		senderEmail (string) - The from email address of the Campaign
-		senderName (string) - The from name of the Campaign
-		html (string) - The HTML body of your message
-		text (string) - The plain text body of your message
-		recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
+        subject (string) - The subject line of the Campaign
+        senderEmail (string) - The from email address of the Campaign
+        senderName (string) - The from name of the Campaign
+        html (string) - The HTML body of your message
+        text (string) - The plain text body of your message
+        recipientName (string) - The display name of your recipient.  Can use Personalization Tokens
 
-		Returns struct - Returns a struct of structs, a split ID with
-		'''
-	
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        Returns struct - Returns a struct of structs, a split ID with
+        '''
 
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Update_Split_Parts',
-			'campaignId': campaignId,
-			'partIds': partIds,
-			'optionalParameters': optionalParameters,
-		}
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Update_Split_Parts',
+            'campaignId': campaignId,
+            'partIds': partIds,
+            'optionalParameters': optionalParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Campaign_Get_Split_Part_Ids(self, campaignId):
-		'''
-		Get the alphabetic split IDs for the parts of a split campaign
+    def Campaign_Get_Split_Part_Ids(self, campaignId):
+        '''
+        Get the alphabetic split IDs for the parts of a split campaign
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		campaignId (int) - The Campaign ID. The campaign must be a split campaign
+        campaignId (int) - The Campaign ID. The campaign must be a split campaign
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
+        Returns array - An array of split part IDs
+        '''
 
-		Returns array - An array of split part IDs
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Get_Split_Part_Ids',
-			'campaignId': campaignId,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Get_Split_Part_Ids',
+            'campaignId': campaignId,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def Campaign_Get_Split_Winner_Report(self, campaignId, optionalParameters=None, **kwargs):
+        '''
+        Get the Campaign_Report for the split winner/remainder, sent with Campaign_Send_Split_Remainder, Campaign_Schedule_Split_Remainder or Campaign_Schedule_Split_Winner
 
-	def Campaign_Get_Split_Winner_Report(self, campaignId, optionalParameters=None, **kwargs):
-		'''
-		Get the Campaign_Report for the split winner/remainder, sent with Campaign_Send_Split_Remainder, Campaign_Schedule_Split_Remainder or Campaign_Schedule_Split_Winner
+        Required keyword arguments:
 
-		Required keyword arguments:
+        campaignId (int) - The Campaign ID. The campaign must be a split campaign
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		campaignId (int) - The Campaign ID. The campaign must be a split campaign
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        cached (bool) - Return a cached set of campaign data, defaults to true.
+        formatted (bool) - Return the campaign data with formatting applied, defaults to false.
 
-		cached (bool) - Return a cached set of campaign data, defaults to true.
-		formatted (bool) - Return the campaign data with formatting applied, defaults to false.
+        Returns struct - See Campaign_Report
+        '''
 
-		Returns struct - See Campaign_Report
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Get_Split_Winner_Report',
-			'campaignId': campaignId,
-			'optionalParameters': optionalParameters,
-		}
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Get_Split_Winner_Report',
+            'campaignId': campaignId,
+            'optionalParameters': optionalParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Campaign_Get_Split_Parts_Info(self, campaignId, partIds):
-		'''
-		Get information for specific splitParts for your MV Split Campaign
+    def Campaign_Get_Split_Parts_Info(self, campaignId, partIds):
+        '''
+        Get information for specific splitParts for your MV Split Campaign
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		campaignId (int) - The Campaign ID. The campaign must be a split campaign
-		partIds (array) - An list of partIds, each element being a single letter A-Z
+        campaignId (int) - The Campaign ID. The campaign must be a split campaign
+        partIds (array) - An list of partIds, each element being a single letter A-Z
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
+        Returns struct - Report info
+        '''
 
-		Returns struct - Report info
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Get_Split_Parts_Info',
-			'campaignId': campaignId,
-			'partIds': partIds,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Get_Split_Parts_Info',
+            'campaignId': campaignId,
+            'partIds': partIds,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def Campaign_Schedule_Split_Parts(self, campaignId, partIds, time):
+        '''
+        Schedule specified split parts to send at the given time.  Schedules all specified parts for the same time
 
-	def Campaign_Schedule_Split_Parts(self, campaignId, partIds, time):
-		'''
-		Schedule specified split parts to send at the given time.  Schedules all specified parts for the same time
+        Required keyword arguments:
 
-		Required keyword arguments:
+        campaignId (int) - The Campaign ID. The campaign must be a split campaign in draft mode
+        partIds (array) - An list of alphabetic split part IDs
+        time (string) - a timeString in UTC timezone
 
-		campaignId (int) - The Campaign ID. The campaign must be a split campaign in draft mode
-		partIds (array) - An list of alphabetic split part IDs
-		time (string) - a timeString in UTC timezone
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        Returns struct - Returns boolean success and an array of issues
+        '''
 
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Schedule_Split_Parts',
+            'campaignId': campaignId,
+            'partIds': partIds,
+            'time': time,
+        }
 
-		Returns struct - Returns boolean success and an array of issues
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Schedule_Split_Parts',
-			'campaignId': campaignId,
-			'partIds': partIds,
-			'time': time,
-		}
+        data = self.makeCall(args)
+        return data
 
-		data = self.makeCall(args)
-		return data
+    def Campaign_Schedule_Cancel_Split_Parts(self, campaignId, partIds):
+        '''
+        Clear a Scheduled Campaign's scheduled time and return the Campaign to Draft mode
 
+        Required keyword arguments:
 
-	def Campaign_Schedule_Cancel_Split_Parts(self, campaignId, partIds):
-		'''
-		Clear a Scheduled Campaign's scheduled time and return the Campaign to Draft mode
+        campaignId (int) - The campaign you wish to schedule
+        partIds (array) - An list of alphabetic split part IDs
 
-		Required keyword arguments:
+        Optional keyword arguments:
 
-		campaignId (int) - The campaign you wish to schedule
-		partIds (array) - An list of alphabetic split part IDs
+        Returns bool - True on success
+        '''
 
-		Optional keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Schedule_Cancel_Split_Parts',
+            'campaignId': campaignId,
+            'partIds': partIds,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-		Returns bool - True on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Schedule_Cancel_Split_Parts',
-			'campaignId': campaignId,
-			'partIds': partIds,
-		}
+    def Campaign_Send_Split_Parts(self, campaignId, partIds):
+        '''
+        Send specified split parts immediately
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        campaignId (int) - The Campaign ID. The campaign must be a split campaign in draft mode
+        partIds (array) - An list of alphabetic split part IDs
 
-	def Campaign_Send_Split_Parts(self, campaignId, partIds):
-		'''
-		Send specified split parts immediately
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        Returns struct - Returns boolean success and an array of issues
+        '''
 
-		campaignId (int) - The Campaign ID. The campaign must be a split campaign in draft mode
-		partIds (array) - An list of alphabetic split part IDs
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Send_Split_Parts',
+            'campaignId': campaignId,
+            'partIds': partIds,
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
+    def Campaign_Send_Split_Test(self, campaignId, partIds, optionalParameters=None, **kwargs):
+        '''
+        Send a test message for each of the specified split partIds
 
-		Returns struct - Returns boolean success and an array of issues
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Send_Split_Parts',
-			'campaignId': campaignId,
-			'partIds': partIds,
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        campaignId (int) - The campaign you wish to test
+        partIds (array) - An list of alphabetic split part IDs
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
+        Optional keyword arguments:
 
-	def Campaign_Send_Split_Test(self, campaignId, partIds, optionalParameters=None, **kwargs):
-		'''
-		Send a test message for each of the specified split partIds
+        testEmail (string/list) - A single email or list of email addresses to send this test to
+        testListId (int/list) - A single listId or list of listIds to send this test to - all lists specified must be Test Lists (see List_Add_Test)
 
-		Required keyword arguments:
+        Returns bool - True on success
+        '''
 
-		campaignId (int) - The campaign you wish to test
-		partIds (array) - An list of alphabetic split part IDs
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Optional keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		testEmail (string/list) - A single email or list of email addresses to send this test to
-		testListId (int/list) - A single listId or list of listIds to send this test to - all lists specified must be Test Lists (see List_Add_Test)
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Send_Split_Test',
+            'campaignId': campaignId,
+            'partIds': partIds,
+            'optionalParameters': optionalParameters,
+        }
 
-		Returns bool - True on success
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        data = self.makeCall(args)
+        return data
 
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Send_Split_Test',
-			'campaignId': campaignId,
-			'partIds': partIds,
-			'optionalParameters': optionalParameters,
-		}
+    def Campaign_Schedule_Split_Remainder(self, campaignId, partId, time):
+        '''
+        Schedule the 'winning' split manually - the part specified will receive the remaining unsent recipients that were not allocated to splits
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        campaignId (int) - The split campaign for which you wish to schedule the remainder
+        partId (string) - The of the split part you want the declare as the 'winner' and allocate remaining recipients to
+        time (string) - a timeString in UTC timezone
 
-	def Campaign_Schedule_Split_Remainder(self, campaignId, partId, time):
-		'''
-		Schedule the 'winning' split manually - the part specified will receive the remaining unsent recipients that were not allocated to splits
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        Returns struct - Returns boolean success and an array of issues
+        '''
 
-		campaignId (int) - The split campaign for which you wish to schedule the remainder
-		partId (string) - The of the split part you want the declare as the 'winner' and allocate remaining recipients to
-		time (string) - a timeString in UTC timezone
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Schedule_Split_Remainder',
+            'campaignId': campaignId,
+            'partId': partId,
+            'time': time,
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
+    def Campaign_Schedule_Cancel_Split_Remainder(self, campaignId):
+        '''
+        Clear a Scheduled Split Remainder's scheduled time
 
-		Returns struct - Returns boolean success and an array of issues
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Schedule_Split_Remainder',
-			'campaignId': campaignId,
-			'partId': partId,
-			'time': time,
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        campaignId (int) - The campaign you wish to schedule
 
+        Optional keyword arguments:
 
-	def Campaign_Schedule_Cancel_Split_Remainder(self, campaignId):
-		'''
-		Clear a Scheduled Split Remainder's scheduled time
+        Returns bool - True on success
+        '''
 
-		Required keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Schedule_Cancel_Split_Remainder',
+            'campaignId': campaignId,
+        }
 
-		campaignId (int) - The campaign you wish to schedule
+        data = self.makeCall(args)
+        return data
 
-		Optional keyword arguments:
+    def Campaign_Send_Split_Remainder(self, campaignId, partId):
+        '''
+        Send the 'winning' split manually - the part specified will receive the remaining unsent recipients that were not allocated to splits
 
+        Required keyword arguments:
 
-		Returns bool - True on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Schedule_Cancel_Split_Remainder',
-			'campaignId': campaignId,
-		}
+        campaignId (int) - The split campaign for which you wish to send the remainder
+        partId (string) - The of the split part you want the declare as the 'winner' and allocate remaining recipients to
 
-		data = self.makeCall(args)
-		return data
+        Optional keyword arguments:
 
+        Returns struct - Returns boolean success and an array of issues
+        '''
 
-	def Campaign_Send_Split_Remainder(self, campaignId, partId):
-		'''
-		Send the 'winning' split manually - the part specified will receive the remaining unsent recipients that were not allocated to splits
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Send_Split_Remainder',
+            'campaignId': campaignId,
+            'partId': partId,
+        }
 
-		Required keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		campaignId (int) - The split campaign for which you wish to send the remainder
-		partId (string) - The of the split part you want the declare as the 'winner' and allocate remaining recipients to
+    def Campaign_Schedule_Split_Winner(self, campaignId, time, winCriteria):
+        '''
+        Schedule the Winner for your split campaign.  When the time comes, it will evaluate the winCriteria and send the remainder to the winning split.
 
-		Optional keyword arguments:
+        Required keyword arguments:
 
+        campaignId (int) - The Campaign ID. The campaign must be a split campaign. The splits must be complete at the time specified for a winner to be scheduled
+        time (string) - A timeString in the UTC timezone
+        winCriteria (array) - An list of criteria to be evaluated in the order specified (these are the same criteria returned in Campaign_Get_Split_Comparison)
 
-		Returns struct - Returns boolean success and an array of issues
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Send_Split_Remainder',
-			'campaignId': campaignId,
-			'partId': partId,
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        Returns bool - True on success
+        '''
 
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Schedule_Split_Winner',
+            'campaignId': campaignId,
+            'time': time,
+            'winCriteria': winCriteria,
+        }
 
-	def Campaign_Schedule_Split_Winner(self, campaignId, time, winCriteria):
-		'''
-		Schedule the Winner for your split campaign.  When the time comes, it will evaluate the winCriteria and send the remainder to the winning split.
+        data = self.makeCall(args)
+        return data
 
-		Required keyword arguments:
+    def Campaign_Schedule_Cancel_Split_Winner(self, campaignId):
+        '''
+        Cancel a previously scheduled Winner evaluation
 
-		campaignId (int) - The Campaign ID. The campaign must be a split campaign. The splits must be complete at the time specified for a winner to be scheduled
-		time (string) - A timeString in the UTC timezone
-		winCriteria (array) - An list of criteria to be evaluated in the order specified (these are the same criteria returned in Campaign_Get_Split_Comparison)
+        Required keyword arguments:
 
-		Optional keyword arguments:
+        campaignId (int) - The Campaign ID. The campaign must be a split campaign with a currently scheduled winner.
 
+        Optional keyword arguments:
 
-		Returns bool - True on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Schedule_Split_Winner',
-			'campaignId': campaignId,
-			'time': time,
-			'winCriteria': winCriteria,
-		}
+        Returns bool - True on success
+        '''
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Schedule_Cancel_Split_Winner',
+            'campaignId': campaignId,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Campaign_Schedule_Cancel_Split_Winner(self, campaignId):
-		'''
-		Cancel a previously scheduled Winner evaluation
+    def Campaign_Get_Split_Comparison(self, campaignId):
+        '''
+        Get the Split Comparison report for a split campaign
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		campaignId (int) - The Campaign ID. The campaign must be a split campaign with a currently scheduled winner.
+        campaignId (int) - The campaign you wish to test
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
+        Returns struct - Returns a struct of structs, a breakdown of how each split performed against each metric - with a 'Sole Winner', 'Sole Loser', 'Tie', 'Tied Winner' or 'Tied Loser' status for each campaign on each metric.  Use this data to determine the winner of your split campaign
+        '''
 
-		Returns bool - True on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Schedule_Cancel_Split_Winner',
-			'campaignId': campaignId,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Campaign_Get_Split_Comparison',
+            'campaignId': campaignId,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def HostedAttachment_List(self):
+        '''
+        List current HostedAttachments
 
-	def Campaign_Get_Split_Comparison(self, campaignId):
-		'''
-		Get the Split Comparison report for a split campaign
+        Required keyword arguments:
 
-		Required keyword arguments:
+        Optional keyword arguments:
 
-		campaignId (int) - The campaign you wish to test
+        Returns struct - Returns a struct with the filename as the key and a list of all campaigns that have the HostedAttachment added as the value
+        '''
 
-		Optional keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'HostedAttachment_List',
+        }
 
+        data = self.makeCall(args)
+        return data
 
-		Returns struct - Returns a struct of structs, a breakdown of how each split performed against each metric - with a 'Sole Winner', 'Sole Loser', 'Tie', 'Tied Winner' or 'Tied Loser' status for each campaign on each metric.  Use this data to determine the winner of your split campaign
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Campaign_Get_Split_Comparison',
-			'campaignId': campaignId,
-		}
+    def HostedAttachment_Add(self, filename, attachment, optionalParameters=None, **kwargs):
+        '''
+        Add a HostedAttachment to the server
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        filename (string) - name The and extension for your attachment
+        attachment (string) - The body of the attachment
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-	def HostedAttachment_List(self):
-		'''
-		List current HostedAttachments
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        base64Encoded (bool) - Specify whether the content is base 64 encoded - defaults to false.
 
+        Returns string - Returns the URL of the HostedAttachment for use in your Campaigns
+        '''
 
-		Optional keyword arguments:
+        if optionalParameters is None:
+            optionalParameters = {}
 
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Returns struct - Returns a struct with the filename as the key and a list of all campaigns that have the HostedAttachment added as the value
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'HostedAttachment_List',
-		}
+        args = {
+            'key': self.key,
+            'method': 'HostedAttachment_Add',
+            'filename': filename,
+            'attachment': attachment,
+            'optionalParameters': optionalParameters,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def HostedAttachment_Add_To_Campaign(self, filename, campaignId):
+        '''
+        Add a HostedAttachment to a Campaign
 
-	def HostedAttachment_Add(self, filename, attachment, optionalParameters=None, **kwargs):
-		'''
-		Add a HostedAttachment to the server
+        Required keyword arguments:
 
-		Required keyword arguments:
+        filename (string) - The of your existing attachment
+        campaignId (int) - The ID of the Campaign in Draft Mode you want to add the attachment to
 
-		filename (string) - name The and extension for your attachment
-		attachment (string) - The body of the attachment
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        Returns bool - Returns true on success
+        '''
 
-		base64Encoded (bool) - Specify whether the content is base 64 encoded - defaults to false.
+        args = {
+            'key': self.key,
+            'method': 'HostedAttachment_Add_To_Campaign',
+            'filename': filename,
+            'campaignId': campaignId,
+        }
 
-		Returns string - Returns the URL of the HostedAttachment for use in your Campaigns
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        data = self.makeCall(args)
+        return data
 
-		args = {
-			'key': self.key,
-			'method': 'HostedAttachment_Add',
-			'filename': filename,
-			'attachment': attachment,
-			'optionalParameters': optionalParameters,
-		}
+    def HostedAttachment_Remove_From_Campaign(self, filename, campaignId):
+        '''
+        Remove an existing HostedAttachment from a Campaign without deleting the HostedAttachment from the server
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        filename (string) - The of the existing HostedAttachment
+        campaignId (int) - The ID of the Campaign you want to remove the attachment from
 
-	def HostedAttachment_Add_To_Campaign(self, filename, campaignId):
-		'''
-		Add a HostedAttachment to a Campaign
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        Returns bool - Returns true on success
+        '''
 
-		filename (string) - The of your existing attachment
-		campaignId (int) - The ID of the Campaign in Draft Mode you want to add the attachment to
+        args = {
+            'key': self.key,
+            'method': 'HostedAttachment_Remove_From_Campaign',
+            'filename': filename,
+            'campaignId': campaignId,
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
+    def HostedAttachment_Delete(self, filename):
+        '''
+        Delete a HostedAttachment from the server and remove it from all Campaigns
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'HostedAttachment_Add_To_Campaign',
-			'filename': filename,
-			'campaignId': campaignId,
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        filename (string) - The of the existing attachment
 
+        Optional keyword arguments:
 
-	def HostedAttachment_Remove_From_Campaign(self, filename, campaignId):
-		'''
-		Remove an existing HostedAttachment from a Campaign without deleting the HostedAttachment from the server
+        Returns bool - Returns true on success
+        '''
 
-		Required keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'HostedAttachment_Delete',
+            'filename': filename,
+        }
 
-		filename (string) - The of the existing HostedAttachment
-		campaignId (int) - The ID of the Campaign you want to remove the attachment from
+        data = self.makeCall(args)
+        return data
 
-		Optional keyword arguments:
+    def Account_Get_Send_Count(self, optionalParameters=None, **kwargs):
+        '''
+        Get the total number of sent emails for your account
 
+        Required keyword arguments:
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'HostedAttachment_Remove_From_Campaign',
-			'filename': filename,
-			'campaignId': campaignId,
-		}
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		data = self.makeCall(args)
-		return data
+        Optional keyword arguments:
 
+        startDate (string) - Count only emails sent on or after this date, format: YYYY-MM-DD HH:MM:SS
+        endDate (string) - Count only emails sent on or before this date, format: YYYY-MM-DD HH:MM:SS
+        campaignId (int) - Count only sent emails belonging to a specific campaign
 
-	def HostedAttachment_Delete(self, filename):
-		'''
-		Delete a HostedAttachment from the server and remove it from all Campaigns
+        Returns int -
+        '''
 
-		Required keyword arguments:
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		filename (string) - The of the existing attachment
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Optional keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Account_Get_Send_Count',
+            'optionalParameters': optionalParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'HostedAttachment_Delete',
-			'filename': filename,
-		}
+    def Account_Get_Hosted_Content_Info(self):
+        '''
+        Get the quota, used and free space for your account
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        Optional keyword arguments:
 
-	def Account_Get_Send_Count(self, optionalParameters=None, **kwargs):
-		'''
-		Get the total number of sent emails for your account
+        Returns struct - Returns a struct containing your quota, used and free space
+        '''
 
-		Required keyword arguments:
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        args = {
+            'key': self.key,
+            'method': 'Account_Get_Hosted_Content_Info',
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		startDate (string) - Count only emails sent on or after this date, format: YYYY-MM-DD HH:MM:SS
-		endDate (string) - Count only emails sent on or before this date, format: YYYY-MM-DD HH:MM:SS
-		campaignId (int) - Count only sent emails belonging to a specific campaign
+    def Account_Get_Block_Sends_Remaining(self):
+        '''
+        Retrieve the number of block sends remaining in a Block Send Quota account
 
-		Returns int - 
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        Required keyword arguments:
 
-		args = {
-			'key': self.key,
-			'method': 'Account_Get_Send_Count',
-			'optionalParameters': optionalParameters,
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        Returns int - The number of sends remaining
+        '''
 
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-	def Account_Get_Hosted_Content_Info(self):
-		'''
-		Get the quota, used and free space for your account
+        args = {
+            'key': self.key,
+            'method': 'Account_Get_Block_Sends_Remaining',
+        }
 
-		Required keyword arguments:
+        data = self.makeCall(args)
+        return data
 
+    def AdvancedCondition_Check_Condition(self, condition):
+        '''
+        Confirm that an AdvancedCondition for use in SavedSearch or Campaign is valid
 
-		Optional keyword arguments:
+        Required keyword arguments:
 
+        condition (AdvancedCondition) - A dict following a format defined in AdvancedCondition_List_Conditions
 
-		Returns struct - Returns a struct containing your quota, used and free space
-		'''
-	
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        Optional keyword arguments:
 
-		args = {
-			'key': self.key,
-			'method': 'Account_Get_Hosted_Content_Info',
-		}
+        Returns bool -
+        '''
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'AdvancedCondition_Check_Condition',
+            'condition': condition,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Account_Get_Block_Sends_Remaining(self):
-		'''
-		Retrieve the number of block sends remaining in a Block Send Quota account
-
-		Required keyword arguments:
-
-
-		Optional keyword arguments:
-
-
-		Returns int - The number of sends remaining
-		'''
-	
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'Account_Get_Block_Sends_Remaining',
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def AdvancedCondition_Check_Condition(self, condition):
-		'''
-		Confirm that an AdvancedCondition for use in SavedSearch or Campaign is valid
-
-		Required keyword arguments:
-
-		condition (AdvancedCondition) - A dict following a format defined in AdvancedCondition_List_Conditions
-
-		Optional keyword arguments:
-
-
-		Returns bool - 
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'AdvancedCondition_Check_Condition',
-			'condition': condition,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def AdvancedCondition_List_Conditions(self):
-		'''
-		Returns a list of all of your available AdvancedConditions for use in
+    def AdvancedCondition_List_Conditions(self):
+        '''
+        Returns a list of all of your available AdvancedConditions for use in
 Campaign and SavedSearch functions
 
-		Required keyword arguments:
+        Required keyword arguments:
 
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        Returns array - Returns a list of valid AdvancedConditions
+        '''
 
+        args = {
+            'key': self.key,
+            'method': 'AdvancedCondition_List_Conditions',
+        }
 
-		Returns array - Returns a list of valid AdvancedConditions
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'AdvancedCondition_List_Conditions',
-		}
+        data = self.makeCall(args)
+        return data
 
-		data = self.makeCall(args)
-		return data
+    def AdvancedCondition_Get_SelectedAreas(self):
+        '''
+        Get Selected Area info for use with Automated Campaigns
 
+        Required keyword arguments:
 
-	def AdvancedCondition_Get_SelectedAreas(self):
-		'''
-		Get Selected Area info for use with Automated Campaigns
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        Returns array - Returns a list of valid SelectedAreas for your account for use with Automated Campaigns
+        '''
 
+        args = {
+            'key': self.key,
+            'method': 'AdvancedCondition_Get_SelectedAreas',
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
+    def Util_Get_MQS(self, fromEmail, subject, html, text):
+        '''
+        Get a Contactology Message Quality Score for an email
 
-		Returns array - Returns a list of valid SelectedAreas for your account for use with Automated Campaigns
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'AdvancedCondition_Get_SelectedAreas',
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        fromEmail (string) - The email address your email will be sent from
+        subject (string) - The of your email
+        html (string) - The HTML body of your message
+        text (string) - The plain version of your message
 
+        Optional keyword arguments:
 
-	def Util_Get_MQS(self, fromEmail, subject, html, text):
-		'''
-		Get a Contactology Message Quality Score for an email
+        Returns struct - A struct containing your score and some detailed information on any issues encountered (see notes above)
+        '''
 
-		Required keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Util_Get_MQS',
+            'fromEmail': fromEmail,
+            'subject': subject,
+            'html': html,
+            'text': text,
+        }
 
-		fromEmail (string) - The email address your email will be sent from
-		subject (string) - The of your email
-		html (string) - The HTML body of your message
-		text (string) - The plain version of your message
+        data = self.makeCall(args)
+        return data
 
-		Optional keyword arguments:
+    def Template_List(self, getByFolder=''):
+        '''
+        Template_List returns a struct of your templates available for use in the new Template Controller
 
+        Required keyword arguments:
 
-		Returns struct - A struct containing your score and some detailed information on any issues encountered (see notes above)
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Util_Get_MQS',
-			'fromEmail': fromEmail,
-			'subject': subject,
-			'html': html,
-			'text': text,
-		}
+        getByFolder (string) - Fetch templates by folder
 
-		data = self.makeCall(args)
-		return data
+        Optional keyword arguments:
 
+        Returns struct - A struct where the key is the template_name and the value is the template_id (Note: This is reversed from most API calls)
+        '''
 
-	def Template_List(self, getByFolder=''):
-		'''
-		Template_List returns a struct of your templates available for use in the new Template Controller
+        args = {
+            'key': self.key,
+            'method': 'Template_List',
+            'getByFolder': getByFolder,
+        }
 
-		Required keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		getByFolder (string) - Fetch templates by folder
+    def Template_Add(self, name, html):
+        '''
+        Add a new Template for use with the new Template Controller
 
-		Optional keyword arguments:
+        Required keyword arguments:
 
+        name (string) - The of your new template
+        html (string) - The HTML content of your new template
 
-		Returns struct - A struct where the key is the template_name and the value is the template_id (Note: This is reversed from most API calls)
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Template_List',
-			'getByFolder': getByFolder,
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        Returns int - The templateId of your new template
+        '''
 
+        args = {
+            'key': self.key,
+            'method': 'Template_Add',
+            'name': name,
+            'html': html,
+        }
 
-	def Template_Add(self, name, html):
-		'''
-		Add a new Template for use with the new Template Controller
+        data = self.makeCall(args)
+        return data
 
-		Required keyword arguments:
+    def Template_Get_Tokens(self):
+        '''
+        Get a list of tokens available for use in the new Template Controller
 
-		name (string) - The of your new template
-		html (string) - The HTML content of your new template
+        Required keyword arguments:
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
+        Returns struct - Struct of tokens
+        '''
 
-		Returns int - The templateId of your new template
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Template_Add',
-			'name': name,
-			'html': html,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Template_Get_Tokens',
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
-
-	def Template_Get_Tokens(self):
-		'''
-		Get a list of tokens available for use in the new Template Controller
-
-		Required keyword arguments:
-
-
-		Optional keyword arguments:
-
-
-		Returns struct - Struct of tokens
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Template_Get_Tokens',
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Template_Transfer_Content(self, templateId, content):
-		'''
-		Transfer content from one template to another.  This will only work if the templates have been set up
+    def Template_Transfer_Content(self, templateId, content):
+        '''
+        Transfer content from one template to another.  This will only work if the templates have been set up
   in advance to use the same IDs for corresponding containers.  See the Template Controller documentation
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		templateId (int) - The template ID that you're moving to
-		content (string) - The full HTML of the old template
+        templateId (int) - The template ID that you're moving to
+        content (string) - The full HTML of the old template
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
+        Returns string - The full HTML content of the new template, with content transferred from the old template where possible
+        '''
 
-		Returns string - The full HTML content of the new template, with content transferred from the old template where possible
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Template_Transfer_Content',
-			'templateId': templateId,
-			'content': content,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Template_Transfer_Content',
+            'templateId': templateId,
+            'content': content,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def Template_Get_Content(self, templateId):
+        '''
+        Get the HTML of a template by ID
 
-	def Template_Get_Content(self, templateId):
-		'''
-		Get the HTML of a template by ID
+        Required keyword arguments:
 
-		Required keyword arguments:
+        templateId (int) - The ID of the template of which you want the content
 
-		templateId (int) - The ID of the template of which you want the content
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        Returns string - The full HTML content of the specified template
+        '''
 
+        args = {
+            'key': self.key,
+            'method': 'Template_Get_Content',
+            'templateId': templateId,
+        }
 
-		Returns string - The full HTML content of the specified template
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Template_Get_Content',
-			'templateId': templateId,
-		}
+        data = self.makeCall(args)
+        return data
 
-		data = self.makeCall(args)
-		return data
+    def Footer_Get_Default(self):
+        '''
+        Get the content of the default footer set for your account
 
+        Required keyword arguments:
 
-	def Footer_Get_Default(self):
-		'''
-		Get the content of the default footer set for your account
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        Returns struct - A struct containing the HTML and Text parts of your default footer
+        '''
 
+        args = {
+            'key': self.key,
+            'method': 'Footer_Get_Default',
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
+    def Footer_List(self):
+        '''
+        List all current footers
 
-		Returns struct - A struct containing the HTML and Text parts of your default footer
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Footer_Get_Default',
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        Optional keyword arguments:
 
+        Returns struct - A struct of footers, with the key being the footer ID and the value being the footer name
+        '''
 
-	def Footer_List(self):
-		'''
-		List all current footers
+        args = {
+            'key': self.key,
+            'method': 'Footer_List',
+        }
 
-		Required keyword arguments:
+        data = self.makeCall(args)
+        return data
 
+    def Footer_Get_Contents(self, footerId):
+        '''
+        Get the HTML and Text for a footer by ID
 
-		Optional keyword arguments:
+        Required keyword arguments:
 
+        footerId (int) - The ID of the footer for which you want the contents
 
-		Returns struct - A struct of footers, with the key being the footer ID and the value being the footer name
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Footer_List',
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        Returns struct - A struct containing the HTML and Text parts of your default footer
+        '''
 
+        args = {
+            'key': self.key,
+            'method': 'Footer_Get_Contents',
+            'footerId': footerId,
+        }
 
-	def Footer_Get_Contents(self, footerId):
-		'''
-		Get the HTML and Text for a footer by ID
+        data = self.makeCall(args)
+        return data
 
-		Required keyword arguments:
+    def Footer_Add(self, name, html, text):
+        '''
+        Add a new footer for use with campaigns
 
-		footerId (int) - The ID of the footer for which you want the contents
+        Required keyword arguments:
 
-		Optional keyword arguments:
+        name (string) - The of your new footer
+        html (string) - The HTML content of your new footer
+        text (string) - The Text content of your new footer
 
+        Optional keyword arguments:
 
-		Returns struct - A struct containing the HTML and Text parts of your default footer
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Footer_Get_Contents',
-			'footerId': footerId,
-		}
+        Returns int - The ID of your new footer
+        '''
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'Footer_Add',
+            'name': name,
+            'html': html,
+            'text': text,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Footer_Add(self, name, html, text):
-		'''
-		Add a new footer for use with campaigns
+    def Footer_Update(self, footerId, html, text):
+        '''
+        Change the HTML and Text parts of an existing footer
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		name (string) - The of your new footer
-		html (string) - The HTML content of your new footer
-		text (string) - The Text content of your new footer
+        footerId (int) - The ID of the footer you want to change
+        html (string) - The new HTML content of your footer
+        text (string) - The new Text content of your footer
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
+        Returns bool - True on success
+        '''
 
-		Returns int - The ID of your new footer
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Footer_Add',
-			'name': name,
-			'html': html,
-			'text': text,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Footer_Update',
+            'footerId': footerId,
+            'html': html,
+            'text': text,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def Report_Get_Bulk_Webhooks(self):
+        '''
+        Report_Get_Bulk_Webhooks will get all of the bulk webhooks report stored being stored for you, in case you missed one of the bulk hooks.  This call only gives you the URLs of the stored reports. You must still fetch them.
 
-	def Footer_Update(self, footerId, html, text):
-		'''
-		Change the HTML and Text parts of an existing footer
+        Required keyword arguments:
 
-		Required keyword arguments:
+        Optional keyword arguments:
 
-		footerId (int) - The ID of the footer you want to change
-		html (string) - The new HTML content of your footer
-		text (string) - The new Text content of your footer
+        Returns array - Returns an array of filenames which hold your stored bulk hooks
+        '''
 
-		Optional keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Report_Get_Bulk_Webhooks',
+        }
 
+        data = self.makeCall(args)
+        return data
 
-		Returns bool - True on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Footer_Update',
-			'footerId': footerId,
-			'html': html,
-			'text': text,
-		}
+    def SocialConnection_List(self, optionalParameters=None, **kwargs):
+        '''
+        List all social connections
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-	def Report_Get_Bulk_Webhooks(self):
-		'''
-		Report_Get_Bulk_Webhooks will get all of the bulk webhooks report stored being stored for you, in case you missed one of the bulk hooks.  This call only gives you the URLs of the stored reports. You must still fetch them.
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        id (int) - Retrieve a specific social connection
+        type (string) - Retrieve only social connections of a certain type, valid values: facebook, twitter, googleAnalytics
 
+        Returns struct - A struct of social connections
+        '''
 
-		Optional keyword arguments:
+        if optionalParameters is None:
+            optionalParameters = {}
 
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Returns array - Returns an array of filenames which hold your stored bulk hooks
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Report_Get_Bulk_Webhooks',
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def SocialConnection_List(self, optionalParameters=None, **kwargs):
-		'''
-		List all social connections
-
-		Required keyword arguments:
-
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		id (int) - Retrieve a specific social connection
-		type (string) - Retrieve only social connections of a certain type, valid values: facebook, twitter, googleAnalytics
-
-		Returns struct - A struct of social connections
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'SocialConnection_List',
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def SocialConnection_Get_Locations(self, id):
-		'''
-		Get all possible post locations for a specific social connection
-
-		Required keyword arguments:
-
-		id (int) - Retrieve a specific social connection
-
-		Optional keyword arguments:
-
-
-		Returns struct - A struct of social connections
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'SocialConnection_Get_Locations',
-			'id': id,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-
-	def http_build_query(self, params, topkey=''):
-		
-		if len(params) == 0:
-			return ""
-		
-		result = ""
-		
-		if isinstance(params, dict):
-			for key in params.keys():
-				newkey = quote(key)
-				if topkey != '':
-					newkey = topkey + quote('[' + key + ']')
-			
-				if isinstance(params[key], dict):
-					result += self.http_build_query(params[key], newkey)
-			
-				elif isinstance(params[key], list):
-					i = 0
-					for val in params[key]:
-						if isinstance(val, dict):
-							for subkey in val.keys():
-								val[subkey] = str(val[subkey]).replace("'", "EC_SingleQuoteSentinelValue")
-						result += newkey + quote('[' + str(i) + ']') + "=" + quote(str(val).replace('"', r'\"').replace("'",'"')) + "&"
-						i = i + 1
-			
-				# boolean should have special treatment as well
-				elif isinstance(params[key], bool):
-					result += newkey + "=" + quote(str(int(params[key]))) + "&"
-			
-				# assume string (integers and floats work well)
-				else:
-					result += newkey + "=" + quote(str(params[key]).replace( "'", "EC_SingleQuoteSentinelValue" )) + "&"
-		
-		# remove the last '&'
-		if result and topkey == '' and result[-1] == '&':
-			result = result[:-1]
-			
-		result = result.replace("EC_SingleQuoteSentinelValue", "'")
-		
-		return result
-	
-
-	def makeCall(self, args):
-		params = self.http_build_query(args)
-		headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain", "User-Agent": "Contactology Python Wrapper " + self.version}
-		
-		if self.useHTTPS:
-			conn = httplib.HTTPSConnection(self.host)
-		else:
-			conn = httplib.HTTPConnection(self.host)
-		conn.request("POST", self.path, params, headers)
-		
-		response = conn.getresponse()
-		jsonstr = response.read()
-		
-		data = None
-		data = json.loads(jsonstr)
-		
-		if data is None:
-			raise Exception("Could not fetch data from the API.")
-
-		if isinstance(data, dict) and 'result' in data and data['result'] == "error":
-			raise Exception("API Error: "+data['message']+" ("+repr(data['code'])+")")
-		
-		return data
-
-		
+        args = {
+            'key': self.key,
+            'method': 'SocialConnection_List',
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def SocialConnection_Get_Locations(self, id):
+        '''
+        Get all possible post locations for a specific social connection
+
+        Required keyword arguments:
+
+        id (int) - Retrieve a specific social connection
+
+        Optional keyword arguments:
+
+        Returns struct - A struct of social connections
+        '''
+
+        args = {
+            'key': self.key,
+            'method': 'SocialConnection_Get_Locations',
+            'id': id,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def http_build_query(self, params, topkey=''):
+        if len(params) == 0:
+            return ""
+
+        result = ""
+
+        if isinstance(params, dict):
+            for key in params.keys():
+                newkey = quote(key)
+                if topkey != '':
+                    newkey = topkey + quote('[' + key + ']')
+
+                if isinstance(params[key], dict):
+                    result += self.http_build_query(params[key], newkey)
+
+                elif isinstance(params[key], list):
+                    i = 0
+                    for val in params[key]:
+                        if isinstance(val, dict):
+                            for subkey in val.keys():
+                                val[subkey] = str(val[subkey]).replace("'", "EC_SingleQuoteSentinelValue")
+                        result += newkey + quote('[' + str(i) + ']') + "=" + quote(str(val).replace('"', r'\"').replace("'", '"')) + "&"
+                        i = i + 1
+
+                # boolean should have special treatment as well
+                elif isinstance(params[key], bool):
+                    result += newkey + "=" + quote(str(int(params[key]))) + "&"
+
+                # assume string (integers and floats work well)
+                else:
+                    result += newkey + "=" + quote(str(params[key]).replace("'", "EC_SingleQuoteSentinelValue")) + "&"
+
+        # remove the last '&'
+        if result and topkey == '' and result[-1] == '&':
+            result = result[:-1]
+
+        result = result.replace("EC_SingleQuoteSentinelValue", "'")
+
+        return result
+
+    def makeCall(self, args):
+        params = self.http_build_query(args)
+        headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain", "User-Agent": "Contactology Python Wrapper " + self.version}
+
+        if self.useHTTPS:
+            conn = httplib.HTTPSConnection(self.host)
+        else:
+            conn = httplib.HTTPConnection(self.host)
+        conn.request("POST", self.path, params, headers)
+
+        response = conn.getresponse()
+        jsonstr = response.read()
+
+        data = None
+        data = json.loads(jsonstr)
+
+        if data is None:
+            raise Exception("Could not fetch data from the API.")
+
+        if isinstance(data, dict) and 'result' in data and data['result'] == "error":
+            raise Exception("API Error: "+data['message']+" ("+repr(data['code'])+")")
+
+        return data
+
+
 class Contactology_Reseller(Contactology):
-	def Admin_Create_Account(self, clientName, adminEmail, userName, password, homePage, logoUrl, clientAddr1, clientCity, clientState, clientZip, optionalParameters=None, **kwargs):
-		'''
-		Create a new Contactology account with the given parameters
-
-		Required keyword arguments:
-
-		clientName (string) - Name for the account
-		adminEmail (string) - Default email address for the account
-		userName (string) - User name for the new account - must be unique and no more than 64 characters
-		password (string) - Password for the new account
-		homePage (string) - URL for the account - will be included in the unsubscribe screen
-		logoUrl (string) - URL to the logo image - will be included in the unsubscribe screen
-		clientAddr1 (string) - Physical address for the account - will be included in the footer of messages
-		clientCity (string) - Physical address for the account - will be included in the footer of messages
-		clientState (string) - Physical address for the account - will be included in the footer of messages
-		clientZip (string) - Physical address for the account - will be included in the footer of messages
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		clientAddr2 (string) - Client's Street Address Line 2
-		clientBusinessName (string) - The client's Business name, defaults to provided clientName
-		phoneNumber (string) - The client's phone number
-		supportEmail (string) - The client's support email address, defaults to provided adminEmail
-		clientTimezone (string) - The client's timezone, defaults to UTC
-		hostedClientLimit (int) - Hosted Client Limit, defaults to 50. Valid values: 50, 100
-		maximumCustomUsers (int) - Maximum Custom Users, defaults to 3. Valid values: 3, 4, 8, 13, 28
-		accountType (string) - Account type, defaults to UNLIMITED. Valid values: NO_EMAIL, CONTACT_QUOTA, BLOCK_SENDS, UNLIMITED
-		contactQuota (int) - Contact quota, defaults to 0. Only valid for CONTACT_QUOTA accountType. Valid values: 100, 250, 500, 1000, 2500, 5000, 7500, 10000, 15000, 20000, 25000
-		blockSendQuota (int) - Block send quota, defaults to 0.  Only valid for BLOCK_SENDS accountType
-		contractLength (int) - Contract length in months, defaults to 1. valid values: 1, 12
-		paymentFrequency (int) - Payment frequency in months, defaults to 1. Valid values: 1, 3, 6, 12
-		poweredBy (bool) - Control the display of the "Powered By Contactology" logo, defaults to false.
-		forwardToFriendLink (bool) - Control the display of the "Forward to a Friend" link, defaults to true.
-		managePreferencesLink (bool) - Control the display of the "Manage Preferences" link, defaults to true.
-		unsubscribeLink (bool) - Control the display of the "Unsubscribe" link, defaults to true.
-		aboutListLink (bool) - Control the display of the "About List" link, defaults to true.
-		optinSource (bool) - Control the display of the "Opt In Source" information in the footer, defaults to true.
-		surveys (bool) - Enable or disable surveys, defaults to false.
-		language (string) - The default language the account will have. Valid values are: en, es, fr, ru
-		numberFormat (string) - The default number format the account will use. Valid values are: us, eu
-
-		Returns int - The user ID of the new account
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'Admin_Create_Account',
-			'clientName': clientName,
-			'adminEmail': adminEmail,
-			'userName': userName,
-			'password': password,
-			'homePage': homePage,
-			'logoUrl': logoUrl,
-			'clientAddr1': clientAddr1,
-			'clientCity': clientCity,
-			'clientState': clientState,
-			'clientZip': clientZip,
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Admin_Create_Account_Minimal(self, clientName, adminEmail, userName, password, optionalParameters=None, **kwargs):
-		'''
-		Create a new Contactology account using minimal initial information
-
-		Required keyword arguments:
-
-		clientName (string) - Name for the account
-		adminEmail (string) - Default email address for the account
-		userName (string) - User name for the new account - must be unique and no more than 64 characters
-		password (string) - Password for the new account
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		clientBusinessName (string) - The client's Business name, defaults to provided clientName
-		phoneNumber (string) - The client's phone number
-		supportEmail (string) - The client's support email address, defaults to provided adminEmail
-		clientTimezone (string) - The client's timezone, defaults to UTC
-		hostedClientLimit (int) - Hosted Client Limit, defaults to 50. Valid values: 50, 100
-		maximumCustomUsers (int) - Maximum Custom Users, defaults to 3. Valid values: 3, 4, 8, 13, 28
-		accountType (string) - Account type, defaults to UNLIMITED. Valid values: NO_EMAIL, CONTACT_QUOTA, BLOCK_SENDS, UNLIMITED
-		contactQuota (int) - Contact quota, defaults to 0. Only valid for CONTACT_QUOTA accountType. Valid values: 100, 250, 500, 1000, 2500, 5000, 7500, 10000, 15000, 20000, 25000
-		blockSendQuota (int) - Block send quota, defaults to 0.  Only valid for BLOCK_SENDS accountType
-		contractLength (int) - Contract length in months, defaults to 1. valid values: 1, 12
-		paymentFrequency (int) - Payment frequency in months, defaults to 1. Valid values: 1, 3, 6, 12
-		poweredBy (bool) - Control the display of the "Powered By Contactology" logo, defaults to false.
-		forwardToFriendLink (bool) - Control the display of the "Forward to a Friend" link, defaults to true.
-		managePreferencesLink (bool) - Control the display of the "Manage Preferences" link, defaults to true.
-		unsubscribeLink (bool) - Control the display of the "Unsubscribe" link, defaults to true.
-		aboutListLink (bool) - Control the display of the "About List" link, defaults to true.
-		optinSource (bool) - Control the display of the "Opt In Source" information in the footer, defaults to true.
-		surveys (bool) - Enable or disable surveys, defaults to false.
-		language (string) - The default language the account will have. Valid values are: en, es, fr, ru
-		numberFormat (string) - The default number format the account will use. Valid values are: us, eu
+    def Admin_Create_Account(self, clientName, adminEmail, userName, password, homePage, logoUrl, clientAddr1, clientCity, clientState, clientZip, optionalParameters=None, **kwargs):
+        '''
+        Create a new Contactology account with the given parameters
+
+        Required keyword arguments:
+
+        clientName (string) - Name for the account
+        adminEmail (string) - Default email address for the account
+        userName (string) - User name for the new account - must be unique and no more than 64 characters
+        password (string) - Password for the new account
+        homePage (string) - URL for the account - will be included in the unsubscribe screen
+        logoUrl (string) - URL to the logo image - will be included in the unsubscribe screen
+        clientAddr1 (string) - Physical address for the account - will be included in the footer of messages
+        clientCity (string) - Physical address for the account - will be included in the footer of messages
+        clientState (string) - Physical address for the account - will be included in the footer of messages
+        clientZip (string) - Physical address for the account - will be included in the footer of messages
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        clientAddr2 (string) - Client's Street Address Line 2
+        clientBusinessName (string) - The client's Business name, defaults to provided clientName
+        phoneNumber (string) - The client's phone number
+        supportEmail (string) - The client's support email address, defaults to provided adminEmail
+        clientTimezone (string) - The client's timezone, defaults to UTC
+        hostedClientLimit (int) - Hosted Client Limit, defaults to 50. Valid values: 50, 100
+        maximumCustomUsers (int) - Maximum Custom Users, defaults to 3. Valid values: 3, 4, 8, 13, 28
+        accountType (string) - Account type, defaults to UNLIMITED. Valid values: NO_EMAIL, CONTACT_QUOTA, BLOCK_SENDS, UNLIMITED
+        contactQuota (int) - Contact quota, defaults to 0. Only valid for CONTACT_QUOTA accountType. Valid values: 100, 250, 500, 1000, 2500, 5000, 7500, 10000, 15000, 20000, 25000
+        blockSendQuota (int) - Block send quota, defaults to 0.  Only valid for BLOCK_SENDS accountType
+        contractLength (int) - Contract length in months, defaults to 1. valid values: 1, 12
+        paymentFrequency (int) - Payment frequency in months, defaults to 1. Valid values: 1, 3, 6, 12
+        poweredBy (bool) - Control the display of the "Powered By Contactology" logo, defaults to false.
+        forwardToFriendLink (bool) - Control the display of the "Forward to a Friend" link, defaults to true.
+        managePreferencesLink (bool) - Control the display of the "Manage Preferences" link, defaults to true.
+        unsubscribeLink (bool) - Control the display of the "Unsubscribe" link, defaults to true.
+        aboutListLink (bool) - Control the display of the "About List" link, defaults to true.
+        optinSource (bool) - Control the display of the "Opt In Source" information in the footer, defaults to true.
+        surveys (bool) - Enable or disable surveys, defaults to false.
+        language (string) - The default language the account will have. Valid values are: en, es, fr, ru
+        numberFormat (string) - The default number format the account will use. Valid values are: us, eu
+
+        Returns int - The user ID of the new account
+        '''
+
+        if optionalParameters is None:
+            optionalParameters = {}
+
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
+
+        args = {
+            'key': self.key,
+            'method': 'Admin_Create_Account',
+            'clientName': clientName,
+            'adminEmail': adminEmail,
+            'userName': userName,
+            'password': password,
+            'homePage': homePage,
+            'logoUrl': logoUrl,
+            'clientAddr1': clientAddr1,
+            'clientCity': clientCity,
+            'clientState': clientState,
+            'clientZip': clientZip,
+            'optionalParameters': optionalParameters,
+        }
+
+        data = self.makeCall(args)
+        return data
+
+    def Admin_Create_Account_Minimal(self, clientName, adminEmail, userName, password, optionalParameters=None, **kwargs):
+        '''
+        Create a new Contactology account using minimal initial information
+
+        Required keyword arguments:
+
+        clientName (string) - Name for the account
+        adminEmail (string) - Default email address for the account
+        userName (string) - User name for the new account - must be unique and no more than 64 characters
+        password (string) - Password for the new account
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        clientBusinessName (string) - The client's Business name, defaults to provided clientName
+        phoneNumber (string) - The client's phone number
+        supportEmail (string) - The client's support email address, defaults to provided adminEmail
+        clientTimezone (string) - The client's timezone, defaults to UTC
+        hostedClientLimit (int) - Hosted Client Limit, defaults to 50. Valid values: 50, 100
+        maximumCustomUsers (int) - Maximum Custom Users, defaults to 3. Valid values: 3, 4, 8, 13, 28
+        accountType (string) - Account type, defaults to UNLIMITED. Valid values: NO_EMAIL, CONTACT_QUOTA, BLOCK_SENDS, UNLIMITED
+        contactQuota (int) - Contact quota, defaults to 0. Only valid for CONTACT_QUOTA accountType. Valid values: 100, 250, 500, 1000, 2500, 5000, 7500, 10000, 15000, 20000, 25000
+        blockSendQuota (int) - Block send quota, defaults to 0.  Only valid for BLOCK_SENDS accountType
+        contractLength (int) - Contract length in months, defaults to 1. valid values: 1, 12
+        paymentFrequency (int) - Payment frequency in months, defaults to 1. Valid values: 1, 3, 6, 12
+        poweredBy (bool) - Control the display of the "Powered By Contactology" logo, defaults to false.
+        forwardToFriendLink (bool) - Control the display of the "Forward to a Friend" link, defaults to true.
+        managePreferencesLink (bool) - Control the display of the "Manage Preferences" link, defaults to true.
+        unsubscribeLink (bool) - Control the display of the "Unsubscribe" link, defaults to true.
+        aboutListLink (bool) - Control the display of the "About List" link, defaults to true.
+        optinSource (bool) - Control the display of the "Opt In Source" information in the footer, defaults to true.
+        surveys (bool) - Enable or disable surveys, defaults to false.
+        language (string) - The default language the account will have. Valid values are: en, es, fr, ru
+        numberFormat (string) - The default number format the account will use. Valid values are: us, eu
 
-		Returns int - The user ID of the new account
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        Returns int - The user ID of the new account
+        '''
 
-		args = {
-			'key': self.key,
-			'method': 'Admin_Create_Account_Minimal',
-			'clientName': clientName,
-			'adminEmail': adminEmail,
-			'userName': userName,
-			'password': password,
-			'optionalParameters': optionalParameters,
-		}
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		data = self.makeCall(args)
-		return data
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
+        args = {
+            'key': self.key,
+            'method': 'Admin_Create_Account_Minimal',
+            'clientName': clientName,
+            'adminEmail': adminEmail,
+            'userName': userName,
+            'password': password,
+            'optionalParameters': optionalParameters,
+        }
 
-	def Admin_Get_Accounts(self):
-		'''
-		Get a list of your current clients
+        data = self.makeCall(args)
+        return data
 
-		Required keyword arguments:
+    def Admin_Get_Accounts(self):
+        '''
+        Get a list of your current clients
 
+        Required keyword arguments:
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
+        Returns struct - Struct of current client accounts { clientId : clientName, clientId : clientName }
+        '''
 
-		Returns struct - Struct of current client accounts { clientId : clientName, clientId : clientName }
-		'''
-	
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'Admin_Get_Accounts',
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Admin_Find_Accounts(self, optionalParameters=None, **kwargs):
-		'''
-		Get a list of your clients based on parameters
-
-		Required keyword arguments:
-
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		createDateStart (string) - Return accounts created on or after createDateStart. Format as UTC.
-		createDateEnd (string) - Return accounts created on or before createDateEnd. Format as UTC.
-		status (string) - Current account status, valid values: active, disabled.
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Returns struct - Struct of accounts { { "clientId":"1", "clientStatus":"active", "clientCreated":"2012-01-01 00:00:00" }, { "clientId":"2", "clientStatus":"disabled", "clientCreated":"2012-02-02 02:00:00" }
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        args = {
+            'key': self.key,
+            'method': 'Admin_Get_Accounts',
+        }
 
-		args = {
-			'key': self.key,
-			'method': 'Admin_Find_Accounts',
-			'optionalParameters': optionalParameters,
-		}
+        data = self.makeCall(args)
+        return data
 
-		data = self.makeCall(args)
-		return data
+    def Admin_Find_Accounts(self, optionalParameters=None, **kwargs):
+        '''
+        Get a list of your clients based on parameters
 
+        Required keyword arguments:
 
-	def Admin_Get_Account_Info(self, clientId):
-		'''
-		Admin_Get_Account_Info retrieves all the info about an Account, including the Plan information
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Required keyword arguments:
+        Optional keyword arguments:
 
-		clientId (int) - The client ID number you want to modify
+        createDateStart (string) - Return accounts created on or after createDateStart. Format as UTC.
+        createDateEnd (string) - Return accounts created on or before createDateEnd. Format as UTC.
+        status (string) - Current account status, valid values: active, disabled.
 
-		Optional keyword arguments:
+        Returns struct - Struct of accounts { { "clientId":"1", "clientStatus":"active", "clientCreated":"2012-01-01 00:00:00" }, { "clientId":"2", "clientStatus":"disabled", "clientCreated":"2012-02-02 02:00:00" }
+        '''
 
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Returns struct - Returns a struct of the account's properties
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Get_Account_Info',
-			'clientId': clientId,
-		}
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'Admin_Find_Accounts',
+            'optionalParameters': optionalParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Admin_Modify_Account(self, clientId, optionalParameters, **kwargs):
-		'''
-		Modifies multiple properties of an existing Contactology account created by your account.  Only fields in optionalParameters will be modified
-
-		Required keyword arguments:
-
-		clientId (int) - The client ID number you want to modify
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
-
-		Optional keyword arguments:
-
-		clientName (string) - Name for the account
-		adminEmail (string) - Default email address for the account
-		password (string) - Password for the permanent user account
-		homePage (string) - URL for the account
-		logoUrl (string) - URL to the logo image
-		clientAddr1 (string) - Physical address for the account
-		clientAddr2 (string) - Client's Street Address Line 2
-		clientCity (string) - Physical address for the account
-		clientState (string) - Physical address for the account
-		clientZip (string) - Physical address for the account
-		clientBusinessName (string) - The Client's Business Name
-		phoneNumber (string) - The client's phone number
-		supportEmail (string) - The client's support email address
-		clientTimezone (string) - The client's timezone
-		forwardToFriendLink (bool) - Control the display of the "Forward to a Friend" link
-		managePreferencesLink (bool) - Control the display of the "Manage Preferences" link
-		unsubscribeLink (bool) - Control the display of the "Unsubscribe" link
-		aboutListLink (bool) - Control the display of the "About List" link
-		optinSource (bool) - Control the display of the "Opt In Source" information in the footer
+    def Admin_Get_Account_Info(self, clientId):
+        '''
+        Admin_Get_Account_Info retrieves all the info about an Account, including the Plan information
 
-		Returns int - The number of fields successfully modified
-		'''
-	
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
-
-		args = {
-			'key': self.key,
-			'method': 'Admin_Modify_Account',
-			'clientId': clientId,
-			'optionalParameters': optionalParameters,
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-	def Admin_Get_Account_Plan(self, clientId):
-		'''
-		Admin_Get_Account_Plan returns an struct of Account Plan details for one of your clients
-
-		Required keyword arguments:
+        Required keyword arguments:
 
-		clientId (int) - The client ID number you want to modify
+        clientId (int) - The client ID number you want to modify
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
+        Returns struct - Returns a struct of the account's properties
+        '''
 
-		Returns struct - Returns a struct of Account Plan details
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Get_Account_Plan',
-			'clientId': clientId,
-		}
-
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'Admin_Get_Account_Info',
+            'clientId': clientId,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Admin_Change_Account_Plan(self, clientId, hostedLimit, maxCustomUsers, package, accountType, contactQuota, contractLength, paymentFrequency, poweredBy, surveys):
-		'''
-		Change Account Plan allows you to change everything about an Account's Plan at once
+    def Admin_Modify_Account(self, clientId, optionalParameters, **kwargs):
+        '''
+        Modifies multiple properties of an existing Contactology account created by your account.  Only fields in optionalParameters will be modified
+
+        Required keyword arguments:
+
+        clientId (int) - The client ID number you want to modify
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
+
+        Optional keyword arguments:
+
+        clientName (string) - Name for the account
+        adminEmail (string) - Default email address for the account
+        password (string) - Password for the permanent user account
+        homePage (string) - URL for the account
+        logoUrl (string) - URL to the logo image
+        clientAddr1 (string) - Physical address for the account
+        clientAddr2 (string) - Client's Street Address Line 2
+        clientCity (string) - Physical address for the account
+        clientState (string) - Physical address for the account
+        clientZip (string) - Physical address for the account
+        clientBusinessName (string) - The Client's Business Name
+        phoneNumber (string) - The client's phone number
+        supportEmail (string) - The client's support email address
+        clientTimezone (string) - The client's timezone
+        forwardToFriendLink (bool) - Control the display of the "Forward to a Friend" link
+        managePreferencesLink (bool) - Control the display of the "Manage Preferences" link
+        unsubscribeLink (bool) - Control the display of the "Unsubscribe" link
+        aboutListLink (bool) - Control the display of the "About List" link
+        optinSource (bool) - Control the display of the "Opt In Source" information in the footer
 
-		Required keyword arguments:
+        Returns int - The number of fields successfully modified
+        '''
 
-		clientId (int) - The client ID number you want to modify
-		hostedLimit (int) - hostedClientLimit Hosted Client Limit. Valid values: 50, 100
-		maxCustomUsers (int) - maximumCustomUsers Maximum Custom Users, valid values: 3, 4, 8, 13, 28
-		package (string) - [DEPRECATED] Package is no longer required - an empty string will work fine. Previous valid values: PACKAGE_CONTACTS_EMAIL, PACKAGE_SURVEYS, PACKAGE_FULL, PACKAGE_MIGRATE will be accepted to keep legacy code from breaking
-		accountType (string) - Account type, valid values: NO_EMAIL, CONTACT_QUOTA, BLOCK_SENDS, UNLIMITED
-		contactQuota (int) - Contact quota, valid values: 100, 250, 500, 1000, 2500, 5000, 7500, 10000, 15000, 20000, 25000
-		contractLength (int) - Contract length, valid values: 1, 12
-		paymentFrequency (int) - Payment frequency, valid values: 1, 3, 6, 12
-		poweredBy (bool) - Display Powered By Contactology logo
-		surveys (bool) - optional Enable or disable for the account, defaults to false
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Optional keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Admin_Modify_Account',
+            'clientId': clientId,
+            'optionalParameters': optionalParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Change_Account_Plan',
-			'clientId': clientId,
-			'hostedLimit': hostedLimit,
-			'maxCustomUsers': maxCustomUsers,
-			'package': package,
-			'accountType': accountType,
-			'contactQuota': contactQuota,
-			'contractLength': contractLength,
-			'paymentFrequency': paymentFrequency,
-			'poweredBy': poweredBy,
-			'surveys': surveys,
-		}
+    def Admin_Get_Account_Plan(self, clientId):
+        '''
+        Admin_Get_Account_Plan returns an struct of Account Plan details for one of your clients
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        clientId (int) - The client ID number you want to modify
 
-	def Admin_Change_Account_Hosted_Limit(self, clientId, hostedLimit):
-		'''
-		Admin_Change_Account_Hosted_Limit allows you to change the Hosted Limit (in Megabytes) for your clients
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        Returns struct - Returns a struct of Account Plan details
+        '''
 
-		clientId (int) - The client ID number you want to modify
-		hostedLimit (int) - Hosted Limit, valid values: 50, 100
+        args = {
+            'key': self.key,
+            'method': 'Admin_Get_Account_Plan',
+            'clientId': clientId,
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
+    def Admin_Change_Account_Plan(self, clientId, hostedLimit, maxCustomUsers, package, accountType, contactQuota, contractLength, paymentFrequency, poweredBy, surveys):
+        '''
+        Change Account Plan allows you to change everything about an Account's Plan at once
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Change_Account_Hosted_Limit',
-			'clientId': clientId,
-			'hostedLimit': hostedLimit,
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        clientId (int) - The client ID number you want to modify
+        hostedLimit (int) - hostedClientLimit Hosted Client Limit. Valid values: 50, 100
+        maxCustomUsers (int) - maximumCustomUsers Maximum Custom Users, valid values: 3, 4, 8, 13, 28
+        package (string) - [DEPRECATED] Package is no longer required - an empty string will work fine. Previous valid values: PACKAGE_CONTACTS_EMAIL, PACKAGE_SURVEYS, PACKAGE_FULL, PACKAGE_MIGRATE will be accepted to keep legacy code from breaking
+        accountType (string) - Account type, valid values: NO_EMAIL, CONTACT_QUOTA, BLOCK_SENDS, UNLIMITED
+        contactQuota (int) - Contact quota, valid values: 100, 250, 500, 1000, 2500, 5000, 7500, 10000, 15000, 20000, 25000
+        contractLength (int) - Contract length, valid values: 1, 12
+        paymentFrequency (int) - Payment frequency, valid values: 1, 3, 6, 12
+        poweredBy (bool) - Display Powered By Contactology logo
+        surveys (bool) - optional Enable or disable for the account, defaults to false
 
+        Optional keyword arguments:
 
-	def Admin_Change_Account_Maximum_Custom_Users(self, clientId, maxCustomUsers):
-		'''
-		Admin_Change_Account_Maximum_Custom_Users allows you to change the Maximum Custom Users of your clients
+        Returns bool - Returns true on success
+        '''
 
-		Required keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Admin_Change_Account_Plan',
+            'clientId': clientId,
+            'hostedLimit': hostedLimit,
+            'maxCustomUsers': maxCustomUsers,
+            'package': package,
+            'accountType': accountType,
+            'contactQuota': contactQuota,
+            'contractLength': contractLength,
+            'paymentFrequency': paymentFrequency,
+            'poweredBy': poweredBy,
+            'surveys': surveys,
+        }
 
-		clientId (int) - The client ID number you want to modify
-		maxCustomUsers (int) - Maximum Custom Users, valid values: 3, 4, 8, 13, 28
+        data = self.makeCall(args)
+        return data
 
-		Optional keyword arguments:
+    def Admin_Change_Account_Hosted_Limit(self, clientId, hostedLimit):
+        '''
+        Admin_Change_Account_Hosted_Limit allows you to change the Hosted Limit (in Megabytes) for your clients
 
+        Required keyword arguments:
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Change_Account_Maximum_Custom_Users',
-			'clientId': clientId,
-			'maxCustomUsers': maxCustomUsers,
-		}
+        clientId (int) - The client ID number you want to modify
+        hostedLimit (int) - Hosted Limit, valid values: 50, 100
 
-		data = self.makeCall(args)
-		return data
+        Optional keyword arguments:
 
+        Returns bool - Returns true on success
+        '''
 
-	def Admin_Change_Account_Package(self, clientId, package):
-		'''
-		Admin_Change_Account_Package allows you to change the Package of your clients
+        args = {
+            'key': self.key,
+            'method': 'Admin_Change_Account_Hosted_Limit',
+            'clientId': clientId,
+            'hostedLimit': hostedLimit,
+        }
 
-		Required keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		clientId (int) - The client ID number you want to modify
-		package (string) - Package, valid values: PACKAGE_CONTACTS_EMAIL, PACKAGE_SURVEYS, PACKAGE_FULL, PACKAGE_MIGRATE
+    def Admin_Change_Account_Maximum_Custom_Users(self, clientId, maxCustomUsers):
+        '''
+        Admin_Change_Account_Maximum_Custom_Users allows you to change the Maximum Custom Users of your clients
 
-		Optional keyword arguments:
+        Required keyword arguments:
 
+        clientId (int) - The client ID number you want to modify
+        maxCustomUsers (int) - Maximum Custom Users, valid values: 3, 4, 8, 13, 28
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Change_Account_Package',
-			'clientId': clientId,
-			'package': package,
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        Returns bool - Returns true on success
+        '''
 
+        args = {
+            'key': self.key,
+            'method': 'Admin_Change_Account_Maximum_Custom_Users',
+            'clientId': clientId,
+            'maxCustomUsers': maxCustomUsers,
+        }
 
-	def Admin_Change_Account_Type(self, clientId, accountType):
-		'''
-		Admin_Change_Account_Type allows you to change the Account Type of your clients
+        data = self.makeCall(args)
+        return data
 
-		Required keyword arguments:
+    def Admin_Change_Account_Package(self, clientId, package):
+        '''
+        Admin_Change_Account_Package allows you to change the Package of your clients
 
-		clientId (int) - The client ID number you want to modify
-		accountType (string) - Account type, valid values: NO_EMAIL, CONTACT_QUOTA, BLOCK_SENDS, UNLIMITED
+        Required keyword arguments:
 
-		Optional keyword arguments:
+        clientId (int) - The client ID number you want to modify
+        package (string) - Package, valid values: PACKAGE_CONTACTS_EMAIL, PACKAGE_SURVEYS, PACKAGE_FULL, PACKAGE_MIGRATE
 
+        Optional keyword arguments:
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Change_Account_Type',
-			'clientId': clientId,
-			'accountType': accountType,
-		}
+        Returns bool - Returns true on success
+        '''
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'Admin_Change_Account_Package',
+            'clientId': clientId,
+            'package': package,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Admin_Change_Account_Contact_Quota(self, clientId, contactQuota):
-		'''
-		Admin_Change_Account_Contact_Quota allows you to change the Contact Quota of your clients
+    def Admin_Change_Account_Type(self, clientId, accountType):
+        '''
+        Admin_Change_Account_Type allows you to change the Account Type of your clients
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		clientId (int) - The client ID number you want to modify
-		contactQuota (int) - Contact quota, valid values: 100, 250, 500, 1000, 2500, 5000, 7500, 10000, 15000, 20000, 25000
+        clientId (int) - The client ID number you want to modify
+        accountType (string) - Account type, valid values: NO_EMAIL, CONTACT_QUOTA, BLOCK_SENDS, UNLIMITED
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
+        Returns bool - Returns true on success
+        '''
 
-		Returns bool - True on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Change_Account_Contact_Quota',
-			'clientId': clientId,
-			'contactQuota': contactQuota,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Admin_Change_Account_Type',
+            'clientId': clientId,
+            'accountType': accountType,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def Admin_Change_Account_Contact_Quota(self, clientId, contactQuota):
+        '''
+        Admin_Change_Account_Contact_Quota allows you to change the Contact Quota of your clients
 
-	def Admin_Change_Account_Contract_Length(self, clientId, contractLength):
-		'''
-		Admin_Change_Account_Contract_Length allows you to change the Contract Length of your clients
+        Required keyword arguments:
 
-		Required keyword arguments:
+        clientId (int) - The client ID number you want to modify
+        contactQuota (int) - Contact quota, valid values: 100, 250, 500, 1000, 2500, 5000, 7500, 10000, 15000, 20000, 25000
 
-		clientId (int) - The client ID number you want to modify
-		contractLength (int) - Contract length, valid values: 1, 12
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        Returns bool - True on success
+        '''
 
+        args = {
+            'key': self.key,
+            'method': 'Admin_Change_Account_Contact_Quota',
+            'clientId': clientId,
+            'contactQuota': contactQuota,
+        }
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Change_Account_Contract_Length',
-			'clientId': clientId,
-			'contractLength': contractLength,
-		}
+        data = self.makeCall(args)
+        return data
 
-		data = self.makeCall(args)
-		return data
+    def Admin_Change_Account_Contract_Length(self, clientId, contractLength):
+        '''
+        Admin_Change_Account_Contract_Length allows you to change the Contract Length of your clients
 
+        Required keyword arguments:
 
-	def Admin_Change_Account_Payment_Frequency(self, clientId, paymentFrequency):
-		'''
-		Admin_Change_Account_Payment_Frequency allows you to change the Payment Frequency of your clients
+        clientId (int) - The client ID number you want to modify
+        contractLength (int) - Contract length, valid values: 1, 12
 
-		Required keyword arguments:
+        Optional keyword arguments:
 
-		clientId (int) - The client ID number you want to modify
-		paymentFrequency (int) - Payment frequency, valid values: 1, 3, 6, 12
+        Returns bool - Returns true on success
+        '''
 
-		Optional keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Admin_Change_Account_Contract_Length',
+            'clientId': clientId,
+            'contractLength': contractLength,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Change_Account_Payment_Frequency',
-			'clientId': clientId,
-			'paymentFrequency': paymentFrequency,
-		}
+    def Admin_Change_Account_Payment_Frequency(self, clientId, paymentFrequency):
+        '''
+        Admin_Change_Account_Payment_Frequency allows you to change the Payment Frequency of your clients
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        clientId (int) - The client ID number you want to modify
+        paymentFrequency (int) - Payment frequency, valid values: 1, 3, 6, 12
 
-	def Admin_Change_Account_Powered_By(self, clientId, poweredBy):
-		'''
-		Admin_Change_Account_Powered_By allows you to toggle the display of the Powered By logo for your clients
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        Returns bool - Returns true on success
+        '''
 
-		clientId (int) - The client ID number you want to modify
-		poweredBy (bool) - Display Powered By Contactology logo
+        args = {
+            'key': self.key,
+            'method': 'Admin_Change_Account_Payment_Frequency',
+            'clientId': clientId,
+            'paymentFrequency': paymentFrequency,
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
+    def Admin_Change_Account_Powered_By(self, clientId, poweredBy):
+        '''
+        Admin_Change_Account_Powered_By allows you to toggle the display of the Powered By logo for your clients
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Change_Account_Powered_By',
-			'clientId': clientId,
-			'poweredBy': poweredBy,
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        clientId (int) - The client ID number you want to modify
+        poweredBy (bool) - Display Powered By Contactology logo
 
+        Optional keyword arguments:
 
-	def Admin_Change_Account_Surveys(self, clientId, surveys):
-		'''
-		Admin_Change_Account_Surveys allows you to enable or disable the Surveys feature for your clients
+        Returns bool - Returns true on success
+        '''
 
-		Required keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Admin_Change_Account_Powered_By',
+            'clientId': clientId,
+            'poweredBy': poweredBy,
+        }
 
-		clientId (int) - The client ID number you want to modify
-		surveys (bool) - Set to true to enable Surveys, false to disable
+        data = self.makeCall(args)
+        return data
 
-		Optional keyword arguments:
+    def Admin_Change_Account_Surveys(self, clientId, surveys):
+        '''
+        Admin_Change_Account_Surveys allows you to enable or disable the Surveys feature for your clients
 
+        Required keyword arguments:
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Change_Account_Surveys',
-			'clientId': clientId,
-			'surveys': surveys,
-		}
+        clientId (int) - The client ID number you want to modify
+        surveys (bool) - Set to true to enable Surveys, false to disable
 
-		data = self.makeCall(args)
-		return data
+        Optional keyword arguments:
 
+        Returns bool - Returns true on success
+        '''
 
-	def Admin_Add_Block_Sends(self, clientId, numSendsToAdd):
-		'''
-		Admin_Add_Block_Sends allows you to add block quota sends to one of your clients
+        args = {
+            'key': self.key,
+            'method': 'Admin_Change_Account_Surveys',
+            'clientId': clientId,
+            'surveys': surveys,
+        }
 
-		Required keyword arguments:
+        data = self.makeCall(args)
+        return data
 
-		clientId (int) - The client ID number you want to modify
-		numSendsToAdd (int) - numSendsToAdd
+    def Admin_Add_Block_Sends(self, clientId, numSendsToAdd):
+        '''
+        Admin_Add_Block_Sends allows you to add block quota sends to one of your clients
 
-		Optional keyword arguments:
+        Required keyword arguments:
 
+        clientId (int) - The client ID number you want to modify
+        numSendsToAdd (int) - numSendsToAdd
 
-		Returns bool - Returns true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Add_Block_Sends',
-			'clientId': clientId,
-			'numSendsToAdd': numSendsToAdd,
-		}
+        Optional keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        Returns bool - Returns true on success
+        '''
 
+        args = {
+            'key': self.key,
+            'method': 'Admin_Add_Block_Sends',
+            'clientId': clientId,
+            'numSendsToAdd': numSendsToAdd,
+        }
 
-	def Admin_Suspend_Account(self, clientId):
-		'''
-		Suspend an Account you created
+        data = self.makeCall(args)
+        return data
 
-		Required keyword arguments:
+    def Admin_Suspend_Account(self, clientId):
+        '''
+        Suspend an Account you created
 
-		clientId (int) - The client ID number you want to modify
+        Required keyword arguments:
 
-		Optional keyword arguments:
+        clientId (int) - The client ID number you want to modify
 
+        Optional keyword arguments:
 
-		Returns bool - true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Suspend_Account',
-			'clientId': clientId,
-		}
+        Returns bool - true on success
+        '''
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'Admin_Suspend_Account',
+            'clientId': clientId,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Admin_Reinstate_Account(self, clientId):
-		'''
-		Reinstate an Account you suspended
+    def Admin_Reinstate_Account(self, clientId):
+        '''
+        Reinstate an Account you suspended
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		clientId (int) - The client ID number you want to modify
+        clientId (int) - The client ID number you want to modify
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
+        Returns bool - true on success
+        '''
 
-		Returns bool - true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Reinstate_Account',
-			'clientId': clientId,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Admin_Reinstate_Account',
+            'clientId': clientId,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def Admin_Delete_Account(self, clientId):
+        '''
+        Suspend an Account you created. Admin_Delete_Account is an alias of Admin_Suspend_Account.
 
-	def Admin_Delete_Account(self, clientId):
-		'''
-		Suspend an Account you created. Admin_Delete_Account is an alias of Admin_Suspend_Account.
+        Required keyword arguments:
 
-		Required keyword arguments:
+        clientId (int) - The client ID number you want to modify
 
-		clientId (int) - The client ID number you want to modify
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        Returns bool - true on success
+        '''
 
+        args = {
+            'key': self.key,
+            'method': 'Admin_Delete_Account',
+            'clientId': clientId,
+        }
 
-		Returns bool - true on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Delete_Account',
-			'clientId': clientId,
-		}
+        data = self.makeCall(args)
+        return data
 
-		data = self.makeCall(args)
-		return data
+    def Admin_Get_Accounts_Completed_Campaigns(self, optionalParameters=None, **kwargs):
+        '''
+        Get a list of all completed campaigns for your clients
 
+        Required keyword arguments:
 
-	def Admin_Get_Accounts_Completed_Campaigns(self, optionalParameters=None, **kwargs):
-		'''
-		Get a list of all completed campaigns for your clients
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Required keyword arguments:
+        Optional keyword arguments:
 
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        sortBy (string) - Sort campaign list for each account by, valid values: campaign_id, campaign_name, start_time
+        sortDir (string) - Sort direction, valid values: U, D
+        startDate (string) - Get only campaigns started on or after this date, format: YYYY-MM-DD HH:MM:SS
+        endDate (string) - Get only campaigns started on or before this date, format: YYYY-MM-DD HH:MM:SS
 
-		Optional keyword arguments:
+        Returns struct - An array of clientIds with a value array containing: campaign_id, campaign_name, campaign_description, start_time, campaign_email_from, campaign_email_from_alias, campaign_email_subject
+        '''
 
-		sortBy (string) - Sort campaign list for each account by, valid values: campaign_id, campaign_name, start_time
-		sortDir (string) - Sort direction, valid values: U, D
-		startDate (string) - Get only campaigns started on or after this date, format: YYYY-MM-DD HH:MM:SS
-		endDate (string) - Get only campaigns started on or before this date, format: YYYY-MM-DD HH:MM:SS
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Returns struct - An array of clientIds with a value array containing: campaign_id, campaign_name, campaign_description, start_time, campaign_email_from, campaign_email_from_alias, campaign_email_subject
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		args = {
-			'key': self.key,
-			'method': 'Admin_Get_Accounts_Completed_Campaigns',
-			'optionalParameters': optionalParameters,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Admin_Get_Accounts_Completed_Campaigns',
+            'optionalParameters': optionalParameters,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def Admin_Get_Accounts_Sends(self, optionalParameters=None, **kwargs):
+        '''
+        Get the total number of sends for each of your accounts
 
-	def Admin_Get_Accounts_Sends(self, optionalParameters=None, **kwargs):
-		'''
-		Get the total number of sends for each of your accounts
+        Required keyword arguments:
 
-		Required keyword arguments:
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        startDate (string) - Get only campaigns started on or after this date, format: YYYY-MM-DD HH:MM:SS
+        endDate (string) - Get only campaigns started on or before this date, format: YYYY-MM-DD HH:MM:SS
 
-		startDate (string) - Get only campaigns started on or after this date, format: YYYY-MM-DD HH:MM:SS
-		endDate (string) - Get only campaigns started on or before this date, format: YYYY-MM-DD HH:MM:SS
+        Returns struct - An array of clientIds each with a value of the total sends
+        '''
 
-		Returns struct - An array of clientIds each with a value of the total sends
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		args = {
-			'key': self.key,
-			'method': 'Admin_Get_Accounts_Sends',
-			'optionalParameters': optionalParameters,
-		}
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'Admin_Get_Accounts_Sends',
+            'optionalParameters': optionalParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Admin_Get_Accounts_List_Count(self):
-		'''
-		Get the total number of subscribed emails for each list owned by each of your accounts
+    def Admin_Get_Accounts_List_Count(self):
+        '''
+        Get the total number of subscribed emails for each list owned by each of your accounts
 
-		Required keyword arguments:
+        Required keyword arguments:
 
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        Returns struct - A struct of clientIds each with a value struct of listId => count
+        '''
 
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		Returns struct - A struct of clientIds each with a value struct of listId => count
-		'''
-	
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        args = {
+            'key': self.key,
+            'method': 'Admin_Get_Accounts_List_Count',
+        }
 
-		args = {
-			'key': self.key,
-			'method': 'Admin_Get_Accounts_List_Count',
-		}
+        data = self.makeCall(args)
+        return data
 
-		data = self.makeCall(args)
-		return data
+    def Admin_Get_Account_Key(self, clientId, optionalParameters=None, **kwargs):
+        '''
+        Get an API key for one of your accounts
 
+        Required keyword arguments:
 
-	def Admin_Get_Account_Key(self, clientId, optionalParameters=None, **kwargs):
-		'''
-		Get an API key for one of your accounts
+        clientId (int) - The account ID number for which you want the API key
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		Required keyword arguments:
+        Optional keyword arguments:
 
-		clientId (int) - The account ID number for which you want the API key
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        userName (string) - The username for which you would like the API key
 
-		Optional keyword arguments:
+        Returns string - API Key
+        '''
 
-		userName (string) - The username for which you would like the API key
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		Returns string - API Key
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		args = {
-			'key': self.key,
-			'method': 'Admin_Get_Account_Key',
-			'clientId': clientId,
-			'optionalParameters': optionalParameters,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Admin_Get_Account_Key',
+            'clientId': clientId,
+            'optionalParameters': optionalParameters,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def Admin_Send_Message(self, clientIds, shortMessage, optionalParameters=None, **kwargs):
+        '''
+        Send an Alert Message to a set of your clients
 
-	def Admin_Send_Message(self, clientIds, shortMessage, optionalParameters=None, **kwargs):
-		'''
-		Send an Alert Message to a set of your clients
+        Required keyword arguments:
 
-		Required keyword arguments:
+        clientIds (array) - An list of Client IDs who will receive the message
+        shortMessage (string) - A short message, up to 255 characters
+        optionalParameters (dict) - Deprecated- use keyword arguments instead
 
-		clientIds (array) - An list of Client IDs who will receive the message
-		shortMessage (string) - A short message, up to 255 characters
-		optionalParameters (dict) - Deprecated- use keyword arguments instead
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        fullMessage (string) -
+        url (string) -
+        priority (int) -
+        startDate (string) -
+        expiresDate (string) -
+        messageId (string) -
 
-		fullMessage (string) - 
-		url (string) - 
-		priority (int) - 
-		startDate (string) - 
-		expiresDate (string) - 
-		messageId (string) - 
+        Returns  -
+        '''
 
-		Returns  - 
-		'''
-	
-		if optionalParameters is None:
-			optionalParameters = {}
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        if optionalParameters is None:
+            optionalParameters = {}
 
-		args = {
-			'key': self.key,
-			'method': 'Admin_Send_Message',
-			'clientIds': clientIds,
-			'shortMessage': shortMessage,
-			'optionalParameters': optionalParameters,
-		}
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'Admin_Send_Message',
+            'clientIds': clientIds,
+            'shortMessage': shortMessage,
+            'optionalParameters': optionalParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Admin_Get_Account_Webhooks(self, clientId):
-		'''
-		Get the current Webhooks settings for the specified Account
+    def Admin_Get_Account_Webhooks(self, clientId):
+        '''
+        Get the current Webhooks settings for the specified Account
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		clientId (int) - The client ID number you want to modify
+        clientId (int) - The client ID number you want to modify
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
+        Returns struct - A struct of Webhook data
+        '''
 
-		Returns struct - A struct of Webhook data
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Get_Account_Webhooks',
-			'clientId': clientId,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Admin_Get_Account_Webhooks',
+            'clientId': clientId,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def Admin_Set_Account_Webhooks(self, clientId, url, webhooksKey, hooks, locations, customFieldIds=None, optionalParameters=None, **kwargs):
+        '''
+        Admin_Set_Account_Webhooks allows you to set the Webhooks information for the specified Account
 
-	def Admin_Set_Account_Webhooks(self, clientId, url, webhooksKey, hooks, locations, customFieldIds=None, optionalParameters=None, **kwargs):
-		'''
-		Admin_Set_Account_Webhooks allows you to set the Webhooks information for the specified Account
+        Required keyword arguments:
 
-		Required keyword arguments:
+        clientId (int) - The client ID number you want to modify
+        url (string) - The URL to receive the Webhook
+        webhooksKey (string) - webhookKey The Webhook Key passed along with the data to verify the origin, this is important for security
+        hooks (array) - An list of events you would like to receive Webfor. Valid values are: WEBHOOK_SUBSCRIBE, WEBHOOK_UNSUBSCRIBE, WEBHOOK_GLOBAL_UNSUBSCRIBE, WEBHOOK_PROFILE_UPDATE, WEBHOOK_BOUNCED, WEBHOOK_EMAIL_CHANGED, WEBHOOK_CAMPAIGN_OPENED, WEBHOOK_CAMPAIGN_CLICKED, WEBHOOK_CAMPAIGN_SENDING_STARTED, WEBHOOK_CAMPAIGN_SENT, WEBHOOK_CAMPAIGN_SENT_TO_ADDITIONAL_RECIPIENT, WEBHOOK_REACTIVATED, WEBHOOK_LIST_CREATED, WEBHOOK_LIST_DELETED, WEBHOOK_LIST_CHANGED
+        locations (array) - An list of Locations a particular Hook can be fired from. Valid values are: ContactDirect, Webapp, WebappBulk, System, API
+        customFieldIds (array) - An list of Custom Field IDs (See: Custom_Field_Get_All) - if specified, the values of the specified fields will be included in the data payload for any Webhook sending contact data
+        optionalParameters (array) - Deprecated- use keyword arguments instead
 
-		clientId (int) - The client ID number you want to modify
-		url (string) - The URL to receive the Webhook
-		webhooksKey (string) - webhookKey The Webhook Key passed along with the data to verify the origin, this is important for security
-		hooks (array) - An list of events you would like to receive Webfor. Valid values are: WEBHOOK_SUBSCRIBE, WEBHOOK_UNSUBSCRIBE, WEBHOOK_GLOBAL_UNSUBSCRIBE, WEBHOOK_PROFILE_UPDATE, WEBHOOK_BOUNCED, WEBHOOK_EMAIL_CHANGED, WEBHOOK_CAMPAIGN_OPENED, WEBHOOK_CAMPAIGN_CLICKED, WEBHOOK_CAMPAIGN_SENDING_STARTED, WEBHOOK_CAMPAIGN_SENT, WEBHOOK_CAMPAIGN_SENT_TO_ADDITIONAL_RECIPIENT, WEBHOOK_REACTIVATED, WEBHOOK_LIST_CREATED, WEBHOOK_LIST_DELETED, WEBHOOK_LIST_CHANGED
-		locations (array) - An list of Locations a particular Hook can be fired from. Valid values are: ContactDirect, Webapp, WebappBulk, System, API
-		customFieldIds (array) - An list of Custom Field IDs (See: Custom_Field_Get_All) - if specified, the values of the specified fields will be included in the data payload for any Webhook sending contact data
-		optionalParameters (array) - Deprecated- use keyword arguments instead
+        Optional keyword arguments:
 
-		Optional keyword arguments:
+        bulk (bool) - Set to true to enable bulk webhooks rollup
+        bulkThreshold (int) - The maximum number of hooks to be included in a single payload, valid values 50 to 10000
+        bulkJSON (bool) - Send hooks as a single JSON dict rather than a newline delimited collection of JSON dicts
+        bulkReport (bool) - Save reports for 7 days in case a hook is missed (retrieve with Report_Get_Bulk_Webhooks)
 
-		bulk (bool) - Set to true to enable bulk webhooks rollup
-		bulkThreshold (int) - The maximum number of hooks to be included in a single payload, valid values 50 to 10000
-		bulkJSON (bool) - Send hooks as a single JSON dict rather than a newline delimited collection of JSON dicts
-		bulkReport (bool) - Save reports for 7 days in case a hook is missed (retrieve with Report_Get_Bulk_Webhooks)
+        Returns struct - A struct of Webhook data
+        '''
 
-		Returns struct - A struct of Webhook data
-		'''
-	
-		if customFieldIds is None:
-			customFieldIds = []
-		if optionalParameters is None:
-			optionalParameters = []
-	
-		for k,v in kwargs.iteritems():
-			optionalParameters[k] = v
+        if customFieldIds is None:
+            customFieldIds = []
+        if optionalParameters is None:
+            optionalParameters = []
 
-		args = {
-			'key': self.key,
-			'method': 'Admin_Set_Account_Webhooks',
-			'clientId': clientId,
-			'url': url,
-			'webhooksKey': webhooksKey,
-			'hooks': hooks,
-			'locations': locations,
-			'customFieldIds': customFieldIds,
-			'optionalParameters': optionalParameters,
-		}
+        for k, v in kwargs.iteritems():
+            optionalParameters[k] = v
 
-		data = self.makeCall(args)
-		return data
+        args = {
+            'key': self.key,
+            'method': 'Admin_Set_Account_Webhooks',
+            'clientId': clientId,
+            'url': url,
+            'webhooksKey': webhooksKey,
+            'hooks': hooks,
+            'locations': locations,
+            'customFieldIds': customFieldIds,
+            'optionalParameters': optionalParameters,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-	def Admin_Deactivate_Account_Webhooks(self, clientId):
-		'''
-		Deactivate all Webhooks for an account
+    def Admin_Deactivate_Account_Webhooks(self, clientId):
+        '''
+        Deactivate all Webhooks for an account
 
-		Required keyword arguments:
+        Required keyword arguments:
 
-		clientId (int) - The client ID number you want to modify
+        clientId (int) - The client ID number you want to modify
 
-		Optional keyword arguments:
+        Optional keyword arguments:
 
+        Returns bool - True on success
+        '''
 
-		Returns bool - True on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Deactivate_Account_Webhooks',
-			'clientId': clientId,
-		}
+        args = {
+            'key': self.key,
+            'method': 'Admin_Deactivate_Account_Webhooks',
+            'clientId': clientId,
+        }
 
-		data = self.makeCall(args)
-		return data
+        data = self.makeCall(args)
+        return data
 
+    def Admin_Get_Purchase_Orders(self):
+        '''
+        Get Purchase Order data for an account
 
-	def Admin_Get_Purchase_Orders(self):
-		'''
-		Get Purchase Order data for an account
+        Required keyword arguments:
 
-		Required keyword arguments:
+        Optional keyword arguments:
 
+        purchaseOrderId (int) - Purchase order id
+        resellerIds (dict) - A dict of reseller ID numbers
+        clientIds (dict) - A dict of client ID numbers
+        minDate (string) - Find purchase orders created on or after minDate. Format as UTC.
+        maxDate (string) - Find purchase orders created on or before maxDate. Format as UTC.
+        paymentType (dict) - The type of payment, valid values: invoice, credit_card, automated_credit_card, unknown
+        product (dict) - The type of product, valid values: block_sends, contact_quota, unlimited, unknown, inbox_analysis
+        addOns (dict) - Add-ons changed, valid values: video_mail, surveys, branded, users, diskspace
+        purchaseOrderStatus (string) - Purchase order status, valid values: none, ok, failed, manual
+        invoiceId (int) - Invoice id
 
-		Optional keyword arguments:
+        Returns struct - A struct of purchase order data
+        '''
 
-		purchaseOrderId (int) - Purchase order id
-		resellerIds (dict) - A dict of reseller ID numbers
-		clientIds (dict) - A dict of client ID numbers
-		minDate (string) - Find purchase orders created on or after minDate. Format as UTC.
-		maxDate (string) - Find purchase orders created on or before maxDate. Format as UTC.
-		paymentType (dict) - The type of payment, valid values: invoice, credit_card, automated_credit_card, unknown
-		product (dict) - The type of product, valid values: block_sends, contact_quota, unlimited, unknown, inbox_analysis
-		addOns (dict) - Add-ons changed, valid values: video_mail, surveys, branded, users, diskspace
-		purchaseOrderStatus (string) - Purchase order status, valid values: none, ok, failed, manual
-		invoiceId (int) - Invoice id
+        args = {
+            'key': self.key,
+            'method': 'Admin_Get_Purchase_Orders',
+        }
 
-		Returns struct - A struct of purchase order data
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Get_Purchase_Orders',
-		}
+        data = self.makeCall(args)
+        return data
 
-		data = self.makeCall(args)
-		return data
+    def Admin_Get_Inbox_Analysis_Remaining(self, clientId):
+        '''
+        Get the number of Inbox Analysis Tests remaining for the specified Account
 
+        Required keyword arguments:
 
-	def Admin_Get_Inbox_Analysis_Remaining(self, clientId):
-		'''
-		Get the number of Inbox Analysis Tests remaining for the specified Account
+        clientId (int) - The client ID number for which you want the number of remaining tests
 
-		Required keyword arguments:
+        Optional keyword arguments:
 
-		clientId (int) - The client ID number for which you want the number of remaining tests
+        Returns int - The number of Inbox Analysis tests available for use by the specified Account
+        '''
 
-		Optional keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Admin_Get_Inbox_Analysis_Remaining',
+            'clientId': clientId,
+        }
 
+        data = self.makeCall(args)
+        return data
 
-		Returns int - The number of Inbox Analysis tests available for use by the specified Account
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Get_Inbox_Analysis_Remaining',
-			'clientId': clientId,
-		}
+    def Admin_Get_Inbox_Analysis_Tests(self, clientId):
+        '''
+        Find Inbox Analysis Tests used
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        clientId (int) - The client ID number for which you want the number of remaining tests
 
-	def Admin_Get_Inbox_Analysis_Tests(self, clientId):
-		'''
-		Find Inbox Analysis Tests used
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        minDate (string) - Find inbox analysis tests run on or after minDate. Format as UTC.
+        maxDate (string) - Find inbox analysis tests run on or before maxDate. Format as UTC.
 
-		clientId (int) - The client ID number for which you want the number of remaining tests
+        Returns struct - The Inbox Analysis tests used
+        '''
 
-		Optional keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Admin_Get_Inbox_Analysis_Tests',
+            'clientId': clientId,
+        }
 
-		minDate (string) - Find inbox analysis tests run on or after minDate. Format as UTC.
-		maxDate (string) - Find inbox analysis tests run on or before maxDate. Format as UTC.
+        data = self.makeCall(args)
+        return data
 
-		Returns struct - The Inbox Analysis tests used
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Get_Inbox_Analysis_Tests',
-			'clientId': clientId,
-		}
+    def Admin_Purchase_Inbox_Analysis_Tests(self, clientId, numTests):
+        '''
+        Purchase additional Inbox Analysis Tests for your the specified Account
 
-		data = self.makeCall(args)
-		return data
+        Required keyword arguments:
 
+        clientId (int) - The client ID number for which you are purchasing tests
+        numTests (int) - The number of tests you are ordering to be added to the specified Account
 
-	def Admin_Purchase_Inbox_Analysis_Tests(self, clientId, numTests):
-		'''
-		Purchase additional Inbox Analysis Tests for your the specified Account
+        Optional keyword arguments:
 
-		Required keyword arguments:
+        Returns bool - True on success
+        '''
 
-		clientId (int) - The client ID number for which you are purchasing tests
-		numTests (int) - The number of tests you are ordering to be added to the specified Account
+        args = {
+            'key': self.key,
+            'method': 'Admin_Purchase_Inbox_Analysis_Tests',
+            'clientId': clientId,
+            'numTests': numTests,
+        }
 
-		Optional keyword arguments:
+        data = self.makeCall(args)
+        return data
 
+    def Admin_Find_Campaigns(self):
+        '''
+        Get Campaign data for an account
 
-		Returns bool - True on success
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Purchase_Inbox_Analysis_Tests',
-			'clientId': clientId,
-			'numTests': numTests,
-		}
+        Required keyword arguments:
 
-		data = self.makeCall(args)
-		return data
+        Optional keyword arguments:
 
+        resellerIds (dict) - A dict of reseller ID numbers
+        clientIds (dict) - A dict of client ID numbers
+        campaignIds (dict) - A dict of campaign ID numbers
+        trials (bool) - Return trial accounts; defaults to true.
+        minCreationDate (string) - Find clients who were created after this date
+        maxCreationDate (string) - Find clients who were created before this date
+        minPurchaseDate (string) - Find clients who upgraded after this date
+        maxPurchaseDate (string) - Find clients who upgraded before this date
+        minDate (string) - Find campaigns sent on or after minDate. Denoted in UTC.
+        maxDate (string) - Find campaigns sent on or before maxDate. Denoted in UTC.
+        minTime (string) - Find campaigns send on or after this time of day. Denoted in UTC.
+        maxTime (string) - Find campaigns send on or before this time of day. Denoted in UTC.
+        campaignType (dict) - The type of campaign, valid values: standard, recurring_parent, recurring_child, transactional
+        minNumSent (int) - Total number sent
+        maxNumSent (int) - Total number sent
+        minSpamRate (float) - Spam rate percentage (e.g. 1% would be 0.01)
+        maxSpamRate (float) - Spam rate percentage (e.g. 1% would be 0.01)
+        minOpenRate (float) - Open rate percentage (e.g. 1% would be 0.01)
+        maxOpenRate (float) - Open rate percentage (e.g. 1% would be 0.01)
+        minBounceRate (float) - Bounce rate percentage (e.g. 1% would be 0.01)
+        maxBounceRate (float) - Bounce rate percentage (e.g. 1% would be 0.01)
+        minClickRate (float) - Click rate percentage (e.g. 1% would be 0.01)
+        maxClickRate (float) - Click rate percentage (e.g. 1% would be 0.01)
+        minUnsubRate (float) - Unusubscribe rate percentage (e.g. 1% would be 0.01)
+        maxUnsubRate (float) - Unsubscribe rate percentage (e.g. 1% would be 0.01)
+        sendConfigId (int) - Send confguration ID
+        sendingDisabled (string) - Clients with sending disabled. May be one of ['any', 'yes', 'no'].
+        content (bool) - Retreive the content of the campaign, defaults to true
 
-	def Admin_Find_Campaigns(self):
-		'''
-		Get Campaign data for an account
+        Returns struct - A struct of Campaign data
+        '''
 
-		Required keyword arguments:
+        args = {
+            'key': self.key,
+            'method': 'Admin_Find_Campaigns',
+        }
 
-
-		Optional keyword arguments:
-
-		resellerIds (dict) - A dict of reseller ID numbers
-		clientIds (dict) - A dict of client ID numbers
-		campaignIds (dict) - A dict of campaign ID numbers
-		trials (bool) - Return trial accounts; defaults to true.
-		minCreationDate (string) - Find clients who were created after this date
-		maxCreationDate (string) - Find clients who were created before this date
-		minPurchaseDate (string) - Find clients who upgraded after this date
-		maxPurchaseDate (string) - Find clients who upgraded before this date
-		minDate (string) - Find campaigns sent on or after minDate. Denoted in UTC.
-		maxDate (string) - Find campaigns sent on or before maxDate. Denoted in UTC.
-		minTime (string) - Find campaigns send on or after this time of day. Denoted in UTC.
-		maxTime (string) - Find campaigns send on or before this time of day. Denoted in UTC.
-		campaignType (dict) - The type of campaign, valid values: standard, recurring_parent, recurring_child, transactional
-		minNumSent (int) - Total number sent
-		maxNumSent (int) - Total number sent
-		minSpamRate (float) - Spam rate percentage (e.g. 1% would be 0.01)
-		maxSpamRate (float) - Spam rate percentage (e.g. 1% would be 0.01)
-		minOpenRate (float) - Open rate percentage (e.g. 1% would be 0.01)
-		maxOpenRate (float) - Open rate percentage (e.g. 1% would be 0.01)
-		minBounceRate (float) - Bounce rate percentage (e.g. 1% would be 0.01)
-		maxBounceRate (float) - Bounce rate percentage (e.g. 1% would be 0.01)
-		minClickRate (float) - Click rate percentage (e.g. 1% would be 0.01)
-		maxClickRate (float) - Click rate percentage (e.g. 1% would be 0.01)
-		minUnsubRate (float) - Unusubscribe rate percentage (e.g. 1% would be 0.01)
-		maxUnsubRate (float) - Unsubscribe rate percentage (e.g. 1% would be 0.01)
-		sendConfigId (int) - Send confguration ID
-		sendingDisabled (string) - Clients with sending disabled. May be one of ['any', 'yes', 'no'].
-		content (bool) - Retreive the content of the campaign, defaults to true
-
-		Returns struct - A struct of Campaign data
-		'''
-	
-	
-		args = {
-			'key': self.key,
-			'method': 'Admin_Find_Campaigns',
-		}
-
-		data = self.makeCall(args)
-		return data
-
-
-
+        data = self.makeCall(args)
+        return data
