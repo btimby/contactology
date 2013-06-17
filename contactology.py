@@ -3,6 +3,7 @@
 import httplib
 try:
     import simplejson as json
+    json  # Make pyflakes happy!
 except ImportError:
     import json
 from urllib import quote
@@ -349,9 +350,6 @@ class Contactology:
         Returns int - Returns the number of active contacts for your account
         '''
 
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Contact_Get_Active_Count',
@@ -373,9 +371,6 @@ class Contactology:
         Returns array - Returns an array containing the email addresses of
         active contacts
         '''
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
 
         args = {
             'key': self.key,
@@ -907,9 +902,6 @@ class Contactology:
         any list
         '''
 
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Contact_Get_No_Subscriptions',
@@ -935,9 +927,6 @@ class Contactology:
         have not opened or clicked
         '''
 
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Contact_Get_No_Activity',
@@ -961,9 +950,6 @@ class Contactology:
 
         Returns int - The number of contacts that were deleted
         '''
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
 
         args = {
             'key': self.key,
@@ -2490,9 +2476,6 @@ class Contactology:
         name
         '''
 
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Group_List',
@@ -2670,16 +2653,11 @@ class Contactology:
 
         Required keyword arguments:
 
-
         Optional keyword arguments:
-
 
         Returns struct - Struct of records with the key of searchId and value
         of name
         '''
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
 
         args = {
             'key': self.key,
@@ -5648,9 +5626,6 @@ class Contactology:
         space
         '''
 
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Account_Get_Hosted_Content_Info',
@@ -5670,9 +5645,6 @@ class Contactology:
 
         Returns int - The number of sends remaining
         '''
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
 
         args = {
             'key': self.key,
@@ -6350,9 +6322,6 @@ class Contactology_Reseller(Contactology):
         clientName, clientId : clientName }
         '''
 
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Admin_Get_Accounts',
@@ -6956,9 +6925,6 @@ class Contactology_Reseller(Contactology):
         Returns struct - A struct of clientIds each with a value struct of
         listId => count
         '''
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
 
         args = {
             'key': self.key,
