@@ -1,12 +1,25 @@
 #!/usr/bin/env python
 
 import httplib
+
+from urllib import quote
+from functools import wraps
+
 try:
     import simplejson as json
     json  # Make pyflakes happy!
 except ImportError:
     import json
-from urllib import quote
+
+
+def optional(f):
+    "Decorator that merges kwargs into optionalParameters keyword argument."
+    @wraps(f)
+    def merge_params(*args, **kwargs):
+        op = kwargs.pop('optionalParameters', {})
+        op.update(kwargs)
+        kwargs['optionalParameters'] = op
+        return f(*args, **kwargs)
 
 
 class Contactology:
@@ -101,7 +114,8 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def Contact_Add_Email(self, email, optionalParameters=None, **kwargs):
+    @optional
+    def Contact_Add_Email(self, email, **kwargs):
         '''
         Add a single email address - does not support Custom Fields
 
@@ -117,25 +131,18 @@ class Contactology:
 
         Returns bool - Returns true on success
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Contact_Add_Email',
             'email': email,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Contact_Add(self, email, customFields, optionalParameters=None,
-                    **kwargs):
+    @optional
+    def Contact_Add(self, email, customFields, **kwargs):
         '''
         Add a contact with custom fields
 
@@ -156,26 +163,19 @@ class Contactology:
 
         Returns bool - Returns true on success
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Contact_Add',
             'email': email,
             'customFields': customFields,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Contact_Add_Email_Multiple(self, emails, optionalParameters=None,
-                                   **kwargs):
+    @optional
+    def Contact_Add_Email_Multiple(self, emails, **kwargs):
         '''
         Add multiple email addresses - does not support Custom Fields
 
@@ -192,25 +192,18 @@ class Contactology:
         Returns struct - Returns a list of email addresses, each marked "true"
             or "false" showing whether they were suppressed
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Contact_Add_Email_Multiple',
             'emails': emails,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Contact_Add_Multiple(self, contacts, optionalParameters=None,
-                             **kwargs):
+    @optional
+    def Contact_Add_Multiple(self, contacts, **kwargs):
         '''
         Add multiple contacts with Custom Fields
 
@@ -228,25 +221,18 @@ class Contactology:
 
         Returns struct - Aggregate import results
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Contact_Add_Multiple',
             'contacts': contacts,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Contact_Import(self, contacts, source, optionalParameters=None,
-                       **kwargs):
+    @optional
+    def Contact_Import(self, contacts, source, **kwargs):
         '''
         Import a collection of contacts. Can import up to 1000 contacts with
             a single call.
@@ -268,26 +254,20 @@ class Contactology:
 
         Returns struct - Aggregate import results
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Contact_Import',
             'contacts': contacts,
             'source': source,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def Contact_Import_Delayed(self, contacts, source, callbackUrl, jobId,
-                               chunkNum, optionalParameters=None, **kwargs):
+                               chunkNum, **kwargs):
         '''
         Import a collection of contacts into a set of lists and groups
         asynchronously
@@ -316,13 +296,6 @@ class Contactology:
 
         Returns bool -
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Contact_Import_Delayed',
@@ -331,7 +304,7 @@ class Contactology:
             'callbackUrl': callbackUrl,
             'jobId': jobId,
             'chunkNum': chunkNum,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -343,9 +316,7 @@ class Contactology:
 
         Required keyword arguments:
 
-
         Optional keyword arguments:
-
 
         Returns int - Returns the number of active contacts for your account
         '''
@@ -364,14 +335,11 @@ class Contactology:
 
         Required keyword arguments:
 
-
         Optional keyword arguments:
-
 
         Returns array - Returns an array containing the email addresses of
         active contacts
         '''
-
         args = {
             'key': self.key,
             'method': 'Contact_Get_Active',
@@ -380,7 +348,8 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def Contact_Get(self, email, optionalParameters=None, **kwargs):
+    @optional
+    def Contact_Get(self, email, **kwargs):
         '''
         Get information on a single contact
 
@@ -401,24 +370,18 @@ class Contactology:
         Returns struct - Returns a struct of structs, keyed off of email
         address, each containing the keys specified above
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Contact_Get',
             'email': email,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Contact_Find(self, optionalParameters=None, **kwargs):
+    @optional
+    def Contact_Find(self, **kwargs):
         '''
         Get a list of contacts
 
@@ -453,23 +416,17 @@ class Contactology:
         Returns struct - Returns a struct of structs, keyed off of email
         address, each containing the keys specified above
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Contact_Find',
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Contact_Get_Count(self, optionalParameters=None, **kwargs):
+    @optional
+    def Contact_Get_Count(self, **kwargs):
         '''
         Find count for a set of Contacts
 
@@ -494,23 +451,17 @@ class Contactology:
 
         Returns int - Number of contacts
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Contact_Get_Count',
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Contact_Find_Ids(self, optionalParameters=None, **kwargs):
+    @optional
+    def Contact_Find_Ids(self, **kwargs):
         '''
         Find a set of Contacts and return just the record IDs
 
@@ -535,24 +486,17 @@ class Contactology:
 
         Returns array - Contact Ids
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Contact_Find_Ids',
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Contact_Update(self, email, customFields, optionalParameters=None,
-                       **kwargs):
+    @optional
+    def Contact_Update(self, email, customFields, **kwargs):
         '''
         Update the custom fields of an existing contact
 
@@ -570,19 +514,12 @@ class Contactology:
 
         Returns bool - Returns true on success
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Contact_Update',
             'email': email,
             'customFields': customFields,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -603,7 +540,6 @@ class Contactology:
         Returns struct - Returns a struct of structs, keyed off of email
         address, each containing the keys specified below
         '''
-
         args = {
             'key': self.key,
             'method': 'Contact_Change_Email',
@@ -624,10 +560,8 @@ class Contactology:
 
         Optional keyword arguments:
 
-
         Returns bool - Returns true on success
         '''
-
         args = {
             'key': self.key,
             'method': 'Contact_Activate',
@@ -647,10 +581,8 @@ class Contactology:
 
         Optional keyword arguments:
 
-
         Returns bool - True if delete was successful
         '''
-
         args = {
             'key': self.key,
             'method': 'Contact_Delete',
@@ -660,7 +592,8 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def Contact_Suppress(self, email, optionalParameters=None, **kwargs):
+    @optional
+    def Contact_Suppress(self, email, **kwargs):
         '''
         Suppress a contact
 
@@ -676,25 +609,18 @@ class Contactology:
         Returns bool - Returns true or false indicating whether the contact
         was suppressed
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Contact_Suppress',
             'email': email,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Contact_Suppress_Multiple(self, emails, optionalParameters=None,
-                                  **kwargs):
+    @optional
+    def Contact_Suppress_Multiple(self, emails, **kwargs):
         '''
         Suppress multiple contacts
 
@@ -710,18 +636,11 @@ class Contactology:
         Returns struct - Returns a list of email addresses, each marked "true"
         or "false" showing whether they were suppressed
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Contact_Suppress_Multiple',
             'emails': emails,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -750,7 +669,8 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def Contact_Get_History(self, email, optionalParameters=None, **kwargs):
+    @optional
+    def Contact_Get_History(self, email, **kwargs):
         '''
         Get the history for a contact
 
@@ -770,24 +690,18 @@ class Contactology:
 
         Returns struct - Returns a struct of history information
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Contact_Get_History',
             'email': email,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Contact_Get_History_Multiple(self, optionalParameters=None, **kwargs):
+    @optional
+    def Contact_Get_History_Multiple(self, **kwargs):
         '''
         Get the history for a set of contacts
 
@@ -811,17 +725,10 @@ class Contactology:
 
         Returns struct - Returns a struct of history information
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Contact_Get_History_Multiple',
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -850,11 +757,11 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def Contact_Set_Subscriptions(self, email, listIds,
-                                  optionalParameters=None, **kwargs):
+    @optional
+    def Contact_Set_Subscriptions(self, email, listIds, **kwargs):
         '''
         Unsubscribe a contact from all lists, then subscribe the contact to the
-  specified lists.
+        specified lists.
 
         Required keyword arguments:
 
@@ -872,19 +779,12 @@ class Contactology:
         Returns array - An array of all the lists the contact is subscribed to
         after the operation, should have the same values as listIds
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Contact_Set_Subscriptions',
             'email': email,
             'listIds': listIds,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -1000,8 +900,9 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
+    @optional
     def CustomField_Add_Textbox(self, fieldName, required, subscriberCanEdit,
-                                optionalParameters=None, **kwargs):
+                                **kwargs):
         '''
         Add a Textbox CustomField to your signup form
 
@@ -1023,27 +924,21 @@ class Contactology:
         Returns struct - Returns a struct containing the new CustomFields
         fieldId and token
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'CustomField_Add_Textbox',
             'fieldName': fieldName,
             'required': required,
             'subscriberCanEdit': subscriberCanEdit,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def CustomField_Add_Decimal(self, fieldName, required, subscriberCanEdit,
-                                optionalParameters=None, **kwargs):
+                                **kwargs):
         '''
         Add a Decimal CustomField to your signup form
 
@@ -1065,27 +960,21 @@ class Contactology:
         Returns struct - Returns a struct containing the new CustomFields
         fieldId and token
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'CustomField_Add_Decimal',
             'fieldName': fieldName,
             'required': required,
             'subscriberCanEdit': subscriberCanEdit,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def CustomField_Add_Integer(self, fieldName, required, subscriberCanEdit,
-                                optionalParameters=None, **kwargs):
+                                **kwargs):
         '''
         Add an Integer CustomField to your signup form
 
@@ -1107,27 +996,21 @@ class Contactology:
         Returns struct - Returns a struct containing the new CustomFields
         fieldId and token
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'CustomField_Add_Integer',
             'fieldName': fieldName,
             'required': required,
             'subscriberCanEdit': subscriberCanEdit,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def CustomField_Add_Dropdown(self, fieldName, required, subscriberCanEdit,
-                                 options, optionalParameters=None, **kwargs):
+                                 options, **kwargs):
         '''
         Add a Dropdown CustomField to your signup form
 
@@ -1151,13 +1034,6 @@ class Contactology:
         Returns struct - Returns a struct containing the new CustomFields
         fieldId and token
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'CustomField_Add_Dropdown',
@@ -1165,14 +1041,15 @@ class Contactology:
             'required': required,
             'subscriberCanEdit': subscriberCanEdit,
             'options': options,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def CustomField_Add_Radio(self, fieldName, required, subscriberCanEdit,
-                              options, optionalParameters=None, **kwargs):
+                              options, **kwargs):
         '''
         Add a Radio CustomField to your signup form
 
@@ -1197,13 +1074,6 @@ class Contactology:
         Returns struct - Returns a struct containing the new CustomFields
         fieldId and token
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'CustomField_Add_Radio',
@@ -1211,14 +1081,15 @@ class Contactology:
             'required': required,
             'subscriberCanEdit': subscriberCanEdit,
             'options': options,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def CustomField_Add_Checkbox(self, fieldName, required, subscriberCanEdit,
-                                 optionalParameters=None, **kwargs):
+                                 **kwargs):
         '''
         Add a single Checkbox CustomField to your signup form
 
@@ -1240,28 +1111,21 @@ class Contactology:
         Returns struct - Returns a struct containing the new CustomFields
         fieldId and token
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'CustomField_Add_Checkbox',
             'fieldName': fieldName,
             'required': required,
             'subscriberCanEdit': subscriberCanEdit,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def CustomField_Add_CheckboxList(self, fieldName, required,
-                                     subscriberCanEdit, options,
-                                     optionalParameters=None, **kwargs):
+                                     subscriberCanEdit, options, **kwargs):
         '''
         Add a CheckboxList CustomField to your signup form
 
@@ -1286,13 +1150,6 @@ class Contactology:
         Returns struct - Returns a struct containing the new CustomFields
         fieldId and token
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'CustomField_Add_CheckboxList',
@@ -1300,14 +1157,15 @@ class Contactology:
             'required': required,
             'subscriberCanEdit': subscriberCanEdit,
             'options': options,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def CustomField_Add_Date(self, fieldName, required, subscriberCanEdit,
-                             optionalParameters=None, **kwargs):
+                             **kwargs):
         '''
         Add a Date CustomField to your signup form
 
@@ -1329,27 +1187,21 @@ class Contactology:
         Returns struct - Returns a struct containing the new CustomFields
         fieldId and token
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'CustomField_Add_Date',
             'fieldName': fieldName,
             'required': required,
             'subscriberCanEdit': subscriberCanEdit,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def CustomField_Add_Email(self, fieldName, required, subscriberCanEdit,
-                              optionalParameters=None, **kwargs):
+                              **kwargs):
         '''
         Add an Email CustomField to your signup form
 
@@ -1371,27 +1223,21 @@ class Contactology:
         Returns struct - Returns a struct containing the new CustomFields
         fieldId and token
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'CustomField_Add_Email',
             'fieldName': fieldName,
             'required': required,
             'subscriberCanEdit': subscriberCanEdit,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def CustomField_Add_Phone(self, fieldName, required, subscriberCanEdit,
-                              optionalParameters=None, **kwargs):
+                              **kwargs):
         '''
         Add a Phone CustomField to your signup form
 
@@ -1413,28 +1259,21 @@ class Contactology:
         Returns struct - Returns a struct containing the new CustomFields
         fieldId and token
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'CustomField_Add_Phone',
             'fieldName': fieldName,
             'required': required,
             'subscriberCanEdit': subscriberCanEdit,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def CustomField_Add_StateDropdown(self, fieldName, required,
-                                      subscriberCanEdit,
-                                      optionalParameters=None, **kwargs):
+                                      subscriberCanEdit, **kwargs):
         '''
         Add a StateDropdown CustomField to your signup form
 
@@ -1457,27 +1296,21 @@ class Contactology:
         Returns struct - Returns a struct containing the new CustomFields
         fieldId and token
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'CustomField_Add_StateDropdown',
             'fieldName': fieldName,
             'required': required,
             'subscriberCanEdit': subscriberCanEdit,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def CustomField_Add_Address(self, fieldName, required, subscriberCanEdit,
-                                optionalParameters=None, **kwargs):
+                                **kwargs):
         '''
         Add an Address CustomField to your signup form
 
@@ -1499,20 +1332,13 @@ class Contactology:
         Returns struct - Returns a struct containing the new CustomFields
         fieldId and token
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'CustomField_Add_Address',
             'fieldName': fieldName,
             'required': required,
             'subscriberCanEdit': subscriberCanEdit,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -1635,7 +1461,8 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def List_Add_Test(self, name, optionalParameters=None, **kwargs):
+    @optional
+    def List_Add_Test(self, name, **kwargs):
         '''
         Create a new test contact list
 
@@ -1656,24 +1483,18 @@ class Contactology:
 
         Returns int - id Returns the List ID of your new List
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'List_Add_Test',
             'name': name,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def List_Add_Internal(self, name, optionalParameters=None, **kwargs):
+    @optional
+    def List_Add_Internal(self, name, **kwargs):
         '''
         Create a new internal contact list
 
@@ -1694,24 +1515,18 @@ class Contactology:
 
         Returns int - id Returns the List ID of your new List
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'List_Add_Internal',
             'name': name,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def List_Add_Private(self, name, optionalParameters=None, **kwargs):
+    @optional
+    def List_Add_Private(self, name, **kwargs):
         '''
         Create a new private contact list
 
@@ -1744,24 +1559,18 @@ class Contactology:
 
         Returns int - id Returns the List ID of your new List
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'List_Add_Private',
             'name': name,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def List_Add_Public(self, name, optionalParameters=None, **kwargs):
+    @optional
+    def List_Add_Public(self, name, **kwargs):
         '''
         Create a new public contact list
 
@@ -1794,18 +1603,11 @@ class Contactology:
 
         Returns int - id Returns the List ID of your new List
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'List_Add_Public',
             'name': name,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -1833,8 +1635,8 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def List_Subscribe(self, listId, email, optionalParameters=None,
-                       **kwargs):
+    @optional
+    def List_Subscribe(self, listId, email, **kwargs):
         '''
         Add an email address contact to an existing list
 
@@ -1865,7 +1667,7 @@ class Contactology:
             'method': 'List_Subscribe',
             'listId': listId,
             'email': email,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -1890,19 +1692,12 @@ class Contactology:
 
         Returns bool - True on success
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'List_Unsubscribe',
             'listId': listId,
             'email': email,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -1933,7 +1728,8 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def List_Get_Contacts(self, listId, optionalParameters=None, **kwargs):
+    @optional
+    def List_Get_Contacts(self, listId, **kwargs):
         '''
         Retrieve a list of contacts in a given list
 
@@ -1962,24 +1758,18 @@ class Contactology:
         Returns struct - Struct of records each with a key of email and values
         of contactId, email, source, status, statusCode and listStatus
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'List_Get_Contacts',
             'listId': listId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def List_Get_Active_Lists(self, optionalParameters=None, **kwargs):
+    @optional
+    def List_Get_Active_Lists(self, **kwargs):
         '''
         Get a listing of currently active lists
 
@@ -2000,17 +1790,10 @@ class Contactology:
         Returns struct - Array of records with the key of listId and values of
         listId, name, description, type and listOwnerEmail
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'List_Get_Active_Lists',
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -2040,8 +1823,8 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def List_Import_Contacts(self, listId, source, contacts,
-                             optionalParameters=None, **kwargs):
+    @optional
+    def List_Import_Contacts(self, listId, source, contacts, **kwargs):
         '''
         Import a collection of contacts into a given list
 
@@ -2061,28 +1844,21 @@ class Contactology:
 
         Returns struct - Aggregate import results
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'List_Import_Contacts',
             'listId': listId,
             'source': source,
             'contacts': contacts,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def List_Import_Contacts_Delayed(self, listId, source, contacts,
-                                     callbackUrl, jobId, chunkNum,
-                                     optionalParameters=None, **kwargs):
+                                     callbackUrl, jobId, chunkNum, **kwargs):
         '''
         Import a collection of contacts into a given list asyncrhonously
 
@@ -2108,13 +1884,6 @@ class Contactology:
 
         Returns bool -
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'List_Import_Contacts_Delayed',
@@ -2124,7 +1893,7 @@ class Contactology:
             'callbackUrl': callbackUrl,
             'jobId': jobId,
             'chunkNum': chunkNum,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -2425,7 +2194,8 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def Group_Get_Contacts(self, groupId, optionalParameters=None, **kwargs):
+    @optional
+    def Group_Get_Contacts(self, groupId, **kwargs):
         '''
         Retrieve a list of contacts in a given group
 
@@ -2447,18 +2217,11 @@ class Contactology:
         email addressemail and values of contactId, email, status and
         statusCode
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Group_Get_Contacts',
             'groupId': groupId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -2484,8 +2247,8 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def Group_Import_Contacts(self, groupId, source, contacts,
-                              optionalParameters=None, **kwargs):
+    @optional
+    def Group_Import_Contacts(self, groupId, source, contacts, **kwargs):
         '''
         Import a collection of contacts into a given group
 
@@ -2505,20 +2268,13 @@ class Contactology:
 
         Returns struct - Aggregate import results
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Group_Import_Contacts',
             'groupId': groupId,
             'source': source,
             'contacts': contacts,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -2546,8 +2302,8 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def SavedSearch_Create(self, name, advancedConditions,
-                           optionalParameters=None, **kwargs):
+    @optional
+    def SavedSearch_Create(self, name, advancedConditions, **kwargs):
         '''
         Create a new SavedSearch
 
@@ -2566,19 +2322,12 @@ class Contactology:
 
         Returns int - Returns the searchId of your new search
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'SavedSearch_Create',
             'name': name,
             'advancedConditions': advancedConditions,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -2608,8 +2357,8 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def SavedSearch_Get_Contacts(self, searchId, optionalParameters=None,
-                                 **kwargs):
+    @optional
+    def SavedSearch_Get_Contacts(self, searchId, **kwargs):
         '''
         Retrieve a list of contacts found by a given saved search
 
@@ -2630,18 +2379,11 @@ class Contactology:
         Returns struct - Struct of records each with a key of email and values
         of contactId, email, status and statusCode
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'SavedSearch_Get_Contacts',
             'searchId': searchId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -2689,9 +2431,9 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
+    @optional
     def Campaign_Create_Standard(self, recipients, campaignName, subject,
-                                 senderEmail, senderName, content,
-                                 optionalParameters=None, **kwargs):
+                                 senderEmail, senderName, content, **kwargs):
         '''
         Create a standard Contactology campaign
 
@@ -2766,13 +2508,6 @@ class Contactology:
 
         Returns int - campaignId The ID for your new Campaign
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Create_Standard',
@@ -2782,16 +2517,16 @@ class Contactology:
             'senderEmail': senderEmail,
             'senderName': senderName,
             'content': content,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def Campaign_Create_Standard_From_Url(self, recipients, campaignName,
                                           subject, senderEmail, senderName,
-                                          content, optionalParameters=None,
-                                          **kwargs):
+                                          content, **kwargs):
         '''
         Create a standard Contactology campaign
 
@@ -2869,13 +2604,6 @@ class Contactology:
 
         Returns int - campaignId The ID for your new Campaign
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Create_Standard_From_Url',
@@ -2885,15 +2613,15 @@ class Contactology:
             'senderEmail': senderEmail,
             'senderName': senderName,
             'content': content,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def Campaign_Create_Ad_Hoc(self, contacts, campaignName, subject,
-                               senderEmail, senderName, content,
-                               optionalParameters=None, **kwargs):
+                               senderEmail, senderName, content, **kwargs):
         '''
         Create a campaign to be sent to an ad hoc list of email addresses. The
         campaign will send immediately, it is not necessary to call
@@ -2973,13 +2701,6 @@ class Contactology:
         Returns struct - Returns a struct containing info about the new
         campaign
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Create_Ad_Hoc',
@@ -2989,18 +2710,18 @@ class Contactology:
             'senderEmail': senderEmail,
             'senderName': senderName,
             'content': content,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def Campaign_Create_Triggered_On_List_Subscription(self, listId, timeType,
                                                        timeValue, campaignName,
                                                        subject, senderEmail,
                                                        senderName, content,
                                                        advancedConditions=None,
-                                                       optionalParameters=None,
                                                        **kwargs):
         '''
         Create an Triggered campaign that sends every time someone subscribes
@@ -3089,14 +2810,8 @@ class Contactology:
 
         Returns int - campaignId The ID of your new Campaign
         '''
-
         if advancedConditions is None:
             advancedConditions = []
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
 
         args = {
             'key': self.key,
@@ -3110,12 +2825,13 @@ class Contactology:
             'senderName': senderName,
             'content': content,
             'advancedConditions': advancedConditions,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def Campaign_Create_Triggered_On_Date_CustomField(self, dateCustomFieldId,
                                                       timeType, timeValue,
                                                       timeDirection,
@@ -3124,7 +2840,6 @@ class Contactology:
                                                       senderEmail, senderName,
                                                       content,
                                                       advancedConditions=None,
-                                                      optionalParameters=None,
                                                       **kwargs):
         '''
         Create an Triggered campaign that sends relative to a Date CustomField
@@ -3221,14 +2936,8 @@ class Contactology:
 
         Returns int - campaignId The ID of your new Campaign
         '''
-
         if advancedConditions is None:
             advancedConditions = []
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
 
         args = {
             'key': self.key,
@@ -3245,16 +2954,17 @@ class Contactology:
             'senderName': senderName,
             'content': content,
             'advancedConditions': advancedConditions,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def Campaign_Create_Recurring(self, timeFrame, sendHour, sendMinute,
                                   sendTimezone, recipients, campaignName,
                                   subject, senderEmail, senderName, content,
-                                  optionalParameters=None, **kwargs):
+                                  **kwargs):
         '''
         Create a Recurring Campaign that sends regularly on a defined schedule
 
@@ -3341,13 +3051,6 @@ class Contactology:
 
         Returns int - campaignId The ID for your new Campaign
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Create_Recurring',
@@ -3361,17 +3064,18 @@ class Contactology:
             'senderEmail': senderEmail,
             'senderName': senderName,
             'content': content,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def Campaign_Create_Recurring_From_Url(self, timeFrame, sendHour,
                                            sendMinute, sendTimezone,
                                            recipients, campaignName, subject,
                                            senderEmail, senderName, content,
-                                           optionalParameters=None, **kwargs):
+                                           **kwargs):
         '''
         Create a Recurring Campaign that sends regularly on a defined schedule
 
@@ -3461,13 +3165,6 @@ class Contactology:
 
         Returns int - campaignId The ID for your new Campaign
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Create_Recurring_From_Url',
@@ -3481,16 +3178,16 @@ class Contactology:
             'senderEmail': senderEmail,
             'senderName': senderName,
             'content': content,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def Campaign_Create_Transactional(self, testContact, testReplacements,
                                       campaignName, subject, senderEmail,
-                                      senderName, content,
-                                      optionalParameters=None, **kwargs):
+                                      senderName, content, **kwargs):
         '''
         Create a transactional Contactology campaign
 
@@ -3567,13 +3264,6 @@ class Contactology:
 
         Returns int - campaignId The ID for your new Campaign
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Create_Transactional',
@@ -3584,14 +3274,14 @@ class Contactology:
             'senderEmail': senderEmail,
             'senderName': senderName,
             'content': content,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Campaign_Update_Standard(self, campaignId, optionalParameters=None,
-                                 **kwargs):
+    @optional
+    def Campaign_Update_Standard(self, campaignId, **kwargs):
         '''
         Update properties of an existing Campaign. Only unsent campaigns in
         Draft status can be updated.
@@ -3679,25 +3369,18 @@ class Contactology:
         Returns struct - Returns a struct containing standard Info for the
         campaign
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Update_Standard',
             'campaignId': campaignId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def Campaign_Update_Triggered_On_List_Subscription(self, campaignId,
-                                                       optionalParameters=None,
                                                        **kwargs):
         '''
         Update properties of an existing Triggered On List Subscription
@@ -3777,25 +3460,18 @@ class Contactology:
         Returns struct - Returns a struct containing standard Info for the
         campaign
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Update_Triggered_On_List_Subscription',
             'campaignId': campaignId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def Campaign_Update_Triggered_On_Date_CustomField(self, campaignId,
-                                                      optionalParameters=None,
                                                       **kwargs):
         '''
         Update properties of an existing Triggered On Date CustomField
@@ -3885,25 +3561,18 @@ class Contactology:
         Returns struct - Returns a struct containing standard Info for the
         campaign
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Update_Triggered_On_Date_CustomField',
             'campaignId': campaignId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Campaign_Update_Recurring(self, campaignId, optionalParameters=None,
-                                  **kwargs):
+    @optional
+    def Campaign_Update_Recurring(self, campaignId, **kwargs):
         '''
         Update properties of an existing Recurring Campaign. Only unactivated
         campaigns in Draft status can be Updated
@@ -3998,25 +3667,18 @@ class Contactology:
         Returns struct - Returns a struct containing standard Info for the
         campaign
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Update_Recurring',
             'campaignId': campaignId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Campaign_Refresh_Url_Content(self, campaignId, optionalParameters=None,
-                                     **kwargs):
+    @optional
+    def Campaign_Refresh_Url_Content(self, campaignId, **kwargs):
         '''
         Refresh the content of a URL based Campaign in Draft status
 
@@ -4034,18 +3696,11 @@ class Contactology:
 
         Returns struct - Returns a struct containing a preview of the campaign
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Refresh_Url_Content',
             'campaignId': campaignId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -4173,7 +3828,8 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def Campaign_Copy(self, campaignId, optionalParameters=None, **kwargs):
+    @optional
+    def Campaign_Copy(self, campaignId, **kwargs):
         '''
         Create a duplicate of a campaign
 
@@ -4189,25 +3845,18 @@ class Contactology:
 
         Returns struct - Returns Info about the newly created campaign
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Copy',
             'campaignId': campaignId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Campaign_Send_Test(self, campaignId, optionalParameters=None,
-                           **kwargs):
+    @optional
+    def Campaign_Send_Test(self, campaignId, **kwargs):
         '''
         Send a test of your Campaign
 
@@ -4228,24 +3877,18 @@ class Contactology:
 
         Returns bool - True on success
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Send_Test',
             'campaignId': campaignId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Campaign_Report(self, campaignId, optionalParameters=None, **kwargs):
+    @optional
+    def Campaign_Report(self, campaignId, **kwargs):
         '''
         Get a report on a Completed Campaign
 
@@ -4264,18 +3907,11 @@ class Contactology:
 
         Returns struct - Returns report data from the specified campaign
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Report',
             'campaignId': campaignId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -4304,8 +3940,8 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def Campaign_Add_Recipients(self, campaignId, contacts,
-                                optionalParameters=None, **kwargs):
+    @optional
+    def Campaign_Add_Recipients(self, campaignId, contacts, **kwargs):
         '''
         Adds an adhoc grouping of contacts to a campaign. The recipients are
         added and will be sent in the next send cycle. This can be used to send
@@ -4326,19 +3962,12 @@ class Contactology:
 
         Returns struct - Returns contact add results
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Add_Recipients',
             'campaignId': campaignId,
             'contacts': contacts,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -4396,10 +4025,9 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
+    @optional
     def Campaign_Send_Transactional_Multiple(self, campaignId, contacts,
-                                             source, replacements,
-                                             optionalParameters=None,
-                                             **kwargs):
+                                             source, replacements, **kwargs):
         '''
         Send a new message in a transactional Campaign
 
@@ -4420,13 +4048,6 @@ class Contactology:
 
         Returns mixed - Returns true on success, returns a struct on failure
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Send_Transactional_Multiple',
@@ -4434,7 +4055,7 @@ class Contactology:
             'contacts': contacts,
             'source': source,
             'replacements': replacements,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -4531,8 +4152,8 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def Campaign_Get_Delivered_Contacts(self, campaignId,
-                                        optionalParameters=None, **kwargs):
+    @optional
+    def Campaign_Get_Delivered_Contacts(self, campaignId, **kwargs):
         '''
         Get a list of all Contacts who have the Delivered status for the
         specified Campaign
@@ -4551,25 +4172,18 @@ class Contactology:
 
         Returns struct - Returns a struct containing all found contacts
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Get_Delivered_Contacts',
             'campaignId': campaignId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Campaign_Get_Hard_Bounced_Contacts(self, campaignId,
-                                           optionalParameters=None, **kwargs):
+    @optional
+    def Campaign_Get_Hard_Bounced_Contacts(self, campaignId, **kwargs):
         '''
         Get a list of all Contacts who Hard Bounced for the specified Campaign
 
@@ -4588,25 +4202,18 @@ class Contactology:
 
         Returns struct - Returns a struct containing all found contacts
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Get_Hard_Bounced_Contacts',
             'campaignId': campaignId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Campaign_Get_Opened_Contacts(self, campaignId, optionalParameters=None,
-                                     **kwargs):
+    @optional
+    def Campaign_Get_Opened_Contacts(self, campaignId, **kwargs):
         '''
         Get a list of all Contacts who Opened the specified Campaign
 
@@ -4625,25 +4232,18 @@ class Contactology:
 
         Returns struct - Returns a struct containing all found contacts
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Get_Opened_Contacts',
             'campaignId': campaignId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Campaign_Get_ClickThru_Contacts(self, campaignId,
-                                        optionalParameters=None, **kwargs):
+    @optional
+    def Campaign_Get_ClickThru_Contacts(self, campaignId, **kwargs):
         '''
         Get a list of all Contacts who Clicked Thru for the specified Campaign
 
@@ -4663,25 +4263,18 @@ class Contactology:
 
         Returns struct - Returns a struct containing all found contacts
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Get_ClickThru_Contacts',
             'campaignId': campaignId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Campaign_Get_Replied_Contacts(self, campaignId,
-                                      optionalParameters=None, **kwargs):
+    @optional
+    def Campaign_Get_Replied_Contacts(self, campaignId, **kwargs):
         '''
         Get a list of all Contacts who Replied To the specified Campaign
 
@@ -4700,25 +4293,18 @@ class Contactology:
 
         Returns struct - Returns a struct containing all found contacts
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Get_Replied_Contacts',
             'campaignId': campaignId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Campaign_Get_Unsubscribed_Contacts(self, campaignId,
-                                           optionalParameters=None, **kwargs):
+    @optional
+    def Campaign_Get_Unsubscribed_Contacts(self, campaignId, **kwargs):
         '''
         Get a list of all Contacts who Unsubscribed from the specified Campaign
 
@@ -4737,25 +4323,18 @@ class Contactology:
 
         Returns struct - Returns a struct containing all found contacts
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Get_Unsubscribed_Contacts',
             'campaignId': campaignId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Campaign_Get_Subscribed_Contacts(self, campaignId,
-                                         optionalParameters=None, **kwargs):
+    @optional
+    def Campaign_Get_Subscribed_Contacts(self, campaignId, **kwargs):
         '''
         Get a list of all Contacts who Subscribed from the specified Campaign
 
@@ -4774,25 +4353,18 @@ class Contactology:
 
         Returns struct - Returns a struct containing all found contacts
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Get_Subscribed_Contacts',
             'campaignId': campaignId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Campaign_Get_Forwarded_Contacts(self, campaignId,
-                                        optionalParameters=None, **kwargs):
+    @optional
+    def Campaign_Get_Forwarded_Contacts(self, campaignId,**kwargs):
         '''
         Get a list of all Contacts who Forwarded the specified Campaign
 
@@ -4811,18 +4383,11 @@ class Contactology:
 
         Returns struct - Returns a struct containing all found contacts
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Get_Forwarded_Contacts',
             'campaignId': campaignId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -4940,9 +4505,10 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
+    @optional
     def Campaign_Create_Split(self, recipients, campaignName, subject,
                               senderEmail, senderName, content, splitParts,
-                              optionalParameters=None, **kwargs):
+                              **kwargs):
         '''
         Create a multivariate split Contactology campaign - used to help
         determine the most effective configuration for your campaigns.
@@ -5021,13 +4587,6 @@ class Contactology:
 
         Returns int - campaignId The ID for your new Campaign
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Create_Split',
@@ -5038,14 +4597,14 @@ class Contactology:
             'senderName': senderName,
             'content': content,
             'splitParts': splitParts,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Campaign_Update_Split_Parts(self, campaignId, partIds,
-                                    optionalParameters, **kwargs):
+    @optional
+    def Campaign_Update_Split_Parts(self, campaignId, partIds, **kwargs):
         '''
         Update properties of an existing Campaign. Only unsent campaigns in
         Draft status can be Updated
@@ -5070,16 +4629,12 @@ class Contactology:
 
         Returns struct - Returns a struct of structs, a split ID with
         '''
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Update_Split_Parts',
             'campaignId': campaignId,
             'partIds': partIds,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -5108,8 +4663,8 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def Campaign_Get_Split_Winner_Report(self, campaignId,
-                                         optionalParameters=None, **kwargs):
+    @optional
+    def Campaign_Get_Split_Winner_Report(self, campaignId, **kwargs):
         '''
         Get the Campaign_Report for the split winner/remainder, sent with
         Campaign_Send_Split_Remainder, Campaign_Schedule_Split_Remainder or
@@ -5129,18 +4684,11 @@ class Contactology:
 
         Returns struct - See Campaign_Report
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Get_Split_Winner_Report',
             'campaignId': campaignId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -5250,8 +4798,8 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def Campaign_Send_Split_Test(self, campaignId, partIds,
-                                 optionalParameters=None, **kwargs):
+    @optional
+    def Campaign_Send_Split_Test(self, campaignId, partIds,**kwargs):
         '''
         Send a test message for each of the specified split partIds
 
@@ -5271,19 +4819,12 @@ class Contactology:
 
         Returns bool - True on success
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Campaign_Send_Split_Test',
             'campaignId': campaignId,
             'partIds': partIds,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -5468,8 +5009,8 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def HostedAttachment_Add(self, filename, attachment,
-                             optionalParameters=None, **kwargs):
+    @optional
+    def HostedAttachment_Add(self, filename, attachment,**kwargs):
         '''
         Add a HostedAttachment to the server
 
@@ -5487,19 +5028,12 @@ class Contactology:
         Returns string - Returns the URL of the HostedAttachment for use in
         your Campaigns
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'HostedAttachment_Add',
             'filename': filename,
             'attachment': attachment,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -5579,7 +5113,8 @@ class Contactology:
         data = self.makeCall(args)
         return data
 
-    def Account_Get_Send_Count(self, optionalParameters=None, **kwargs):
+    @optional
+    def Account_Get_Send_Count(self, **kwargs):
         '''
         Get the total number of sent emails for your account
 
@@ -5598,17 +5133,10 @@ class Contactology:
 
         Returns int -
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Account_Get_Send_Count',
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -6001,7 +5529,8 @@ Campaign and SavedSearch functions
         data = self.makeCall(args)
         return data
 
-    def SocialConnection_List(self, optionalParameters=None, **kwargs):
+    @optional
+    def SocialConnection_List(self, **kwargs):
         '''
         List all social connections
 
@@ -6017,17 +5546,10 @@ Campaign and SavedSearch functions
 
         Returns struct - A struct of social connections
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'SocialConnection_List',
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -6134,10 +5656,10 @@ Campaign and SavedSearch functions
 
 
 class Contactology_Reseller(Contactology):
+    @optional
     def Admin_Create_Account(self, clientName, adminEmail, userName, password,
                              homePage, logoUrl, clientAddr1, clientCity,
-                             clientState, clientZip, optionalParameters=None,
-                             **kwargs):
+                             clientState, clientZip, **kwargs):
         '''
         Create a new Contactology account with the given parameters
 
@@ -6206,13 +5728,6 @@ class Contactology_Reseller(Contactology):
 
         Returns int - The user ID of the new account
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Admin_Create_Account',
@@ -6226,15 +5741,15 @@ class Contactology_Reseller(Contactology):
             'clientCity': clientCity,
             'clientState': clientState,
             'clientZip': clientZip,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
+    @optional
     def Admin_Create_Account_Minimal(self, clientName, adminEmail, userName,
-                                     password, optionalParameters=None,
-                                     **kwargs):
+                                     password, **kwargs):
         '''
         Create a new Contactology account using minimal initial information
 
@@ -6290,13 +5805,6 @@ class Contactology_Reseller(Contactology):
 
         Returns int - The user ID of the new account
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Admin_Create_Account_Minimal',
@@ -6304,7 +5812,7 @@ class Contactology_Reseller(Contactology):
             'adminEmail': adminEmail,
             'userName': userName,
             'password': password,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -6330,7 +5838,8 @@ class Contactology_Reseller(Contactology):
         data = self.makeCall(args)
         return data
 
-    def Admin_Find_Accounts(self, optionalParameters=None, **kwargs):
+    @optional
+    def Admin_Find_Accounts(self, **kwargs):
         '''
         Get a list of your clients based on parameters
 
@@ -6351,17 +5860,10 @@ class Contactology_Reseller(Contactology):
         "active", "clientCreated":"2012-01-01 00:00:00" }, { "clientId":"2",
         "clientStatus":"disabled", "clientCreated":"2012-02-02 02:00:00" }
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Admin_Find_Accounts',
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -6390,7 +5892,8 @@ class Contactology_Reseller(Contactology):
         data = self.makeCall(args)
         return data
 
-    def Admin_Modify_Account(self, clientId, optionalParameters, **kwargs):
+    @optional
+    def Admin_Modify_Account(self, clientId, **kwargs):
         '''
         Modifies multiple properties of an existing Contactology account
         created by your account. Only fields in optionalParameters will be
@@ -6428,15 +5931,11 @@ class Contactology_Reseller(Contactology):
 
         Returns int - The number of fields successfully modified
         '''
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Admin_Modify_Account',
             'clientId': clientId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -6840,8 +6339,8 @@ class Contactology_Reseller(Contactology):
         data = self.makeCall(args)
         return data
 
-    def Admin_Get_Accounts_Completed_Campaigns(self, optionalParameters=None,
-                                               **kwargs):
+    @optional
+    def Admin_Get_Accounts_Completed_Campaigns(self, **kwargs):
         '''
         Get a list of all completed campaigns for your clients
 
@@ -6863,23 +6362,17 @@ class Contactology_Reseller(Contactology):
         campaign_id, campaign_name, campaign_description, start_time,
         campaign_email_from, campaign_email_from_alias, campaign_email_subject
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Admin_Get_Accounts_Completed_Campaigns',
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Admin_Get_Accounts_Sends(self, optionalParameters=None, **kwargs):
+    @optional
+    def Admin_Get_Accounts_Sends(self, **kwargs):
         '''
         Get the total number of sends for each of your accounts
 
@@ -6897,17 +6390,10 @@ class Contactology_Reseller(Contactology):
         Returns struct - An array of clientIds each with a value of the total
         sends
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Admin_Get_Accounts_Sends',
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -6934,8 +6420,8 @@ class Contactology_Reseller(Contactology):
         data = self.makeCall(args)
         return data
 
-    def Admin_Get_Account_Key(self, clientId, optionalParameters=None,
-                              **kwargs):
+    @optional
+    def Admin_Get_Account_Key(self, clientId, **kwargs):
         '''
         Get an API key for one of your accounts
 
@@ -6950,25 +6436,18 @@ class Contactology_Reseller(Contactology):
 
         Returns string - API Key
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Admin_Get_Account_Key',
             'clientId': clientId,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
         return data
 
-    def Admin_Send_Message(self, clientIds, shortMessage,
-                           optionalParameters=None, **kwargs):
+    @optional
+    def Admin_Send_Message(self, clientIds, shortMessage, **kwargs):
         '''
         Send an Alert Message to a set of your clients
 
@@ -6989,19 +6468,12 @@ class Contactology_Reseller(Contactology):
 
         Returns  -
         '''
-
-        if optionalParameters is None:
-            optionalParameters = {}
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
-
         args = {
             'key': self.key,
             'method': 'Admin_Send_Message',
             'clientIds': clientIds,
             'shortMessage': shortMessage,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
@@ -7029,9 +6501,9 @@ class Contactology_Reseller(Contactology):
         data = self.makeCall(args)
         return data
 
+    @optional
     def Admin_Set_Account_Webhooks(self, clientId, url, webhooksKey, hooks,
-                                   locations, customFieldIds=None,
-                                   optionalParameters=None, **kwargs):
+                                   locations, customFieldIds=None, **kwargs):
         '''
         Admin_Set_Account_Webhooks allows you to set the Webhooks information
         for the specified Account
@@ -7071,14 +6543,8 @@ class Contactology_Reseller(Contactology):
 
         Returns struct - A struct of Webhook data
         '''
-
         if customFieldIds is None:
             customFieldIds = []
-        if optionalParameters is None:
-            optionalParameters = []
-
-        for k, v in kwargs.iteritems():
-            optionalParameters[k] = v
 
         args = {
             'key': self.key,
@@ -7089,7 +6555,7 @@ class Contactology_Reseller(Contactology):
             'hooks': hooks,
             'locations': locations,
             'customFieldIds': customFieldIds,
-            'optionalParameters': optionalParameters,
+            'optionalParameters': kwargs.get('optionalParameters'),
         }
 
         data = self.makeCall(args)
