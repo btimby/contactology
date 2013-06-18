@@ -20,6 +20,7 @@ def optional(f):
         op.update(kwargs)
         kwargs['optionalParameters'] = op
         return f(*args, **kwargs)
+    return merge_params
 
 
 class Contactology:
@@ -5639,16 +5640,15 @@ Campaign and SavedSearch functions
         conn.request("POST", self.path, params, headers)
 
         response = conn.getresponse()
-        if 199 > response.status > 300:
-            # Error response, raise an appropriate exception rather than trying
-            # to decode the HTML error message.
-            raise Exception('Received HTTP %s error: %s' % (response.status, response.reason))
+        if response.status < 200 or response.status >= 300:
+            raise Exception('Received HTTP %s error: %s' % (response.status,
+                            response.reason))
 
-        # data = None
-        data = json.loads(response.read())
-
-        # if data is None:
-        #     raise Exception("Could not fetch data from the API.")
+        data = response.read()
+        try:
+            data = json.loads(data)
+        except ValueError:
+            raise Exception('Could not decode JSON: %s' % data)
 
         if ((isinstance(data, dict) and
              'result' in data and data['result'] == "error")):
