@@ -5602,7 +5602,7 @@ Campaign and SavedSearch functions
                         if isinstance(val, dict):
                             for subkey in val.keys():
                                 val[subkey] = sentinel(str(val[subkey]))
-                        val = quote(val.replace('"', '\\"').replace('\'', '"'))
+                        val = quote(str(val).replace('"', '\\"').replace('\'', '"'))
                         idx = quote('['+str(i)+']')
                         result += newkey + idx + "=" + val + "&"
                         i += 1
